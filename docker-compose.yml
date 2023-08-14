@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  videolify:
+    image: videochat:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: videochat
+    hostname: muhammad-uzbek/videochat
+    volumes:
+      - .env:/src/.env:ro
+      - ./app/:/src/app/:ro
+      - ./public/:/src/public/:ro
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+# Uncomment below, remove "ports:" section above and configure labels as
+# needed for LetsEncrypt TLS certificates with Traefik.
+# See https://doc.traefik.io/traefik/user-guides/docker-compose/basic-example/
+#   expose:
+#     - 3000
+#   labels:
+#     - "traefik.enable=true"
+#     - "traefik.http.routers.muhammad-uzbek.rule=Host(`videochat.example.com`)"
+#     - "traefik.http.routers.muhammad-uzbek.entrypoints=websecure"
+#     - "traefik.http.routers.muhammad-uzbek.tls.certresolver=myresolver"
+#     - "traefik.http.services.muhammad-uzbek.loadbalancer.server.port=3000"

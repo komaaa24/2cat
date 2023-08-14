@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Video Calling App</title>
+  <style>
+    video {
+      width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoElement" autoplay></video>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    // Function to stream MP4 file
+    function streamVideo() {
+      const videoElement = document.getElementById('videoElement');
+      const streamUrl = '/stream'; // URL for streaming endpoint
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(streamUrl);
+        hls.attachMedia(videoElement);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          videoElement.play();
+        });
+      } else if (videoElement.canPlayType('application/vnd.apple.mpegurl')) {
+        videoElement.src = streamUrl;
+        videoElement.addEventListener('loadedmetadata', () => {
+          videoElement.play();
+        });
+      }
+    }
+
+    // Connect to the server
+    socket.on('connect', () => {
+      console.log('Connected to the server');
+      streamVideo();
+    });
+
+    // Handle disconnect event
+    socket.on('disconnect', () => {
+      console.log('Disconnected from the server');
+    });
+  </script>
+</body>
+</html>

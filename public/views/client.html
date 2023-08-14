@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+
+    <script async<meta http-equiv="X-UA-Compatible" content="IE=edge"
+    src="https://www.googletagmanager.com/gtag/js?id=G-X085TX7411"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      
+      gtag("config", "G-X085TX7411");
+    </script>
+
+    <!-- Clarity (clarity.js) - Microsoft analytics 
+    <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "93jfa0ufr9");
+    </script>-->
+
+    <!-- Title and Icon -->
+
+    <title>Videochat</title>
+    <link rel="shortcut icon" href="../images/favicon.png" />
+    <link rel="apple-touch-icon" href="../images/favicon.png" />
+
+    <!-- Meta Information -->
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Videochat.uz - video muloqot portali"
+    />
+    <meta
+      name="keywords"
+      content="webrtc, self hosted, voip, sip, real-time communications, chat, messaging, meet, webrtc stun, webrtc turn, video meeting, video chat, video conference, multi video chat, multi video conference, peer to peer, p2p, rtc, alternative to, zoom, microsoft teams, google meet, jitsi, meeting"
+    />
+
+    <!-- https://ogp.me -->
+
+    <!-- Primary Meta Tags -->
+    <title>Videochat.uz - video muloqot portali</title>
+    <meta name="title" content="Videolify" />
+    <meta name="description" content="videochat.uz. Video muloqot portali" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://videochat.uz/" />
+    <meta property="og:title" content="Videolify" />
+    <meta property="og:description" content="videochat.uz. Video muloqot portali" />
+    <!-- <meta
+      property="og:image"
+      content="https://videochat.uz/images/preview.png"
+    /> -->
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://videochat.uz/" />
+    <meta property="twitter:title" content="Videolify" />
+    <meta
+      property="twitter:description"
+      content="videochat.uz. Video muloqot portali"
+    />
+
+
+    <!-- StyleSheet -->
+
+    <link rel="stylesheet" href="../css/client.css" />
+    <link rel="stylesheet" href="../css/videoGrid.css" />
+    <link rel="stylesheet" href="../css/whiteboard.css" />
+    <link rel="stylesheet" href="../css/newcall.css" />
+
+    <!-- https://cdnjs.com/libraries/font-awesome -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    />
+
+    <!-- https://animate.style 4 using for swal fadeIn-Out -->
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+  </head>
+
+  <body onload="initClientPeer()">
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <!-- just 4SEO Optimization -->
+
+    <div id="webRTCSeo">
+      <h1>WebRTC</h1>
+    </div>
+
+    <!-- show this before to join -->
+    
+    <div id="loadingDiv" class="center pulsate wave">
+      <!-- <h1>Yuklanmoqda...</h1>
+      <pre>
+          Iltimos, kamera va mikrofonlaringizga ruxsat bering.
+      </pre> -->
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+        <div class="ball"></div>
+    </div>
+
+    <!-- Start buttons bar
+        https://fontawesome.com/icons?d=gallery
+        -->
+
+    <div id="buttonsBar" class="">
+      <button id="mySettingsBtn" class="fas fa-sharp fa-regular fa-gear">
+      </button>
+      <button id="shareRoomBtn" class="fas fa-users"></button>
+      
+      <button id="videoBtn" class="fas fa-video"></button>
+      <button id="swapCameraBtn" class="fas fa-camera-rotate">
+      </button>
+      <button id="screenShareBtn" class="fas fa-desktop"></button>
+      <button id="recordStreamBtn" class="fas fa-record-vinyl"></button>
+      <button id="fullScreenBtn" class="fas fa-expand-alt"></button>
+      <button id="chatRoomBtn" class="fas fa-comment">
+      </button>
+      <button id="audioBtn" class="fas fa-microphone">
+      </button>
+      <button id="captionBtn" class="fas fa-closed-captioning"></button>
+      <button id="myHandBtn" class="fas fa-hand-paper"></button>
+      <button id="whiteboardBtn" class="fas fa-chalkboard-teacher"></button>
+      <button id="fileShareBtn" class="fas fa-folder-open"></button>
+      <button id="audioOutputChangeBtn" class="fas fa-volume-up">
+      </button>
+      <button id="nextBtn">
+        <img
+          id="nextBtnLoading"
+          src="../images/loading.svg"
+          alt="next"
+          class="loading-animation"
+        />
+        <i class="fas fa-solid fa-circle-arrow-right"></i>
+      </button>
+      <button id="aboutBtn" class="fas fa-question"></button>
+      <!-- <button id="leaveRoomBtn" class="fas fa-right-from-bracket"></button> -->
+     
+    </div>
+    <!-- End left buttons -->
+
+    <!-- Start chat room 
+        https://codepen.io/sajadhsm/pen/odaBdd
+        https://getemoji.com
+        -->
+
+    <section id="msgerDraggable" class="msger-draggable fadein">
+      <section id="msger" class="msger">
+        <header id="msgerHeader" class="msger-header">
+          <div class="msger-header-title">
+            <button id="msgerClose" class="fas fa-times"></button>
+          </div>
+          <div class="msger-header-options">
+            <button id="msgerSaveBtn" class="fas fa-save"></button>
+            <button id="msgerClean" class="fas fa-trash"></button>
+          </div>
+        </header>
+
+        <main id="msgerChat" class="msger-chat"></main>
+
+        <!-- Start emoji picker -->
+
+        <section id="msgerEmojiPicker" class="hidden fadein"></section>
+
+        <!-- End emoji picker -->
+
+        <div class="msger-inputarea">
+          <textarea
+            rows="1"
+            cols="1"
+            id="msgerInput"
+            class="msger-input"
+            placeholder="Xabar yozish..."
+          ></textarea>
+        </div>
+
+        <div class="msger-input-buttons">
+          <button id="msgerEmojiBtn" class="fas fa-smile"></button>
+          <button id="msgerMarkdownBtn" class="fab fa-markdown"></button>
+          <button id="msgerShareFileBtn" class="fas fa-paperclip"></button>
+          <button id="msgerVideoUrlBtn" class="fab fa-youtube"></button>
+          <button id="msgerCPBtn" class="fas fa-users"></button>
+          <button id="msgerCleanTextBtn" class="fas fa-trash"></button>
+          <button id="msgerPasteBtn" class="fas fa-paste"></button>
+          <label class="switch">
+            <input id="msgerShowChatOnMsg" type="checkbox" checked />
+            <span class="slider round"></span>
+          </label>
+          <button id="msgerSendBtn" class="fas fa-paper-plane"></button>
+        </div>
+      </section>
+
+      <!-- Start private msg -->
+
+      <section id="msgerCP" class="center fadein">
+        <section id="msgerCPSec" class="msger">
+          <header id="msgerCPHeader" class="msger-private-header">
+            <div class="msger-header-title">
+              <i class="fas fa-comment-alt"></i> Send Private messages
+            </div>
+            <div class="msger-header-options">
+              <button id="msgerCPCloseBtn" class="fas fa-times"></button>
+            </div>
+          </header>
+          <main id="msgerCPChat" class="msger-chat">
+            <div class="search-container">
+              <input
+                id="searchPeerBarName"
+                type="text"
+                placeholder=" 🔍 Search peer by name..."
+                name="search"
+                onkeyup="searchPeer()"
+              />
+            </div>
+            <br />
+            <div id="msgerCPList"></div>
+          </main>
+        </section>
+      </section>
+
+      <!-- End private msg -->
+    </section>
+
+    <!-- End chat room -->
+
+    <!-- Start of caption section -->
+
+    <section id="captionDraggable" class="msger-draggable fadein">
+      <section id="caption" class="msger">
+        <header id="captionHeader" class="msger-header">
+          <div class="msger-header-title">
+            <button id="captionClose" class="fas fa-times"></button>
+          </div>
+          <div class="msger-header-options">
+            <button id="captionSaveBtn" class="fas fa-save"></button>
+            <button id="captionClean" class="fas fa-trash"></button>
+          </div>
+        </header>
+
+        <main id="captionChat" class="msger-chat"></main>
+        <div class="msger-inputarea">
+          <button
+            id="speechRecognitionIcon"
+            class="fas fa-microphone-alt"
+          ></button>
+          <select id="recognitionLanguage"></select>
+          <select id="recognitionDialect"></select>
+          <button type="button" id="speechRecognitionStart">
+            <i class="fas fa-play"></i>&nbsp;Start
+          </button>
+          <button type="button" id="speechRecognitionStop">
+            <i class="fas fa-stop"></i>&nbsp;Stop
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <!-- End of caption section -->
+
+    <!-- Start my settings -->
+
+    <section id="mySettings" class="center fadein">
+      <header id="mySettingsHeader">
+        <button id="mySettingsCloseBtn" class="fas fa-times"></button>
+      </header>
+      <main>
+        <br />
+        <div class="tab">
+          <button id="tabDevicesBtn" class="fas fa-cog tablinks"></button>
+          <button id="tabBandwidthBtn" class="fas fa-wifi tablinks"></button>
+          <button id="tabRoomBtn" class="fas fa-home tablinks"></button>
+          <button id="tabStylingBtn" class="fas fa-palette tablinks"></button>
+          <button id="tabLanguagesBtn" class="fas fa-globe tablinks"></button>
+        </div>
+
+        <div id="tabDevices" class="tabcontent">
+          <br />
+          <div>
+            <label for="videoSource">Kamera</label><br />
+            <select id="videoSource"></select>
+          </div>
+          <br />
+          <div>
+            <label for="audioSource">Mikrofon</label><br />
+            <select id="audioSource"></select>
+          </div>
+          <br />
+          <div>
+            <label for="audioOutput">Speaker</label><br />
+            <select id="audioOutput"></select>
+          </div>
+        </div>
+
+        <div id="tabBandwidth" class="tabcontent">
+          <br />
+          <label for="videoQuality">Video sifati</label>
+          <br />
+          <select id="videoQuality">
+            <option value="default">Default</option>
+            <option value="qvgaVideo">QVGA</option>
+            <option value="vgaVideo">VGA</option>
+            <option value="hdVideo">HD</option>
+            <option value="fhdVideo">FULL HD</option>
+            <option value="2kVideo">2k</option>
+            <option value="4kVideo">4K</option>
+          </select>
+          <br /><br />
+          <label for="videoFps">Kamera fps</label>
+          <br />
+          <select id="videoFps">
+            <option value="60">60 fps</option>
+            <option value="30">30 fps</option>
+            <option value="25">25 fps</option>
+            <option value="20">20 fps</option>
+            <option value="15">15 fps</option>
+            <option value="10">10 fps</option>
+            <option value="5">5 fps</option>
+          </select>
+          <div id="screenFpsDiv">
+            <br />
+            <label for="screenFps">fps</label>
+            <br />
+            <select id="screenFps">
+              <option value="60">60 fps</option>
+              <option value="30">30 fps</option>
+              <option value="25">25 fps</option>
+              <option value="20">20 fps</option>
+              <option value="15">15 fps</option>
+              <option value="10">10 fps</option>
+              <option value="5">5 fps</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="tabRoom" class="tabcontent">
+          <br />
+          <div>
+            <label>Ism</label><br />
+            <input
+              id="myPeerNameSet"
+              type="text"
+              placeholder="Ismni o'zgartirish..."
+            />&nbsp;&nbsp;
+            <button id="myPeerNameSetBtn">
+              <i class="fas fa-user-edit"></i>&nbsp; Ok
+            </button>
+          </div>
+          <br />
+          <div id="tabRoomParticipants">
+            <label>Ishtirokchilar</label><br />
+            <button id="muteEveryoneBtn">
+              <i class="fas fa-microphone"></i>&nbsp; Mute everyone
+            </button>
+            <button id="hideEveryoneBtn">
+              <i class="fas fa-video"></i>&nbsp;Hide everyone
+            </button>
+          </div>
+          <div id="tabRoomSecurity" style="display: none">
+            <br /><br />
+            <label>Security</label><br />
+            <button id="lockRoomBtn">
+              <i class="fas fa-lock-open"></i>&nbsp;Xonani maxfiylash
+            </button>
+            <button id="unlockRoomBtn">
+              <i class="fas fa-lock"></i>&nbsp; Xonani ochish
+            </button>
+          </div>
+          <br /><br />
+          <label>Ovoz effektlar</label><br />
+          <input
+            id="switchSounds"
+            style="color: #fff"
+            class="toggle"
+            type="checkbox"
+            checked
+          />
+        </div>
+
+        <div id="tabStyling" class="tabcontent">
+          <br />
+          <label for="videolifyTheme">Theme color</label>
+          <br />
+          <select id="videolifyTheme">
+            <option value="neon">🟣 Neon</option>
+            <option value="dark">⚫️ Dark</option>
+            <option value="forest">🟢 Forest</option>
+            <option value="ghost">⚪️ Ghost</option>
+          </select>
+          <br /><br />
+          <label>Video fit:</label>
+          <br />
+          <select id="videoObjFitSelect">
+            <option value="fill">fill</option>
+            <option value="contain">contain</option>
+            <option value="cover">cover</option>
+            <option value="scale-down">scale-down</option>
+            <option value="none">none</option>
+          </select>
+          <br /><br />
+          <label for="BtnsBar">Buttons bar</label>
+          <br />
+          <select id="BtnsBar">
+            <option value="vertical">🚦 Vertical</option>
+            <option value="horizontal">🚥 Horizontal</option>
+          </select>
+          <br /><br />
+          <div id="pinUnpinGridDiv">
+            <label for="pinVideoPositionSelect">Pin grid</label>
+            <br />
+            <select id="pinVideoPositionSelect">
+              <option value="vertical">Vertical</option>
+              <option value="horizontal">Horizontal</option>
+              <option value="top">Top</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="tabLanguages" class="tabcontent">
+          <br />
+          <div id="google_translate_element"></div>
+        </div>
+        <br />
+      </main>
+    </section>
+
+    <!-- End my settings -->
+
+    <!-- Start whiteboard -->
+
+    <section id="whiteboard" class="hidden">
+      <header id="whiteboardHeader" class="whiteboard-header">
+        <div id="whiteboardTitle" class="whiteboard-header-title">
+          <button id="whiteboardCloseBtn" class="fas fa-times"></button>
+        </div>
+        <div class="whiteboard-header-options">
+          <button
+            id="whiteboardGhostButton"
+            class="fas fa-circle-half-stroke"
+          ></button>
+          <input
+            id="wbBackgroundColorEl"
+            class="whiteboardColorPicker"
+            type="color"
+            value="#FFFFFF"
+          />
+          <input
+            id="wbDrawingColorEl"
+            class="whiteboardColorPicker"
+            type="color"
+            value="#000"
+          />
+          <button id="whiteboardPencilBtn" class="fas fa-pencil-alt"></button>
+          <button
+            id="whiteboardObjectBtn"
+            class="fas fa-mouse-pointer"
+          ></button>
+          <button id="whiteboardUndoBtn" class="fas fa-undo"></button>
+          <button id="whiteboardRedoBtn" class="fas fa-redo"></button>
+          <button id="whiteboardImgFileBtn" class="far fa-image"></button>
+          <button id="whiteboardImgUrlBtn" class="fas fa-link"></button>
+          <button id="whiteboardTextBtn" class="fas fa-spell-check"></button>
+          <button id="whiteboardLineBtn" class="fas fa-slash"></button>
+          <button id="whiteboardRectBtn" class="far fa-square"></button>
+          <button id="whiteboardCircleBtn" class="far fa-circle"></button>
+          <button id="whiteboardSaveBtn" class="fas fa-save"></button>
+          <button id="whiteboardEraserBtn" class="fas fa-eraser"></button>
+          <button id="whiteboardCleanBtn" class="fas fa-trash"></button>
+        </div>
+      </header>
+      <main>
+        <canvas id="wbCanvas"></canvas>
+      </main>
+    </section>
+
+    <!-- End whiteboard -->
+
+    <!-- Start File Send -->
+
+    <div id="sendFileDiv" class="center fadein">
+      <img
+        id="imgShareSend"
+        src="../images/share.png"
+        alt="Share-send"
+        class="center-img"
+      /><br />
+      <div id="sendFileInfo"></div>
+      <div id="sendFilePercentage"></div>
+      <progress id="sendProgress" max="0" value="0"></progress>
+      <button id="sendAbortBtn">
+        <i class="fas fa-stop-circle"></i>&nbsp; Abort
+      </button>
+    </div>
+
+    <!-- End File Send -->
+
+    <!-- Start File Receive -->
+
+    <div id="receiveFileDiv" class="center fadein">
+      <img
+        id="imgShareReceive"
+        src="../images/share.png"
+        alt="Share-receive"
+        class="center-img"
+      /><br />
+      <div id="receiveFileInfo"></div>
+      <div id="receiveFilePercentage"></div>
+      <progress id="receiveProgress" max="0" value="0"></progress>
+      <button id="receiveHideBtn">
+        <i class="fas fa-eye-slash"></i>&nbsp; Hide
+      </button>
+    </div>
+
+    <!-- Stop File Receive -->
+
+    <!-- Start video URL iframe -->
+
+    <div id="videoUrlCont" class="center fadein">
+      <div id="videoUrlHeader">
+        <button id="videoUrlCloseBtn" class="fas fa-times"></button>
+      </div>
+      <br />
+      <iframe
+        id="videoUrlIframe"
+        title="Video Url Player"
+        src=""
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- End Youtube Iframe -->
+
+    <!-- Start Video - Audio player -->
+    
+    <div id="videoAudioUrlCont" class="center fadein">
+      <div id="videoAudioUrlHeader">
+        <button id="videoAudioCloseBtn" class="fas fa-times"></button>
+      </div>
+      <br />
+      <video id="videoAudioUrlElement" src="" autoplay controls></video>
+    </div>
+
+    <!-- End Video - Audio player -->
+
+    <!-- Start Video container -->
+    <div class="leave-and-settings-bar">
+      <div class="online-users" id="onlineUsers">
+        <i class="fas fa-users"></i>
+        <span id="onlineUsersCount">0</span>
+      </div>
+      <button id="leaveRoomBtn" class="fas fa-right-from-bracket"></button>
+    </div>
+    <div id="videoPinMediaContainer"></div>
+    <div id="videoMediaContainer">
+      <!-- <div class="Camera"></div> -->
+    </div>
+
+    <!-- End Video container -->
+
+    <!--
+        - JS scripts https://cdn.jsdelivr.net
+        
+        - https://webrtc.github.io/adapter/adapter-latest.js                (https://github.com/webrtcHacks/adapter)
+        - https://www.npmjs.com/package/marked                              (https://github.com/markedjs/marked)
+        - https://www.npmjs.com/package/detectrtc                           (https://github.com/muaz-khan/DetectRTC)
+        - https://www.npmjs.com/package/sweetalert2                         (https://github.com/sweetalert2/sweetalert2)
+        - https://www.npmjs.com/package/fabric                              (https://github.com/fabricjs/fabric.js)
+        - https://www.npmjs.com/package/qrious                              (https://github.com/neocotic/qrious)
+        - https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js    (https://github.com/missive/emoji-mart)
+        - https://www.npmjs.com/package/tippy.js                            (https://github.com/atomiks/tippyjs) 
+        -->
+    <script defer src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/detectrtc@1.4.1/DetectRTC.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.14"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/fabric@5.2.4-browser/dist/fabric.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <script defer src="https://unpkg.com/@popperjs/core@2"></script>
+    <script defer src="https://unpkg.com/tippy.js@6"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
+    <script defer src="../js/client.js"></script>
+    <script defer src="../js/detectSpeaking.js"></script>
+    <script defer src="../js/speechRecognition.js"></script>
+    <script defer src="../js/videoGrid.js"></script>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+      ym(93187601, "init", {
+          clickmap:true,
+          trackLinks:true,
+          accurateTrackBounce:true,
+          webvisor:true
+      });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/93187601" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+          quicklink.listen();
+        });
+    </script>
+    <!-- end of Js scripts -->
+    <!-- 
+		the <video> and <audio> tags are all added and removed dynamically
+		in 'onAddStream', 'setupLocalMedia', and 'removePeer'/'disconnect'
+		-->
+
+    <!-- 
+            Start Google Translate 
+            https://www.w3schools.com/howto/howto_google_translate.asp
+        -->
+
+    <!-- <script>
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          { pageLanguage: "en" },
+          "google_translate_element"
+        );
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
+
+    <!-- End Google Translate -->
+  </body>
+</html>

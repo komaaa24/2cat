@@ -1,0 +1,46 @@
+const path = require("path");
+
+module.exports = {
+  views: {
+    client: path.join(__dirname, "../../", "public/views/client.html"),
+    landing: path.join(__dirname, "../../", "public/views/landing.html"),
+    newCall: path.join(__dirname, "../../", "public/views/newcall.html"),
+    notFound: path.join(__dirname, "../../", "public/views/404.html"),
+    permission: path.join(__dirname, "../../", "public/views/permission.html"),
+    privacy: path.join(__dirname, "../../", "public/views/privacy.html"),
+    stunTurn: path.join(__dirname, "../../", "public/views/testStunTurn.html"),
+    teststream: path.join(__dirname, "../../", "public/views/teststream.html"),
+    videoStream: path.join(
+      __dirname,
+      "../../",
+      "public/views/videoStream.html"
+    ),
+  },
+  dir: {
+    public: path.join(__dirname, "../../", "public"),
+  },
+  stunServers: [
+    "stun:213.230.110.176:3478",
+    "stun:stun.l.google.com:19302",
+    "stun:iphone-stun.strato-iphone.de:3478",
+    "stun:stun.sipnet.net:3478",
+    "stun:bn-turn1.xirsys.com",
+    "stun:a.relay.metered.ca:80",
+  ],
+  turn: {
+    status: true,
+    urls: [,],
+    credential: [
+      {
+        url: "turn:a.relay.metered.ca:80" || process.env.TURN_URLS,
+        credentialName: "G6sedqXT65/CucHv" || process.env.TURN_PASSWORD,
+        username: "e9e0948e08a59457a6f7d973",
+      },
+      {
+        url: "turn:numb.viagenie.ca",
+        credentialName: "muazkh",
+        username: "webrtc@live.com",
+      },
+    ],
+  },
+};
