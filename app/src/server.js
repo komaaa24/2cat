@@ -129,41 +129,6 @@ app.get("*", (req, res, next) => {
   res.sendFile(config.views.notFound);
 });
 
-// understood
-// test Stun and Turn connections
-// app.get(["/test"], (req, res) => {
-//   if (Object.keys(req.query).length > 0) {
-//     log.debug("Request Query", req.query);
-//   }
-//   /*
-//   http://localhost:3000/test?iceServers=[{"urls":"stun:stun.l.google.com:19302"},{"urls":"turn:openrelay.metered.ca:443","username":"openrelayproject","credential":"openrelayproject"}]
-//   https://videochat.uz//test?iceServers=[{"urls":"stun:stun.l.google.com:19302"},{"urls":"turn:openrelay.metered.ca:443","username":"openrelayproject","credential":"openrelayproject"}]
-//   https://videolify.herokuapp.com/test?iceServers=[{"urls":"stun:stun.l.google.com:19302"},{"urls":"turn:openrelay.metered.ca:443","username":"openrelayproject","credential":"openrelayproject"}]
-//   */
-//   res.sendFile(views.stunTurn);
-// });
-
-// TODO must fathom them 304 - 341
-// app.get("/stream", (req, res) => {
-//   const videoPath = "./videogirls.mp4"; // Replace with your MP4 file path
-//   const stream = fs.createReadStream(videoPath);
-//   ffmpeg(stream)
-//     .outputFormat("flv") // Convert to FLV format for streaming
-//     .videoCodec("libx264") // Specify video codec
-//     .audioCodec("aac") // Specify audio codec
-//     .noAudio() // Disable audio
-//     .pipe(res, { end: true });
-// });
-
-// app.get("/streamtest", (req, res) => {
-//   res.sendFile(views.teststream);
-// });
-
-/**
- Videochat API v1
- For api docs we use: https://swagger.io/
- */
-
 // FIXME use jsonwebtoken and improve code
 // request meeting room endpoint
 app.post([apiBasePath + "/meeting"], (req, res) => {
@@ -274,39 +239,6 @@ if (turnEnabled == "true") {
 const testStunTurn = host + "/test?iceServers=" + JSON.stringify(iceServers);
 
 app.use(errorHandler);
-/**
- * Expose server to external with https tunnel using ngrok
- * https://ngrok.com
- */
-// async function ngrokStart() {
-//   try {
-//     await ngrok.authtoken(ngrokAuthToken);
-//     await ngrok.connect(port);
-//     let api = ngrok.getApi();
-//     let data = await api.listTunnels();
-//     let pu0 = data.tunnels[0].public_url;
-//     let pu1 = data.tunnels[1].public_url;
-//     let tunnelHttps = pu0.startsWith("https") ? pu0 : pu1;
-//     // server settings
-//     log.debug("settings", {
-//       iceServers: iceServers,
-//       ngrok: {
-//         ngrok_enabled: ngrokEnabled,
-//         ngrok_token: ngrokAuthToken,
-//       },
-//       server: host,
-//       server_tunnel: tunnelHttps,
-//       test_ice_servers: testStunTurn,
-//       api_docs: api_docs,
-//       api_key_secret: api_key_secret,
-//       sentry_enabled: sentryEnabled,
-//       node_version: process.versions.node,
-//     });
-//   } catch (err) {
-//     log.warn("[Error] ngrokStart", err.body);
-//     process.exit(1);
-//   }
-// }
 
 /**
  * Start Local Server with ngrok https tunnel (optional)
@@ -325,22 +257,6 @@ server.listen(port, null, () => {
 	`,
     "font-family:monospace"
   );
-
-  //   // https tunnel
-  //   if (ngrokEnabled == "true" && isHttps === false) {
-  //     ngrokStart();
-  //   } else {
-  //     // server settings
-  //     log.debug("settings", {
-  //       iceServers: iceServers,
-  //       server: host,
-  //       test_ice_servers: testStunTurn,
-  //       api_docs: api_docs,
-  //       api_key_secret: api_key_secret,
-  //       sentry_enabled: sentryEnabled,
-  //       node_version: process.versions.node,
-  //     });
-  //   }
 });
 
 /**
@@ -360,7 +276,6 @@ io.sockets.on("connect", async (socket) => {
   log.debug("[" + socket.id + "] connection accepted", {
     host: socket.handshake.headers.host.split(":")[0],
   });
-  // console.log("iooo", io);
 
   socket.channels = {};
   sockets[socket.id] = socket;

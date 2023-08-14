@@ -61,6 +61,7 @@ router.get("/privacy", (req, res, next) => {
 });
 
 router.get("/api/freepeers", (req, res, next) => {
+  console.log("ishlayabdi");
   let freePeer = findFreePeer(peers);
   res.send(JSON.stringify({ freePeer: freePeer }));
 });
