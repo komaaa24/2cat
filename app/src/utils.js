@@ -214,6 +214,23 @@ const connectMongoDb = async () => {
   }
 };
 
+const getAllVideoPaths = (videosPath) => {
+  const videoPathArray = [];
+  fs.readdirSync(`${videosPath}`).forEach((file, index) => {
+    file = `${videosPath}/${file}`;
+    var stat = fs.statSync(file),
+      info = new Date(fs.lstatSync(file).birthtimeMs);
+    if (!stat.isDirectory())
+      videoPathArray.push({
+        path: file,
+        name: file,
+        sizeInBytes: stat["size"],
+        lastModifiedAt: info,
+      });
+  });
+  return videoPathArray;
+};
+
 module.exports = {
   errorHandler,
   makeHttps,
@@ -223,4 +240,5 @@ module.exports = {
   findFreePeer,
   canJoin,
   connectMongoDb,
+  getAllVideoPaths,
 };
