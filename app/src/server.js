@@ -89,7 +89,8 @@ app.use(
 ); // api docs
 
 // all start from here
-app.get((req, res, next) => {
+app.get("*", (req, res, next) => {
+  console.log("something");
   console.log(req.ip);
   next();
 });
