@@ -11,7 +11,12 @@ const app = express();
 const ffmpeg = require("ffmpeg");
 const Logs = require("./logs");
 const log = new Logs("server");
-const { errorHandler, makeHttps, connectMongoDb } = require("./utils");
+const {
+  errorHandler,
+  makeHttps,
+  connectMongoDb,
+  getAllVideoPaths,
+} = require("./utils");
 const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
 const User = require("./models/user.model");
@@ -105,6 +110,9 @@ app.get("*", async (req, res, next) => {
     next(err);
   }
 });
+
+const videos = getAllVideoPaths(config.dir.public);
+console.log(videos)
 
 app.use("/", require("./apiRoutes"));
 

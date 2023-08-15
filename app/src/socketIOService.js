@@ -490,10 +490,7 @@ module.exports = class SocketIOService {
        * @returns {json} indent 4 spaces
        */
 
-      let available = this.checkFreePeersAndMerge(peers, this.sendToPeer);
-      // if (available) {
-
-      // }
+      this.checkFreePeersAndMerge(peers, this.sendToPeer);
     }); // end [sockets.on-connect]
   }
 
@@ -601,7 +598,7 @@ module.exports = class SocketIOService {
       available = Object.keys(peers).filter(
         (key) => Object.keys(peers[key]).length === 1
       );
-      console.log("available intervall", available);
+      console.log("available interval", available);
       if (available.length > 1) {
         // send 2nd peer to the first channel
         let firstChannel = available[0];

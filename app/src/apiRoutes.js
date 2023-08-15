@@ -13,9 +13,10 @@ const log = new Logs("server");
 // const api_key_secret = process.env.API_KEY_SECRET || "videochat_default_secret";
 
 router.get("/stream", (req, res, next) => {
-  res.sendFile(config.views.stream);
+  res.sendFile();
 });
 
+// FIXME ip will be sent then I have to get it and send appropriate video stream
 router.get("/video", (req, res, next) => {
   const range = req.headers.range;
   if (!range) {
