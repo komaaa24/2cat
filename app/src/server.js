@@ -16,7 +16,6 @@ const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
 const User = require("./models/user.model");
 
-
 const isHttps = false; // must be the same on client.js
 const port = process.env.PORT || 3000; // must be the same to client.js signalingServerPort
 
@@ -124,7 +123,7 @@ app.get("*", (req, res, next) => {
  * Check the functionality of STUN/TURN servers:
  * https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
  */
-const iceServers = []; //TODO what's used for ?
+const iceServers = config.iceServers;
 
 // Stun is always needed
 iceServers.push({ urls: stun });

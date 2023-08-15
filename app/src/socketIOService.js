@@ -1,6 +1,7 @@
 const Logs = require("./logs");
 const { urlMaker } = require("./utils");
 const config = require("./config");
+const User = require("./models/user.model");
 
 let channels = config.channels; // collect channels
 let sockets = config.sockets; // collect sockets
@@ -489,7 +490,10 @@ module.exports = class SocketIOService {
        * @returns {json} indent 4 spaces
        */
 
-      this.checkFreePeersAndMerge(peers, this.sendToPeer);
+      let available = this.checkFreePeersAndMerge(peers, this.sendToPeer);
+      // if (available) {
+
+      // }
     }); // end [sockets.on-connect]
   }
 
@@ -578,7 +582,7 @@ module.exports = class SocketIOService {
         peer_id: socket.id,
         peers: peers[channel],
         should_create_offer: false,
-        iceServers: iceServers,
+        iceServers: config.iceServers,
       });
       // offer true
       socket.emit("addPeer", {
@@ -592,8 +596,9 @@ module.exports = class SocketIOService {
   }
 
   checkFreePeersAndMerge(peers, senderFunc) {
+    let available;
     setInterval(function () {
-      let available = Object.keys(peers).filter(
+      available = Object.keys(peers).filter(
         (key) => Object.keys(peers[key]).length === 1
       );
       console.log("available intervall", available);
@@ -608,5 +613,6 @@ module.exports = class SocketIOService {
         });
       }
     }, 20000);
+    return available;
   }
 };
