@@ -20,6 +20,7 @@ router.get("/stream", (req, res, next) => {
 router.get("/video", async (req, res, next) => {
   // console.log(req.ip);
   let user = await User.findOne({ ip: req.ip });
+  console.log(req.ip);
 
   if (!user) {
     user = await User.create({ ip });
