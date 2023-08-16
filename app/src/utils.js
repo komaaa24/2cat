@@ -231,6 +231,11 @@ const getAllVideoPaths = (videosPath) => {
   return videoPathArray;
 };
 
+const makeUrlForVideo = (url) => {
+  url = url.split(`\\`).slice(6);
+  return `${url[0]}\\${url[1]}`;
+};
+
 module.exports = {
   errorHandler,
   makeHttps,
@@ -241,4 +246,5 @@ module.exports = {
   canJoin,
   connectMongoDb,
   getAllVideoPaths,
+  makeUrlForVideo,
 };

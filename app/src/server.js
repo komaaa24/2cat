@@ -87,7 +87,7 @@ app.use(cors()); // Enable All CORS Requests for all origins
 app.use(compression()); // Compress all HTTP responses using GZip
 app.use(express.json()); // Api parse body data as json
 app.use(express.static(dir.public)); // Use all static files from the public folder
-app.use(express.urlencoded({ extended: false })); // Need for Slack API body parser
+app.use(express.urlencoded({ extended: true })); // Need for Slack API body parser
 app.use(
   apiBasePath + "/docs",
   swaggerUi.serve,
@@ -95,21 +95,21 @@ app.use(
 ); // api docs
 
 // all start from here
-app.get("*", async (req, res, next) => {
-  try {
-    const isNewUser = await User.findOne({ ip: req.ip });
-    if (!isNewUser) {
-      const newUser = await User.create({
-        ip: req.ip,
-        watched: [],
-      });
-      await newUser.save();
-    }
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+// app.get("*", async (req, res, next) => {
+//   try {
+//     const isNewUser = await User.findOne({ ip: req.ip });
+//     if (!isNewUser) {
+//       const newUser = await User.create({
+//         ip: req.ip,
+//         watched: [],
+//       });
+//       await newUser.save();
+//     }
+//     next();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 app.use("/", require("./apiRoutes"));
 
@@ -152,7 +152,6 @@ if (turnEnabled == "true") {
     credential: turnCredential,
   });
 }
-
 
 // Test Stun and Turn connection with query params
 // const testStunTurn = host + "/test?iceServers=" + JSON.stringify(iceServers);

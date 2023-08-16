@@ -1,11 +1,6 @@
 const Logs = require("./logs");
 const { urlMaker } = require("./utils");
-const config = require("./config");
-const User = require("./models/user.model");
-
-let channels = config.channels; // collect channels
-let sockets = config.sockets; // collect sockets
-let peers = config.peers; // collect peers info grp by channels
+const configs = require("./config");
 
 const log = new Logs("socket service");
 
@@ -22,7 +17,7 @@ module.exports = class SocketIOService {
       });
 
       socket.channels = {};
-      sockets[socket.id] = socket;
+      configs.sockets[socket.id] = socket;
 
       const transport = socket.conn.transport.name; // in most cases, "polling"
       log.debug("[" + socket.id + "] Connection transport", transport);
@@ -46,7 +41,7 @@ module.exports = class SocketIOService {
           await this.removePeerFrom(channel, socket);
         }
         log.debug("[" + socket.id + "] disconnected", { reason: reason });
-        delete sockets[socket.id];
+        delete configs.sockets[socket.id];
       });
 
       /**
@@ -77,22 +72,22 @@ module.exports = class SocketIOService {
           );
         }
         // no channel aka room in channels init
-        if (!(channel in channels)) channels[channel] = {};
+        if (!(channel in configs.channels)) configs.channels[channel] = {};
 
         // no channel aka room in peers init
-        if (!(channel in peers)) peers[channel] = {};
+        if (!(channel in configs.peers)) configs.peers[channel] = {};
 
         // room locked by the participants can't join
         if (
-          peers[channel]["lock"] === true &&
-          peers[channel]["password"] != channel_password
+          configs.peers[channel]["lock"] === true &&
+          configs.peers[channel]["password"] != channel_password
         ) {
           log.debug("[" + socket.id + "] [Warning] Room Is Locked", channel);
           return socket.emit("roomIsLocked");
         }
 
         // collect peers info grp by channels
-        peers[channel][socket.id] = {
+        configs.peers[channel][socket.id] = {
           peer_name: peer_name,
           peer_video: peer_video,
           peer_audio: peer_audio,
@@ -103,15 +98,15 @@ module.exports = class SocketIOService {
           peer_rec_status: peer_rec_status,
           peer_privacy_status: peer_privacy_status,
         };
-        log.debug("[Join] - connected peers grp by roomId", peers);
+        log.debug("[Join] - connected peers grp by roomId", configs.peers);
         await this.addPeerTo(channel, socket);
 
-        channels[channel][socket.id] = socket;
+        configs.channels[channel][socket.id] = socket;
         socket.channels[channel] = channel;
 
         // Send some server info to joined peer TODO is it working?
-        await this.sendToPeer(socket.id, sockets, "serverInfo", {
-          peers_count: Object.keys(peers[channel]).length,
+        await this.sendToPeer(socket.id, configs.sockets, "serverInfo", {
+          peers_count: Object.keys(configs.peers[channel]).length,
         });
       });
 
@@ -122,7 +117,7 @@ module.exports = class SocketIOService {
         let peer_id = config.peer_id;
         let ice_candidate = config.ice_candidate;
 
-        await this.sendToPeer(peer_id, sockets, "iceCandidate", {
+        await this.sendToPeer(peer_id, configs.sockets, "iceCandidate", {
           peer_id: socket.id,
           ice_candidate: ice_candidate,
         });
@@ -142,7 +137,7 @@ module.exports = class SocketIOService {
           }
         );
 
-        await this.sendToPeer(peer_id, sockets, "sessionDescription", {
+        await this.sendToPeer(peer_id, configs.sockets, "sessionDescription", {
           peer_id: socket.id,
           session_description: session_description,
         });
@@ -154,6 +149,7 @@ module.exports = class SocketIOService {
 
       // understood
       socket.on("roomAction", async (config) => {
+        console.log(config);
         let room_is_locked = false;
         let room_id = config.room_id;
         let peer_name = config.peer_name;
@@ -163,8 +159,8 @@ module.exports = class SocketIOService {
         try {
           switch (action) {
             case "lock":
-              peers[room_id]["lock"] = true;
-              peers[room_id]["password"] = password;
+              configs.peers[room_id]["lock"] = true;
+              configs.peers[room_id]["password"] = password;
               await this.sendToRoom(room_id, socket.id, "roomAction", {
                 peer_name: peer_name,
                 action: action,
@@ -172,8 +168,8 @@ module.exports = class SocketIOService {
               room_is_locked = true;
               break;
             case "unlock":
-              delete peers[room_id]["lock"];
-              delete peers[room_id]["password"];
+              delete configs.peers[room_id]["lock"];
+              delete configs.peers[room_id]["password"];
               await this.sendToRoom(room_id, socket.id, "roomAction", {
                 peer_name: peer_name,
                 action: action,
@@ -183,9 +179,15 @@ module.exports = class SocketIOService {
               let config = {
                 peer_name: peer_name,
                 action: action,
-                password: password == peers[room_id]["password"] ? "OK" : "KO",
+                password:
+                  password == configs.peers[room_id]["password"] ? "OK" : "KO",
               };
-              await this.sendToPeer(socket.id, sockets, "roomAction", config);
+              await this.sendToPeer(
+                socket.id,
+                configs.sockets,
+                "roomAction",
+                config
+              );
               break;
           }
         } catch (err) {
@@ -209,9 +211,9 @@ module.exports = class SocketIOService {
         let peer_name_new = config.peer_name_new;
         let peer_id_to_update = null;
 
-        for (let peer_id in peers[room_id]) {
-          if (peers[room_id][peer_id]["peer_name"] == peer_name_old) {
-            peers[room_id][peer_id]["peer_name"] = peer_name_new;
+        for (let peer_id in configs.peers[room_id]) {
+          if (configs.peers[room_id][peer_id]["peer_name"] == peer_name_old) {
+            configs.peers[room_id][peer_id]["peer_name"] = peer_name_new;
             peer_id_to_update = peer_id;
           }
         }
@@ -243,26 +245,28 @@ module.exports = class SocketIOService {
         let element = config.element;
         let status = config.status;
         try {
-          for (let peer_id in peers[room_id]) {
-            if (peers[room_id][peer_id]["peer_name"] == peer_name) {
+          for (let peer_id in configs.peers[room_id]) {
+            if (configs.peers[room_id][peer_id]["peer_name"] == peer_name) {
               switch (element) {
                 case "video":
-                  peers[room_id][peer_id]["peer_video_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_video_status"] = status;
                   break;
                 case "audio":
-                  peers[room_id][peer_id]["peer_audio_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_audio_status"] = status;
                   break;
                 case "screen":
-                  peers[room_id][peer_id]["peer_screen_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_screen_status"] =
+                    status;
                   break;
                 case "hand":
-                  peers[room_id][peer_id]["peer_hand_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_hand_status"] = status;
                   break;
                 case "rec":
-                  peers[room_id][peer_id]["peer_rec_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_rec_status"] = status;
                   break;
                 case "privacy":
-                  peers[room_id][peer_id]["peer_privacy_status"] = status;
+                  configs.peers[room_id][peer_id]["peer_privacy_status"] =
+                    status;
                   break;
               }
             }
@@ -296,19 +300,19 @@ module.exports = class SocketIOService {
           config.typeOfCall
         );
         if (freePeer) {
-          this.sendToPeer(config.peer_id, sockets, "nextPeer", {
+          this.sendToPeer(config.peer_id, configs.sockets, "nextPeer", {
             freePeer: freePeer,
             error: null,
           });
         } else {
           if (config.typeOfCall == "leftUser") {
-            this.sendToPeer(config.peer_id, sockets, "nextPeer", {
+            this.sendToPeer(config.peer_id, configs.sockets, "nextPeer", {
               freePeer: freePeer,
               error: "stay",
             });
           } else {
             freePeer = urlMaker();
-            this.sendToPeer(config.peer_id, sockets, "nextPeer", {
+            this.sendToPeer(config.peer_id, configs.sockets, "nextPeer", {
               freePeer: freePeer,
               error: "No peer",
             });
@@ -356,7 +360,7 @@ module.exports = class SocketIOService {
               "]"
           );
 
-          await this.sendToPeer(peer_id, sockets, "peerAction", {
+          await this.sendToPeer(peer_id, configs.sockets, "peerAction", {
             peer_id: peer_id,
             peer_name: peer_name,
             peer_action: peer_action,
@@ -385,7 +389,7 @@ module.exports = class SocketIOService {
             "]"
         );
 
-        await this.sendToPeer(peer_id, sockets, "kickOut", {
+        await this.sendToPeer(peer_id, configs.sockets, "kickOut", {
           peer_name: peer_name,
         });
       });
@@ -430,7 +434,7 @@ module.exports = class SocketIOService {
         if (broadcast) {
           await this.sendToRoom(room_id, socket.id, "fileInfo", config);
         } else {
-          await this.sendToPeer(peer_id, sockets, "fileInfo", config);
+          await this.sendToPeer(peer_id, configs.sockets, "fileInfo", config);
         }
       });
 
@@ -469,7 +473,12 @@ module.exports = class SocketIOService {
             logMe
           );
 
-          await this.sendToPeer(peer_id, sockets, "videoPlayer", sendConfig);
+          await this.sendToPeer(
+            peer_id,
+            configs.sockets,
+            "videoPlayer",
+            sendConfig
+          );
         } else {
           log.debug(
             "[" +
@@ -490,7 +499,7 @@ module.exports = class SocketIOService {
        * @returns {json} indent 4 spaces
        */
 
-      this.checkFreePeersAndMerge(peers, this.sendToPeer);
+      this.checkFreePeersAndMerge(configs.peers, this.sendToPeer);
     }); // end [sockets.on-connect]
   }
 
@@ -501,26 +510,32 @@ module.exports = class SocketIOService {
     }
     try {
       delete socket.channels[channel];
-      delete channels[channel][socket.id];
-      delete peers[channel][socket.id]; // delete peer data from the room
+      delete configs.channels[channel][socket.id];
+      delete configs.peers[channel][socket.id]; // delete peer data from the room
 
-      switch (Object.keys(peers[channel]).length) {
+      switch (Object.keys(configs.peers[channel]).length) {
         case 0: // last peer disconnected from the room without room lock & password set
-          delete peers[channel];
+          delete configs.peers[channel];
           break;
         case 2: // last peer disconnected from the room having room lock & password set
-          if (peers[channel]["lock"] && peers[channel]["password"]) {
-            delete peers[channel]; // clean lock and password value from the room
+          if (
+            configs.peers[channel]["lock"] &&
+            configs.peers[channel]["password"]
+          ) {
+            delete configs.peers[channel]; // clean lock and password value from the room
           }
           break;
       }
     } catch (err) {
       log.error("Remove Peer", this.toJson(err));
     }
-    log.debug("[removePeerFrom] - connected peers grp by roomId", peers);
+    log.debug(
+      "[removePeerFrom] - connected peers grp by roomId",
+      configs.peers
+    );
 
-    for (let id in channels[channel]) {
-      await channels[channel][id].emit("removePeer", {
+    for (let id in configs.channels[channel]) {
+      await configs.channels[channel][id].emit("removePeer", {
         peer_id: socket.id,
       });
       socket.emit("removePeer", { peer_id: id });
@@ -541,10 +556,10 @@ module.exports = class SocketIOService {
 
   findFreePeer(roomID, last5, typeOfCall) {
     // remove roomID from peers, it may be a key of peers object
-    let allChannels = peers;
+    let allChannels = configs.peers;
     delete allChannels[roomID];
-    let available = Object.keys(peers).filter(
-      (key) => Object.keys(peers[key]).length === 1
+    let available = Object.keys(configs.peers).filter(
+      (key) => Object.keys(configs.peers[key]).length === 1
     );
     let newestPeers = available.filter((key) => !last5.includes(key));
     if (newestPeers.length > 0) {
@@ -558,10 +573,10 @@ module.exports = class SocketIOService {
   }
 
   async sendToRoom(room_id, socket_id, msg, config = {}) {
-    for (let peer_id in channels[room_id]) {
+    for (let peer_id in configs.channels[room_id]) {
       // not send data to myself
       if (peer_id != socket_id) {
-        await channels[room_id][peer_id].emit(msg, config);
+        await configs.channels[room_id][peer_id].emit(msg, config);
       }
     }
   }
@@ -573,22 +588,22 @@ module.exports = class SocketIOService {
 
   // understood
   async addPeerTo(channel, socket) {
-    for (let id in channels[channel]) {
+    for (let id in configs.channels[channel]) {
       // offer false
-      await channels[channel][id].emit("addPeer", {
+      await configs.channels[channel][id].emit("addPeer", {
         peer_id: socket.id,
-        peers: peers[channel],
+        peers: configs.peers[channel],
         should_create_offer: false,
-        iceServers: config.iceServers,
+        iceServers: configs.iceServers,
       });
 
-      console.log(config.iceServers);
+      // console.log(config.iceServers);
       // offer true
       socket.emit("addPeer", {
         peer_id: id,
-        peers: peers[channel],
+        peers: configs.peers[channel],
         should_create_offer: true,
-        iceServers: config.iceServers,
+        iceServers: configs.iceServers,
       });
       log.debug("[" + socket.id + "] emit addPeer [" + id + "]");
     }
@@ -607,7 +622,7 @@ module.exports = class SocketIOService {
         let secondChannel = available[1];
         let firstPeer = Object.keys(peers[firstChannel])[0];
         // send 2nd peer to the first channel
-        senderFunc(firstPeer, channels[firstChannel], "nextPeer", {
+        senderFunc(firstPeer, configs.channels[firstChannel], "nextPeer", {
           freePeer: secondChannel,
         });
       }

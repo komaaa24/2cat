@@ -4,7 +4,12 @@ const express = require("express");
 const Logs = require("./logs");
 const router = express.Router();
 const config = require("./config");
-const { canJoin, findFreePeer, getMeetingURL } = require("./utils");
+const {
+  canJoin,
+  findFreePeer,
+  getMeetingURL,
+  makeUrlForVideo,
+} = require("./utils");
 const fs = require("fs");
 const path = require("path");
 const User = require("./models/user.model");
@@ -45,7 +50,8 @@ router.get("/video", async (req, res, next) => {
   //   return;
   // }
 
-  const videoPath = path.resolve(video.path);
+  let videoPath = path.resolve(video.path);
+  videoPath = makeUrlForVideo(videoPath);
   // const videoSize = fs.statSync(videoPath).size;
 
   // const CHUNK_SIZE = 10 ** 6; // 1M
