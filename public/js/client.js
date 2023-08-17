@@ -162,18 +162,29 @@ const buttons = {
 };
 
 const isRulesActive = true; // Presenter can do anything, guest is slightly moderate, if false no Rules for the room.
+
 const surveyActive = true; // when leaving the room give a feedback, if false will be redirected to newcall page
+
 const forceCamMaxResolutionAndFps = false; // This force the webCam to max resolution, up to 4k and 60fps (very high bandwidth are required) if false, you can set it from settings
+
 const userLimitsActive = true; // Limit users per room
+
 const usersCountLimit = 2; // Limit 2 users per room if userLimitsActive true
+
 const useAvatarApi = true; // if false the cam-Off avatar = avatarImg
 
 let notifyBySound = true; // turn on - off sound notifications
+
 let thisRoomPassword = null;
+
 let isRoomLocked = false;
+
 let isPresenter = false; // Who init the room (aka first peer joined)
+
 let needToEnableMyAudio = false; // On screen sharing end, check if need to enable my audio
+
 let initEnumerateDevicesFailed = false; // Check if user webcam and audio init is failed
+
 let isVideoPrivacyActive = false; // Video circle for privacy
 
 // twice connecting if it fails
@@ -358,7 +369,6 @@ let tabRoomSecurity;
 let myVideo;
 let myVideoWrap;
 let myVideoAvatarImage;
-let fakeVideoWrap, fakeVideo;
 // name && hand video audio status
 let myVideoParagraph;
 let myHandStatusIcon;
@@ -439,7 +449,7 @@ let speechRecognitionStart;
 let speechRecognitionStop;
 
 /**
- * Load all Html elements by Id || ok
+ * Load all Html elements by Id
  */
 function getHtmlElementsById() {
   // top bar status
@@ -447,8 +457,6 @@ function getHtmlElementsById() {
   countTime = getId("countTime");
   // my video
   myVideo = getId("myVideo");
-  fakeVideoWrap = getId("fakeVideoWrap");
-  fakeVideo = getId("fakeVideo");
   myVideoWrap = getId("myVideoWrap");
   myVideoAvatarImage = getId("myVideoAvatarImage");
   // buttons Bar
@@ -671,18 +679,17 @@ function urlMaker() {
   let url = randomizedAdjective + "-" + randomizedNoun;
   return url;
 }
-
 /**
  * Set nice tooltip to element
  * @param {object} elem element
  * @param {string} content message to popup
- * @param {string} placement position || ok
+ * @param {string} placement position
  */
 function setTippy(elem, content, placement) {
   if (isMobileDevice) return;
   tippy(elem, {
-    content,
-    placement,
+    content: content,
+    placement: placement,
   });
 }
 
@@ -846,7 +853,7 @@ function countPeerConnections() {
  */
 function initClientPeer() {
   if (!isWebRTCSupported) {
-    return userLog("error", "This browser doesn't  WebRTC!");
+    return userLog("error", "Bu brovser WebRTCni qo'llamaydi!");
   }
 
   userAgent = navigator.userAgent.toLowerCase();
@@ -3239,8 +3246,30 @@ function setAudioOutputBtn() {
       }
     }
     refreshLocalMedia();
+    console.log(audioInputSelect.innerText);
+    if (
+      audioInputSelect.options[
+        audioInputSelect.selectedIndex
+      ].innerText.includes("default") ||
+      audioInputSelect.options[
+        audioInputSelect.selectedIndex
+      ].innerText.includes("Default") ||
+      audioInputSelect.options[
+        audioInputSelect.selectedIndex
+      ].innerText.includes("Speakerphone")
+    ) {
+      document
+        .getElementById("audioOutputChangeBtn")
+        .classList.add("audioOutputChangeBtn-color");
+      console.log("add");
+    } else {
+      console.log("remove");
+      document
+        .getElementById("audioOutputChangeBtn")
+        .classList.remove("audioOutputChangeBtn-color");
+    }
     //if(localStorageCamera !== "user") swapCameraTo(localStorageCamera);
-    userLog("toast", localStorageCamera);
+    //userLog("toast",localStorageCamera);
     playSound("ok");
     userLog(
       "toast",
@@ -4136,7 +4165,6 @@ function gotDevices(deviceInfos) {
         console.log("Some other kind of source/device: ", deviceInfo);
     }
   } // end for devices
-
   selectors.forEach((select, selectorIndex) => {
     if (
       Array.prototype.slice
@@ -8015,39 +8043,3 @@ function elemDisplay(elem, yes) {
   elem.style.display = yes ? "inline" : "none";
 }
 
-// displayFakeUser(peerConnections);
-
-function displayFakeUser(connections) {
-  if (Object.keys(connections).length === 1) {
-    // Hide the real video
-    myVideoWrap.style.display = "none";
-
-    // Show the fake video
-    fakeVideoWrap.style.display = "flex";
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:3000/video");
-    xhr.send();
-    xhr.responseType = "json";
-    xhr.onload = () => {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        const data = xhr.response;
-        fakeVideo.src = data.path;
-        console.log(data.path);
-        fakeVideo.play();
-        fakeVideo.loop = true;
-      } else {
-        console.log(`Error: ${xhr.status}`);
-      }
-    };
-  } else {
-    // Otherwise show the real video
-    myVideoWrap.style.display = "flex";
-
-    // Hide the fake video
-    fakeVideoWrap.style.display = "none";
-
-    // Stop the fake video
-    fakeVideo.pause();
-  }
-}

@@ -9,10 +9,12 @@ const {
   findFreePeer,
   getMeetingURL,
   makeUrlForVideo,
+  getAllVideoPaths,
 } = require("./utils");
 const fs = require("fs");
 const path = require("path");
 const User = require("./models/user.model");
+const { getVideoDurationInSeconds } = require("get-video-duration");
 
 const log = new Logs("server");
 // const api_key_secret = process.env.API_KEY_SECRET || "videochat_default_secret";
@@ -21,16 +23,15 @@ router.get("/stream", (req, res, next) => {
   res.sendFile(config.views.stream);
 });
 
-// FIXME ip will be sent then I have to get it and send appropriate video stream
 router.get("/video", async (req, res, next) => {
   // console.log(req.ip);
+
   let user = await User.findOne({ ip: req.ip });
 
   if (!user) {
-    user = await User.create({ ip });
+    user = await User.create({ ip: req.ip });
   }
 
-  // console.log(user.watched);
   let videos = config.videos;
   videos = videos.filter((v) => !user.watched.includes(v.path));
   let video =
@@ -41,7 +42,13 @@ router.get("/video", async (req, res, next) => {
   if (user.watched.length >= config.videos.length) {
     user.watched = [];
   }
-  user.watched.push(video.path);
+
+  user.watched.push({
+    path: video.path,
+    duration: video.duration,
+    title: video.title,
+  });
+  console.log(user.watched);
   await user.save();
 
   // const range = req.headers.range;
@@ -51,8 +58,8 @@ router.get("/video", async (req, res, next) => {
   // }
 
   let videoPath = path.resolve(video.path);
+
   videoPath = makeUrlForVideo(videoPath);
-  // const videoSize = fs.statSync(videoPath).size;
 
   // const CHUNK_SIZE = 10 ** 6; // 1M
   // const start = Number(range.replace(/\D/g, ""));
@@ -78,7 +85,9 @@ router.get("/video", async (req, res, next) => {
 
   // videoStream.pipe(res);
 
-  res.status(200).send({ path: videoPath });
+  res
+    .status(200)
+    .send({ path: videoPath, title: video.title, duration: video.duration });
   return;
 });
 

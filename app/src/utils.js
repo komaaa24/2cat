@@ -6,7 +6,8 @@ const { v4: uuidV4 } = require("uuid");
 const { default: mongoose } = require("mongoose");
 const config = require("./config");
 require("dotenv").config();
-
+const { getVideoDurationInSeconds } = require("get-video-duration");
+const { faker } = require("@faker-js/faker");
 const log = new Logs("server");
 
 const makeHttps = (status, app) => {
@@ -217,15 +218,19 @@ const connectMongoDb = async (uri) => {
 
 const getAllVideoPaths = (videosPath) => {
   const videoPathArray = [];
-  fs.readdirSync(`${videosPath}`).forEach((file, index) => {
+  let videoDuration;
+  // From a local path...
+
+  fs.readdirSync(`${videosPath}`).forEach(async (file, index) => {
     file = `${videosPath}/${file}`;
+    videoDuration = await getVideoDurationInSeconds(file);
     var stat = fs.statSync(file),
       info = new Date(fs.lstatSync(file).birthtimeMs);
     if (!stat.isDirectory())
       videoPathArray.push({
         path: file,
-        // sizeInBytes: stat["size"],
-        // lastModifiedAt: info,
+        duration: videoDuration,
+        title: faker.internet.userName(),
       });
   });
   return videoPathArray;

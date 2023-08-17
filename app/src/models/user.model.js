@@ -5,7 +5,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Name is Required"],
   },
-  watched: [{ type: String }],
+  watched: [
+    {
+      path: String,
+      title: String,
+      duration: String,
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);
