@@ -87,7 +87,7 @@ router.get("/video", async (req, res, next) => {
 
   res
     .status(200)
-    .send({ path: videoPath, title: video.title, duration: video.duration });
+    .send({ path: video.path, title: video.title, duration: video.duration });
   return;
 });
 
