@@ -1567,6 +1567,10 @@ button {
   left: 32px;
 }
 
+#fakeVideoWrap {
+  display:none;
+}
+
 /*
 z-index
 7 video avatar img

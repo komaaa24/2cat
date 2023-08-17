@@ -3,15 +3,19 @@
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
-    <script async<meta http-equiv="X-UA-Compatible" content="IE=edge"
-    src="https://www.googletagmanager.com/gtag/js?id=G-X085TX7411"></script>
+    <script
+      async<meta
+      http-equiv="X-UA-Compatible"
+      content="IE=edge"
+      src="https://www.googletagmanager.com/gtag/js?id=G-X085TX7411"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-      
+
       gtag("config", "G-X085TX7411");
     </script>
 
@@ -43,10 +47,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta
-      name="description"
-      content="Videochat.uz - video muloqot portali"
-    />
+    <meta name="description" content="Videochat.uz - video muloqot portali" />
     <meta
       name="keywords"
       content="webrtc, self hosted, voip, sip, real-time communications, chat, messaging, meet, webrtc stun, webrtc turn, video meeting, video chat, video conference, multi video chat, multi video conference, peer to peer, p2p, rtc, alternative to, zoom, microsoft teams, google meet, jitsi, meeting"
@@ -63,7 +64,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://videochat.uz/" />
     <meta property="og:title" content="Videolify" />
-    <meta property="og:description" content="videochat.uz. Video muloqot portali" />
+    <meta
+      property="og:description"
+      content="videochat.uz. Video muloqot portali"
+    />
     <!-- <meta
       property="og:image"
       content="https://videochat.uz/images/preview.png"
@@ -77,7 +81,6 @@
       property="twitter:description"
       content="videochat.uz. Video muloqot portali"
     />
-
 
     <!-- StyleSheet -->
 
@@ -111,17 +114,17 @@
     </div>
 
     <!-- show this before to join -->
-    
+
     <div id="loadingDiv" class="center pulsate wave">
       <!-- <h1>Yuklanmoqda...</h1>
       <pre>
           Iltimos, kamera va mikrofonlaringizga ruxsat bering.
       </pre> -->
-        <div class="ball"></div>
-        <div class="ball"></div>
-        <div class="ball"></div>
-        <div class="ball"></div>
-        <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
+      <div class="ball"></div>
     </div>
 
     <!-- Start buttons bar
@@ -129,26 +132,24 @@
         -->
 
     <div id="buttonsBar" class="">
-      <button id="mySettingsBtn" class="fas fa-sharp fa-regular fa-gear">
-      </button>
+      <button
+        id="mySettingsBtn"
+        class="fas fa-sharp fa-regular fa-gear"
+      ></button>
       <button id="shareRoomBtn" class="fas fa-users"></button>
-      
+
       <button id="videoBtn" class="fas fa-video"></button>
-      <button id="swapCameraBtn" class="fas fa-camera-rotate">
-      </button>
+      <button id="swapCameraBtn" class="fas fa-camera-rotate"></button>
       <button id="screenShareBtn" class="fas fa-desktop"></button>
       <button id="recordStreamBtn" class="fas fa-record-vinyl"></button>
       <button id="fullScreenBtn" class="fas fa-expand-alt"></button>
-      <button id="chatRoomBtn" class="fas fa-comment">
-      </button>
-      <button id="audioBtn" class="fas fa-microphone">
-      </button>
+      <button id="chatRoomBtn" class="fas fa-comment"></button>
+      <button id="audioBtn" class="fas fa-microphone"></button>
       <button id="captionBtn" class="fas fa-closed-captioning"></button>
       <button id="myHandBtn" class="fas fa-hand-paper"></button>
       <button id="whiteboardBtn" class="fas fa-chalkboard-teacher"></button>
       <button id="fileShareBtn" class="fas fa-folder-open"></button>
-      <button id="audioOutputChangeBtn" class="fas fa-volume-up">
-      </button>
+      <button id="audioOutputChangeBtn" class="fas fa-volume-up"></button>
       <button id="nextBtn">
         <img
           id="nextBtnLoading"
@@ -160,7 +161,6 @@
       </button>
       <button id="aboutBtn" class="fas fa-question"></button>
       <!-- <button id="leaveRoomBtn" class="fas fa-right-from-bracket"></button> -->
-     
     </div>
     <!-- End left buttons -->
 
@@ -557,7 +557,7 @@
     <!-- End Youtube Iframe -->
 
     <!-- Start Video - Audio player -->
-    
+
     <div id="videoAudioUrlCont" class="center fadein">
       <div id="videoAudioUrlHeader">
         <button id="videoAudioCloseBtn" class="fas fa-times"></button>
@@ -576,9 +576,15 @@
       </div>
       <button id="leaveRoomBtn" class="fas fa-right-from-bracket"></button>
     </div>
+
     <div id="videoPinMediaContainer"></div>
+    <!-- <h1 style="font-size: 10rem; color: red">Hello</h1> -->
+    <!-- Fake video starts -->
     <div id="videoMediaContainer">
-      <!-- <div class="Camera"></div> -->
+      <!-- <div id="fakeVideoWrap">
+        <video id="fakeVideo"></video>
+        <h1>Hello</h1>
+      </div> -->
     </div>
 
     <!-- End Video container -->
@@ -595,13 +601,34 @@
         - https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js    (https://github.com/missive/emoji-mart)
         - https://www.npmjs.com/package/tippy.js                            (https://github.com/atomiks/tippyjs) 
         -->
-    <script defer src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/detectrtc@1.4.1/DetectRTC.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.14"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/fabric@5.2.4-browser/dist/fabric.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"></script>
+    <script
+      defer
+      src="https://webrtc.github.io/adapter/adapter-latest.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/detectrtc@1.4.1/DetectRTC.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.14"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/fabric@5.2.4-browser/dist/fabric.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"
+    ></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js"
+    ></script>
     <script defer src="https://unpkg.com/@popperjs/core@2"></script>
     <script defer src="https://unpkg.com/tippy.js@6"></script>
     <script defer src="/socket.io/socket.io.js"></script>
@@ -610,27 +637,53 @@
     <script defer src="../js/speechRecognition.js"></script>
     <script defer src="../js/videoGrid.js"></script>
     <!-- Yandex.Metrika counter -->
-    <script type="text/javascript" >
-      (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-      m[i].l=1*new Date();
-      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    <script type="text/javascript">
+      (function (m, e, t, r, i, k, a) {
+        m[i] =
+          m[i] ||
+          function () {
+            (m[i].a = m[i].a || []).push(arguments);
+          };
+        m[i].l = 1 * new Date();
+        for (var j = 0; j < document.scripts.length; j++) {
+          if (document.scripts[j].src === r) {
+            return;
+          }
+        }
+        (k = e.createElement(t)),
+          (a = e.getElementsByTagName(t)[0]),
+          (k.async = 1),
+          (k.src = r),
+          a.parentNode.insertBefore(k, a);
+      })(
+        window,
+        document,
+        "script",
+        "https://mc.yandex.ru/metrika/tag.js",
+        "ym"
+      );
 
       ym(93187601, "init", {
-          clickmap:true,
-          trackLinks:true,
-          accurateTrackBounce:true,
-          webvisor:true
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true,
       });
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/93187601" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <noscript
+      ><div>
+        <img
+          src="https://mc.yandex.ru/watch/93187601"
+          style="position: absolute; left: -9999px"
+          alt=""
+        /></div
+    ></noscript>
     <!-- /Yandex.Metrika counter -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/quicklink/2.3.0/quicklink.umd.js"></script>
     <script>
-        window.addEventListener('load', () => {
-          quicklink.listen();
-        });
+      window.addEventListener("load", () => {
+        quicklink.listen();
+      });
     </script>
     <!-- end of Js scripts -->
     <!-- 
