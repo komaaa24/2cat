@@ -216,6 +216,12 @@ const connectMongoDb = async (uri) => {
   }
 };
 
+/**
+ *
+ * @param {string} videosPath
+ * @returns {string[]}
+ */
+
 const getAllVideoPaths = (videosPath) => {
   const videoPathArray = [];
   let videoDuration;

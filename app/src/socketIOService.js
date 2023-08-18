@@ -611,11 +611,13 @@ module.exports = class SocketIOService {
 
   checkFreePeersAndMerge(peers, senderFunc) {
     let available;
+    console.log(peers);
     setInterval(function () {
       available = Object.keys(peers).filter(
         (key) => Object.keys(peers[key]).length === 1
       );
       console.log("available interval", available);
+
       if (available.length > 1) {
         // send 2nd peer to the first channel
         let firstChannel = available[0];

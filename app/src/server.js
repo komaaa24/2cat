@@ -94,7 +94,6 @@ app.use(
   swaggerUi.setup(swaggerDocument)
 ); // api docs
 
-
 // all start from here
 // app.get("*", async (req, res, next) => {
 //   try {
@@ -179,3 +178,5 @@ server.listen(port, async () => {
 
 // every 15 seconds, send a ping to each socket to make sure it's still alive
 checkConnection(io, 15000);
+
+module.exports = { app };

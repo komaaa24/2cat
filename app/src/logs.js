@@ -62,11 +62,11 @@ module.exports = class Logs {
   info(msg, op = "") {
     console.info(
       "[" +
-      this.getDataTime() +
-      "] [" +
-      this.appName +
-      "] " +
-      colors.green(msg),
+        this.getDataTime() +
+        "] [" +
+        this.appName +
+        "] " +
+        colors.green(msg),
       util.inspect(op, options)
     );
   }
@@ -80,11 +80,11 @@ module.exports = class Logs {
   warn(msg, op = "") {
     console.info(
       "[" +
-      this.getDataTime() +
-      "] [" +
-      this.appName +
-      "] " +
-      colors.yellow(msg),
+        this.getDataTime() +
+        "] [" +
+        this.appName +
+        "] " +
+        colors.yellow(msg),
       util.inspect(op, options)
     );
   }

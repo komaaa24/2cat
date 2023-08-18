@@ -1683,7 +1683,7 @@ function handleNextPeer(config) {
         peer_rec_status:false
       }
     }
-    loadRemoteMediaStream("https://videochatuz-production.up.railway.app"+resp.path ,peers, "NrbVoHSuIovu4ZjJAAAD1", "video")
+    loadRemoteMediaStream(resp.path ,peers, "NrbVoHSuIovu4ZjJAAAD1", "video")
     })
     
     

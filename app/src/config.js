@@ -2,11 +2,14 @@ const path = require("path");
 const { getAllVideoPaths } = require("./utils");
 require("dotenv").config();
 
+let videosPaths = getAllVideoPaths(
+  path.join(__dirname, "../../", "public", "videos")
+);
 module.exports = {
   channels: {}, // collect channels
   sockets: {}, // collect sockets
   peers: {},
-  videos: getAllVideoPaths(path.join(__dirname, "../../", "public", "videos")),
+  videos: videosPaths,
   views: {
     client: path.join(__dirname, "../../", "public/views/client.html"),
     landing: path.join(__dirname, "../../", "public/views/landing.html"),
