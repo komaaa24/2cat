@@ -121,8 +121,8 @@ const buttons = {
     showWhiteboardBtn: false,
     showFileShareBtn: false,
     showMySettingsBtn: true,
-    showAboutBtn: false,
-    showmyVideoStatusButton: false,// Please keep me always true, Thank you!
+    showAboutBtn: false, 
+    showmyVideoStatusButton:false,// Please keep me always true, Thank you!
     showFullScreenBtn: false,
   },
   chat: {
@@ -455,7 +455,7 @@ let speechRecognitionStop;
  * Load all Html elements by Id
  */
 function getHtmlElementsById() {
-  // top bar status
+// top bar status
   onlineUsersCount = getId("onlineUsersCount");
   countTime = getId("countTime");
   // my video
@@ -677,9 +677,9 @@ function setButtonsToolTip() {
   );
 }
 // random channel
-function urlMaker() {
-  let adjectivesUz = ["kichik", "katta", "ulkan"];
-  let nounsUz = ["it", "tipratikan", "olma"];
+function urlMaker(){
+  let adjectivesUz = ["kichik","katta","ulkan"];
+  let nounsUz = ["it","tipratikan","olma"];
   let randomizedAdjective = adjectivesUz[Math.floor(Math.random() * adjectivesUz.length)];
   let randomizedNoun = nounsUz[Math.floor(Math.random() * nounsUz.length)];
   let url = randomizedAdjective + "-" + randomizedNoun;
@@ -948,11 +948,11 @@ async function handleConnect() {
   } else {
     await initEnumerateDevices();
     await setupLocalMedia();
-    if (localStorage.getItem("peer_name") === null || localStorage.getItem("peer_name") === undefined) {
-      await whoAreYou();
-    } else {
-      whoAreYouJoin();
-      joiningPart2();
+    if(localStorage.getItem("peer_name") === null || localStorage.getItem("peer_name") === undefined) {
+        await whoAreYou();
+    }else{
+        whoAreYouJoin();
+        joiningPart2();
     }
   }
 }
@@ -992,10 +992,10 @@ function availableServers(config) {
  */
 function roomIsBusy() {
   fetch('/api/freepeers')
-    .then(response => response.json())
-    .then(data => {
-      openURL("/join/" + data.freePeer);
-    });
+        .then(response => response.json())
+        .then(data => {
+          openURL("/join/" + data.freePeer);
+        });
   // signalingSocket.disconnect();
   // playSound("alert");
   // Swal.fire({
@@ -1131,7 +1131,7 @@ async function whoAreYou() {
 
   joiningPart2();
 }
-function joiningPart2() {
+function joiningPart2(){
   if (isMobileDevice) return;
 
   initAudioBtn = getId("initAudioBtn");
@@ -1174,7 +1174,7 @@ function checkPeerAudioVideo() {
 function whoAreYouJoin() {
   myVideoWrap.style.display = "inline";
   myVideoParagraph.innerHTML = (myPeerName || window.localStorage.getItem("peer_name")) + " (me)";
-  myVideoParagraph.innerHTML = (myPeerName || window.localStorage.getItem("peer_name"));
+  myVideoParagraph.innerHTML =  (myPeerName || window.localStorage.getItem("peer_name"));
   setPeerAvatarImgName("myVideoAvatarImage", useAvatarApi);
   setPeerChatAvatarImgName("right", myPeerName);
   joinToChannel();
@@ -1192,7 +1192,7 @@ async function joinToChannel() {
     channel_password: thisRoomPassword,
     peer_info: peerInfo,
     peer_geo: peerGeo,
-    peer_name: myPeerName || window.localStorage.getItem("peer_name") || "Mehmon",
+    peer_name: myPeerName|| window.localStorage.getItem("peer_name") || "Mehmon",
     peer_video: useVideo,
     peer_audio: useAudio,
     peer_video_status: myVideoStatus,
@@ -1349,12 +1349,12 @@ async function handlePeersConnectionStatus(peer_id) {
       // remoteVideoWrapper.appendChild(remoteAvatarText);
       // console.log(remoteAvatarText)
     }
-    else if (connectionStatus == "connected") {
+    else if(connectionStatus == "connected") {
       let remoteAvatarImg = document.getElementById(peer_id + "_avatar");
       remoteAvatarImg.style.display = "none";
     }
-    else if (connectionStatus === "failed") {
-      if (reconnecting) {
+    else if(connectionStatus === "failed") {
+      if(reconnecting) {
         nextPeer();
       }
       else {
@@ -1657,42 +1657,53 @@ function handleRemovePeer(config) {
   playSound("removePeer");
 
   console.log("ALL PEERS", allPeers);
-  if (Object.keys(allPeers).length == 2) {
+  if(Object.keys(allPeers).length == 2){
     console.log("2 ta suhbatdosh bor");
   }
-  else {
+  else{
     setTimeout(() => {
-      nextPeer("leftUser");
+      nextPeer("leftUser"); 
     }, 2000);
   }
-
+  
 }
 
 function handleNextPeer(config) {
   console.log("Signaling server said to next peer:", config);
-  if (config.error == "No peer") {
-    if (fakeBotsAmount < fakeBotsLimit) {
+  if(config.error == "No peer"){
+    if(fakeBotsAmount < fakeBotsLimit){
       fakeBotsAmount++;
-      fetch("https://videochatuz-production.up.railway.app/video")
-        .then(res => res.json())
-        .then((resp) => {
-          console.log(resp)
-          let peers = {
-            NrbVoHSuIovu4ZjJAAAD1: {
-              peer_name: resp.title,
-              peer_video: true,
-              peer_video_status: true,
-              peer_audio_status: true,
-              peer_screen_status: false,
-              peer_hand_status: false,
-              peer_rec_status: false
-            }
+      fetch("/video")
+      .then(res=>res.json())
+      .then((resp)=>{
+        console.log(resp)
+        let peers = {
+        NrbVoHSuIovu4ZjJAAAD1:{
+          peer_name:resp.title, 
+          peer_video:true,
+          peer_video_status:true,
+          peer_audio_status:true,
+          peer_screen_status:false,
+          peer_hand_status:false,
+          peer_rec_status:false
           }
-          loadRemoteMediaStream("https://videochatuz-production.up.railway.app" + resp.path, peers, "NrbVoHSuIovu4ZjJAAAD1", "video")
-        })
+        }
+      loadRemoteMediaStream(resp.path ,peers, "NrbVoHSuIovu4ZjJAAAD1", "video");
+      getId("nextBtnLoading").style.display = "none";
+      setTimeout(() => {
+        openURL("/join/"+config.freePeer);
+        console.log("No free peer found", config);
+      }, (resp.duration * 1000)+2000);
+      }) 
     }
-
-
+    else{
+      playSound("alert");
+      setTimeout(() => {
+        openURL("/join/"+config.freePeer);
+        console.log("No free peer found", config);
+      }, 2400);
+    }
+    
     // let remoteVideoStreamBot = getId(peer_id + "_video");
     //attachMediaStream(remoteVideoStreamBot, "https://videochatuz-production.up.railway.app/video")
     // userLog("toast","Bo'sh suhbatdosh topilmadi. Topilsa avtomatik ulanadi, iltimos kuting.");
@@ -1702,12 +1713,12 @@ function handleNextPeer(config) {
     //   console.log("No free peer found", config);
     // }, 4000);
     console.log("No free peer found", config);
-  } else if (config.error == "stay") {
+  }else if(config.error == "stay"){
     console.log("Stay in room", config);
   }
-  else {
+  else{
     console.log("Free peer found", config);
-    openURL("/join/" + config.freePeer);
+    openURL("/join/"+config.freePeer);
   }
 }
 
@@ -1962,7 +1973,7 @@ function enumerateAudioDevices(stream) {
   console.log("06. Get Audio Devices");
   navigator.mediaDevices
     .enumerateDevices()
-    .then((devices) => {
+    .then((devices) =>{
       devices.forEach((device) => {
         let el = null;
         if ("audioinput" === device.kind) {
@@ -2099,7 +2110,7 @@ async function setupLocalMedia() {
     );
   }
   //check if camera in localstorage(camera) is the same as the one in the stream
-
+  
 } // end [setup_local_stream]
 
 /**
@@ -2115,7 +2126,7 @@ async function loadLocalMedia(stream) {
 
   console.log("LOAD LOCAL MEDIA STREAM TRACKS", localMediaStream.getTracks());
   let localStorageCamera = localStorage.getItem("camera") || "user";
-  if (localStorageCamera !== "user") swapCameraTo(localStorageCamera);
+  if(localStorageCamera !== "user") swapCameraTo(localStorageCamera);
   // local video elemets
   const myVideoWrap = document.createElement("div");
   const myLocalMedia = document.createElement("video");
@@ -2168,7 +2179,7 @@ async function loadLocalMedia(stream) {
   myVideoFullScreenBtn.className = className.fullScreen;
 
   // my video pin/unpin button
-  if (buttons.main.showmyPinButton) {
+  if(buttons.main.showmyPinButton) {
     myVideoPinBtn.setAttribute("id", "myVideoPinBtn");
     myVideoPinBtn.className = className.pinUnpin;
   }
@@ -2176,8 +2187,8 @@ async function loadLocalMedia(stream) {
   console.log("Audio Output Devices");
   console.log(getId("audioSource").options);
   // if there is "🎤 AirPods" select it
-  for (let output of getId("audioSource").options) {
-    if (output.text === "🎤 AirPods" || output.text === "🎤 AirPods Pro") {
+  for(let output of getId("audioSource").options) {
+    if(output.text === "🎤 AirPods" || output.text === "🎤 AirPods Pro") {
       getId("audioSource").value = localStorage.getItem("audioInputSelect") || output.value;
     }
   }
@@ -2218,8 +2229,8 @@ async function loadLocalMedia(stream) {
   if (buttons.local.showVideoCircleBtn) {
     myVideoNavBar.appendChild(myPrivacyBtn);
   }
-  if (buttons.main.showmyVideoStatusButton) {
-    myVideoNavBar.appendChild(myVideoStatusIcon);
+  if(buttons.main.showmyVideoStatusButton) {
+      myVideoNavBar.appendChild(myVideoStatusIcon);
   }
   myVideoNavBar.appendChild(myAudioStatusIcon);
   myVideoNavBar.appendChild(myHandStatusIcon);
@@ -2388,14 +2399,14 @@ async function loadRemoteMediaStream(stream, peers, peer_id, typeStream = 'strea
   // remote audio status element
   remoteAudioStatusIcon.setAttribute("id", peer_id + "_audioStatus");
   remoteAudioStatusIcon.className = className.audioOn;
-  // add icon at the beginning of the name of the peer about microphone status
-  // if (peer_audio_status) {
-  //   remotePeerName.innerHTML = `<i class="fas fa-microphone" id="nameAudioIcon" ></i> |  ${peer_name}`;
-  // }
-  // else
-  // {
-  //   remotePeerName.innerHTML = `<i class="fas fa-microphone-slash" id="nameAudioIcon"></i> | ${peer_name}`;
-  // }
+    // add icon at the beginning of the name of the peer about microphone status
+    // if (peer_audio_status) {
+    //   remotePeerName.innerHTML = `<i class="fas fa-microphone" id="nameAudioIcon" ></i> |  ${peer_name}`;
+    // }
+    // else
+    // {
+    //   remotePeerName.innerHTML = `<i class="fas fa-microphone-slash" id="nameAudioIcon"></i> | ${peer_name}`;
+    // }
 
   // remote audio volume element
   remoteAudioVolume.setAttribute("id", peer_id + "_audioVolume");
@@ -2471,7 +2482,7 @@ async function loadRemoteMediaStream(stream, peers, peer_id, typeStream = 'strea
   if (buttons.remote.showSnapShotBtn) {
     remoteVideoNavBar.appendChild(remoteVideoToImgBtn);
   }
-  if (buttons.remote.showmyVideoStatusButton) {
+  if(buttons.remote.showmyVideoStatusButton){
     remoteVideoNavBar.appendChild(remoteVideoStatusIcon);
   }
   remoteVideoNavBar.appendChild(remoteAudioStatusIcon);
@@ -2525,9 +2536,9 @@ async function loadRemoteMediaStream(stream, peers, peer_id, typeStream = 'strea
   // append all elements to videoMediaContainer
   getId("videoMediaContainer").appendChild(remoteVideoWrap);
   // attachMediaStream is a part of the adapter.js library
-  if (typeStream == 'stream') {
+  if(typeStream == 'stream'){
     attachMediaStream(remoteMedia, remoteMediaStream);
-  } else {
+  }else{
     remoteMedia.src = stream;
     remoteMedia.play();
   }
@@ -2611,7 +2622,7 @@ async function loadRemoteMediaStream(stream, peers, peer_id, typeStream = 'strea
   }
 }
 
-async function loadRemoteMediaStreamFake(stream,) {
+async function loadRemoteMediaStreamFake(stream,  ) {
   // get data from peers obj
   let peer_name = "Bot";
   let peer_video = true;
@@ -2670,14 +2681,14 @@ async function loadRemoteMediaStreamFake(stream,) {
   // remote audio status element
   remoteAudioStatusIcon.setAttribute("id", peer_id + "_audioStatus");
   remoteAudioStatusIcon.className = className.audioOn;
-  // add icon at the beginning of the name of the peer about microphone status
-  // if (peer_audio_status) {
-  //   remotePeerName.innerHTML = `<i class="fas fa-microphone" id="nameAudioIcon" ></i> |  ${peer_name}`;
-  // }
-  // else
-  // {
-  //   remotePeerName.innerHTML = `<i class="fas fa-microphone-slash" id="nameAudioIcon"></i> | ${peer_name}`;
-  // }
+    // add icon at the beginning of the name of the peer about microphone status
+    // if (peer_audio_status) {
+    //   remotePeerName.innerHTML = `<i class="fas fa-microphone" id="nameAudioIcon" ></i> |  ${peer_name}`;
+    // }
+    // else
+    // {
+    //   remotePeerName.innerHTML = `<i class="fas fa-microphone-slash" id="nameAudioIcon"></i> | ${peer_name}`;
+    // }
 
   // remote audio volume element
   remoteAudioVolume.setAttribute("id", peer_id + "_audioVolume");
@@ -2753,7 +2764,7 @@ async function loadRemoteMediaStreamFake(stream,) {
   if (buttons.remote.showSnapShotBtn) {
     remoteVideoNavBar.appendChild(remoteVideoToImgBtn);
   }
-  if (buttons.remote.showmyVideoStatusButton) {
+  if(buttons.remote.showmyVideoStatusButton){
     remoteVideoNavBar.appendChild(remoteVideoStatusIcon);
   }
   remoteVideoNavBar.appendChild(remoteAudioStatusIcon);
@@ -2989,11 +3000,11 @@ function setPeerAvatarImgName(videoAvatarImageId, peerName, useAvatar) {
     videoAvatarImageElement.setAttribute(
       "src",
       avatarApiUrl +
-      "?name=" +
-      (peerName || localStorage.getItem("peerName")) +
-      "&size=" +
-      avatarImgSize +
-      "&background=random&rounded=true"
+        "?name=" +
+        (peerName || localStorage.getItem("peerName")) +
+        "&size=" +
+        avatarImgSize +
+        "&background=random&rounded=true"
     );
   } else {
     videoAvatarImageElement.setAttribute("src", avatarImg);
@@ -3373,7 +3384,7 @@ function handleVideoToImg(videoStream, videoToImgBtn, peer_id = null) {
       // handle remote video snapshot
       let remoteVideoStatusBtn = getId(peer_id + "_videoStatus");
       // if (remoteVideoStatusBtn.className === className.videoOn) {
-      return takeSnapshot(video);
+        return takeSnapshot(video);
       //}
     } else {
       // handle local video snapshot
@@ -3489,9 +3500,9 @@ function setShareRoomBtn() {
   */
 function setAudioOutputBtn() {
   audioOutputChangeBtn.addEventListener("click", async (e) => {
-
+    
     let allInputDevicesLength = audioInputSelect.options.length;
-    if (allInputDevicesLength == 1) {
+    if(allInputDevicesLength == 1){
       return console.log("No audio input devices found");
     }
     else if (allInputDevicesLength == 2) {
@@ -3568,18 +3579,18 @@ function setAudioOutputBtn() {
     }
     refreshLocalMedia();
     console.log(audioInputSelect.innerText)
-    if (audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('default') || audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('Default') || audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('Speakerphone')) {
+    if(audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('default') || audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('Default') || audioInputSelect.options[audioInputSelect.selectedIndex].innerText.includes('Speakerphone')){
       document.getElementById('audioOutputChangeBtn').classList.add('audioOutputChangeBtn-color')
       console.log("add")
     }
-    else {
+    else{
       console.log("remove")
       document.getElementById('audioOutputChangeBtn').classList.remove('audioOutputChangeBtn-color')
     }
     //if(localStorageCamera !== "user") swapCameraTo(localStorageCamera);
     //userLog("toast",localStorageCamera);
     playSound("ok")
-    userLog("toast", "Ovoz qurilmasi: " + audioInputSelect.options[audioInputSelect.selectedIndex].innerText);
+    userLog("toast", "Ovoz qurilmasi: " + audioInputSelect.options[audioInputSelect.selectedIndex].innerText); 
     // save audio output device to localstorage
     localStorage.setItem("audioInputSelect", audioInputSelect.value);
     // getId("audioSource").value = audioInputSelect.value;
@@ -4207,7 +4218,7 @@ function refreshLocalMedia() {
   navigator.mediaDevices
     .getUserMedia(getAudioVideoConstraints())
     .then(gotStream)
-    .then(gotDevices)
+    .then(gotDevices)    
     .catch(handleError);
 
 }
@@ -4218,7 +4229,7 @@ function refreshLocalMedia() {
  */
 function getAudioVideoConstraints() {
   const audioSource = localStorage.getItem("audioInputSelect") ? localStorage.getItem("audioInputSelect") : audioInputSelect.value;
-  // userLog("toast", "Selected audio source: " + localStorage.getItem("selectedCamera"));
+ // userLog("toast", "Selected audio source: " + localStorage.getItem("selectedCamera"));
   const videoSource = localStorage.getItem("selectedCamera") ? localStorage.getItem("selectedCamera") : videoSelect.value;
   let videoConstraints = false;
   if (useVideo) {
@@ -4236,7 +4247,7 @@ function getAudioVideoConstraints() {
   );
   if (cameraStatelocal) {
     vidconsts["facingMode"] = cameraState;
-  }
+  }         
   let audioConstraints = {
     deviceId: audioSource ? { exact: audioSource } : undefined,
     echoCancellation: true,
@@ -4401,10 +4412,10 @@ async function gotStream(stream) {
     setMyVideoStatusTrue();
     // This fix IPadPro - Tablet mirror of the back camera
     if ((isMobileDevice || isIPadDevice || isTabletDevice)) {
-      if (camera == "user") {
+      if(camera == "user"){
         myVideo.classList.add("mirror");
         isCamMirrored = true;
-      } else {
+      }else{
         myVideo.classList.remove("mirror");
         isCamMirrored = false;
       }
@@ -4502,7 +4513,7 @@ function handleError(err) {
  */
 function attachMediaStream(element, vid) {
   //console.log("DEPRECATED, attachMediaStream will soon be removed.");
-
+  
   element.srcObject = vid;
   // console.log("Success, media stream attached", stream.getTracks());
 
@@ -4534,7 +4545,7 @@ function attachMediaStream(element, vid) {
  * if mobile and mySettings open do nothing return
  */
 function showButtonsBarAndMenu() {
-  if (isMobileDevice) {
+  if(isMobileDevice) {
     buttonsBar.style.display = "flex";
     isButtonsVisible = true;
     return;
@@ -4559,7 +4570,7 @@ function checkButtonsBarAndMenu() {
   // if it's mobile don't hide buttons 
   toggleClassElements("navbar", "none");
   if (!isButtonsBarOver) {
-
+   
     buttonsBar.style.display = "none";
     isButtonsVisible = false;
   }
@@ -4701,8 +4712,8 @@ function handleAudio(e, init, force = null) {
   force != null
     ? (e.className = myAudioStatus ? className.audioOn : className.audioOff)
     : (e.target.className = myAudioStatus
-      ? className.audioOn
-      : className.audioOff);
+        ? className.audioOn
+        : className.audioOff);
 
   if (init) {
     audioBtn.className = myAudioStatus ? className.audioOn : className.audioOff;
@@ -4732,8 +4743,8 @@ function handleVideo(e, init, force = null) {
   force != null
     ? (e.className = myVideoStatus ? className.videoOn : className.videoOff)
     : (e.target.className = myVideoStatus
-      ? className.videoOn
-      : className.videoOff);
+        ? className.videoOn
+        : className.videoOff);
 
   if (init) {
     videoBtn.className = myVideoStatus ? className.videoOn : className.videoOff;
@@ -4772,10 +4783,10 @@ async function swapCamera() {
       //   myVideo.classList.toggle("mirror");
       //   isCamMirrored = true;
       // }
-      if (camera == "user") {
+      if(camera == "user"){
         myVideo.classList.add("mirror");
         isCamMirrored = true;
-      } else {
+      }else{
         myVideo.classList.remove("mirror");
         isCamMirrored = false;
       }
@@ -4797,7 +4808,7 @@ async function swapCameraTo(cameraType) {
   // some devices can't swap the cam, if have Video Track already in execution.
   stopLocalVideoTrack();
 
-  let camStream = null;
+  let camStream = null; 
 
   try {
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
@@ -4810,10 +4821,10 @@ async function swapCameraTo(cameraType) {
       //   myVideo.classList.toggle("mirror");
       //   isCamMirrored = true;
       // }
-      if (camera == "user") {
+      if(camera == "user"){
         myVideo.classList.add("mirror");
         isCamMirrored = true;
-      } else {
+      }else{
         myVideo.classList.remove("mirror");
         isCamMirrored = false;
       }
@@ -5251,7 +5262,7 @@ function handleMediaRecorderStop(event) {
   playSound("recStop");
   console.log("MediaRecorder stopped: ", event);
   console.log("MediaRecorder Blobs: ", recordedBlobs);
-  myVideoParagraph.innerHTML = (myPeerName || "who?") + " (Siz)";
+  myVideoParagraph.innerHTML = (myPeerName || "who?")  + " (Siz)";
   isStreamRecording = false;
   if (isRecScreenStream) {
     recScreenStream.getTracks().forEach((track) => {
@@ -5623,8 +5634,9 @@ function appendMessage(from, img, side, msg, privateMsg, msgId = null) {
 		<div class="msg-img" style="background-image: url('${img}')"></div>
 		<div class=${msgBubble}>
             <div class="msg-info">
-                <div class="msg-info-name">${side == "left" ? "U" : "Siz"
-    }</div>
+                <div class="msg-info-name">${
+                  side == "left" ? "U" : "Siz"
+                }</div>
                 <div class="msg-info-time">${time}</div>
             </div>
             <div id="${chatMessagesId}" class="msg-text">${msg}
@@ -5654,7 +5666,7 @@ function appendMessage(from, img, side, msg, privateMsg, msgId = null) {
   //               ></button>
   //           </div>
   //       </div>
-  // </div>
+	// </div>
   //   `;
   msgerChat.insertAdjacentHTML("beforeend", msgHTML);
   msgerChat.scrollTop += 500;
@@ -5874,7 +5886,7 @@ function stripHtml(html) {
 function isHtml(str) {
   let a = document.createElement("div");
   a.innerHTML = str;
-  for (let c = a.childNodes, i = c.length; i--;) {
+  for (let c = a.childNodes, i = c.length; i--; ) {
     if (c[i].nodeType == 1) return true;
   }
   return false;
@@ -6019,7 +6031,7 @@ function hideShowMySettings() {
       );
     }
     // my current peer name
-    myPeerNameSet.placeholder = myPeerName || window.localStorage.getItem("peer_name");
+    myPeerNameSet.placeholder = myPeerName || window.localStorage.getItem("peer_name"); 
     // center screen on show
     mySettings.style.top = "50%";
     mySettings.style.left = "50%";
@@ -6094,8 +6106,9 @@ function handlePeerName(config) {
   let msgerPeerAvatar = getId(peer_id + "_pMsgAvatar");
   if (msgerPeerName) msgerPeerName.value = peer_name;
   if (msgerPeerAvatar)
-    msgerPeerAvatar.src = `${avatarApiUrl}?name=${(peer_name || window.localStorage.getItem("peer_name"))
-      }&size=24&background=random&rounded=true`;
+    msgerPeerAvatar.src = `${avatarApiUrl}?name=${
+      (peer_name || window.localStorage.getItem("peer_name") )
+    }&size=24&background=random&rounded=true`;
   // refresh also peer video avatar name
   setPeerAvatarImgName(peer_id + "_avatar", useAvatarApi);
 }
@@ -6146,7 +6159,7 @@ function setMyAudioStatus(status) {
     status ? "You're unmuted" : "You're muted",
     "bottom"
   );
-
+  
   status ? playSound("on") : playSound("off");
   setTippy(
     audioBtn,
@@ -6271,7 +6284,7 @@ function handleAudioVolume(audioVolumeId, mediaId) {
  * @param {string} peer_id socket.id
  */
 function handlePeerAudioBtn(peer_id) {
-  if (!buttons.remote.audioBtnClickAllowed) return;
+  if (!buttons.remote.audioBtnClickAllowed) return; 
   let peerAudioBtn = getId(peer_id + "_audioStatus");
   peerAudioBtn.onclick = () => {
     if (peerAudioBtn.className === className.audioOn)
@@ -7362,11 +7375,11 @@ function handleDataChannelFileSharing(data) {
 function sendFileData(peer_id, broadcast) {
   console.log(
     "Send file " +
-    fileToSend.name +
-    " size " +
-    bytesToSize(fileToSend.size) +
-    " type " +
-    fileToSend.type
+      fileToSend.name +
+      " size " +
+      bytesToSize(fileToSend.size) +
+      " type " +
+      fileToSend.type
   );
 
   sendInProgress = true;
@@ -8118,10 +8131,10 @@ function handlePeerVolume(data) {
   }
   element.style.height = volume + "%";
   remoteVideoWrap.classList.toggle('speaking');
-  setTimeout(function () {
-    element.style.backgroundColor = '#19bb5c';
-    element.style.height = '0%';
-    remoteVideoWrap.classList.toggle('speaking');
+    setTimeout(function () {
+        element.style.backgroundColor = '#19bb5c';
+        element.style.height = '0%';
+        remoteVideoWrap.classList.toggle('speaking');
   }, 700);
 }
 
@@ -8134,14 +8147,14 @@ function handleMyVolume(data) {
   let volume = data.volume + 25;
   if (!element) return;
   if (volume > 50) {
-    element.style.backgroundColor = 'orange';
+      element.style.backgroundColor = 'orange';
   }
   element.style.height = volume + '%';
   myVideoWrap.classList.toggle('speaking');
   setTimeout(function () {
-    element.style.backgroundColor = '#19bb5c';
-    element.style.height = '0%';
-    myVideoWrap.classList.toggle('speaking');
+      element.style.backgroundColor = '#19bb5c';
+      element.style.height = '0%';
+      myVideoWrap.classList.toggle('speaking');
   }, 700);
 }
 
