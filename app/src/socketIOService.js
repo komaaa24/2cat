@@ -303,6 +303,7 @@ module.exports = class SocketIOService {
           this.sendToPeer(config.peer_id, configs.sockets, "nextPeer", {
             freePeer: freePeer,
             error: null,
+            peersCount: Object.values(configs.peers).length
           });
         } else {
           if (config.typeOfCall == "leftUser") {
@@ -352,12 +353,12 @@ module.exports = class SocketIOService {
         } else {
           log.debug(
             "[" +
-              socket.id +
-              "] emit peerAction to [" +
-              peer_id +
-              "] from room_id [" +
-              room_id +
-              "]"
+            socket.id +
+            "] emit peerAction to [" +
+            peer_id +
+            "] from room_id [" +
+            room_id +
+            "]"
           );
 
           await this.sendToPeer(peer_id, configs.sockets, "peerAction", {
@@ -381,12 +382,12 @@ module.exports = class SocketIOService {
 
         log.debug(
           "[" +
-            socket.id +
-            "] kick out peer [" +
-            peer_id +
-            "] from room_id [" +
-            room_id +
-            "]"
+          socket.id +
+          "] kick out peer [" +
+          peer_id +
+          "] from room_id [" +
+          room_id +
+          "]"
         );
 
         await this.sendToPeer(peer_id, configs.sockets, "kickOut", {
@@ -416,12 +417,12 @@ module.exports = class SocketIOService {
 
         log.debug(
           "[" +
-            socket.id +
-            "] Peer [" +
-            peer_name +
-            "] send file to room_id [" +
-            room_id +
-            "]",
+          socket.id +
+          "] Peer [" +
+          peer_name +
+          "] send file to room_id [" +
+          room_id +
+          "]",
           {
             peerName: file.peerName,
             fileName: file.fileName,
@@ -464,12 +465,12 @@ module.exports = class SocketIOService {
         if (peer_id) {
           log.debug(
             "[" +
-              socket.id +
-              "] emit videoPlayer to [" +
-              peer_id +
-              "] from room_id [" +
-              room_id +
-              "]",
+            socket.id +
+            "] emit videoPlayer to [" +
+            peer_id +
+            "] from room_id [" +
+            room_id +
+            "]",
             logMe
           );
 
@@ -482,10 +483,10 @@ module.exports = class SocketIOService {
         } else {
           log.debug(
             "[" +
-              socket.id +
-              "] emit videoPlayer to [room_id: " +
-              room_id +
-              "]",
+            socket.id +
+            "] emit videoPlayer to [room_id: " +
+            room_id +
+            "]",
             logMe
           );
 
