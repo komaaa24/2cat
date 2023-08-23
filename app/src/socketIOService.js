@@ -293,9 +293,8 @@ module.exports = class SocketIOService {
       });
 
       socket.on("nextPeer", async (config) => {
-        const peersLength = Object.values(configs.peers[config.room_id]).length || 0;
+        const peersLength = (configs.peers[config.room_id] != undefined && configs.peers[config.room_id]) ? Object.keys(configs.peers[config.room_id]).length : 0;
         log.debug("Next button", config);
-
         let freePeer = this.findFreePeer(
           config.room_id,
           config.last5peers,
