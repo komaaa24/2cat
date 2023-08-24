@@ -10,6 +10,7 @@ const { getVideoDurationInSeconds } = require("get-video-duration");
 const { faker } = require("@faker-js/faker");
 const log = new Logs("server");
 
+
 const makeHttps = (status, app) => {
   let server,
     host,
@@ -29,7 +30,9 @@ const makeHttps = (status, app) => {
 };
 
 const urlMaker = () => {
-  let adjectivesUz = [
+
+
+  adjectivesUz = [
     "kichik",
     "katta",
     "ulkan",
@@ -39,69 +42,68 @@ const urlMaker = () => {
     "yashil",
     "qizil",
     "qora",
-    "zangor",
+
     "oq",
-    "qizil",
-    "qora",
     "issiq",
-    "oq",
-    "yashil",
-    "asosiy",
-    "kuchli",
-    "shirin",
+    "salqin",
+    "yorqin",
+    "shirali",
     "bechora",
     "ajoyib",
     "noyob",
     "omadli",
     "uzun",
     "kalta",
-    "mitti",
+    "yaltiroq",
     "buyuk",
-    "uzun",
+    "uzoq",
     "yolgiz",
     "boy",
-    "yosh",
-    "kir",
+    "kelajakdor",
     "toza",
     "jigarrang",
     "qorongi",
     "ahmoq",
-    "hafa",
+    "hikoyalovchi",
     "shovqin",
     "sokin",
     "ahmoqona",
     "dono",
+    "chiroyli",
+    "silliq",
+    "shirin",
+    "achchiq",
+    "muzdek",
+    "issiq",
+    "sovuq",
+    "qattiq",
+    "yumshoq"
+
   ];
-  let nounsUz = [
+
+  nounsUz = [
     "it",
     "tipratikan",
     "olma",
     "nok",
-    "arvoh",
     "mushuk",
     "ayiq",
     "kuchuk",
     "echki",
-    "toshbaqa",
-    "shapka",
-    "paypoq",
     "ilon",
+
     "qumursqa",
     "ot",
     "qoshiq",
-    "vilka",
-    "urgimchak",
     "daraxt",
     "stul",
     "stol",
     "divan",
     "sochiq",
-    "panda",
     "non",
     "uzum",
     "olmaqand",
     "tosh",
-    "krisa",
     "sichqon",
     "qush",
     "pishak",
@@ -109,14 +111,11 @@ const urlMaker = () => {
     "rasm",
     "qurbaqa",
     "tuya",
-    "hunajin",
-    "akula",
     "yulbars",
     "zebra",
     "urdak",
     "burgut",
     "baliq",
-    "mushucha",
     "maymun",
     "ukka",
     "quyon",
@@ -126,6 +125,15 @@ const urlMaker = () => {
     "pashsha",
     "tuti",
     "chivin",
+    "ilon",
+    "malla",
+    "jajji",
+    "yurak",
+    "oshqovoq",
+    "qalampir",
+    "qaldirg'och",
+    "begona",
+    "shamol"
   ];
   let randomizedAdjective =
     adjectivesUz[Math.floor(Math.random() * adjectivesUz.length)];
