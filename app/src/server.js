@@ -9,6 +9,10 @@ const cors = require("cors");
 
 dotenv.config();
 
+process.on("unhandledRejection", (err) => {
+  console.log(`The Error : ${err}`);
+})
+
 const app = express();
 // const ffmpeg = require("ffmpeg");
 const Logs = require("./logs");
