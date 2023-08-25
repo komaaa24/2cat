@@ -86,6 +86,10 @@ router.get("/video", async (req, res, next) => {
 
   // videoStream.pipe(res);
 
+  const title = video.title;
+  const testTitle = video.path.split("public")[1].split("/")[1].split(".")[0]
+  console.log(`Video.title : ${title}`);
+  console.log(`Test title : ${testTitle}`);
   res
     .status(200)
     .send({
