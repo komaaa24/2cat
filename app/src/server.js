@@ -14,7 +14,7 @@ const log = new Logs("server");
 const {
   errorHandler,
   makeHttps,
-  connectMongoDb,
+  // connectMongoDb,
 } = require("./utils");
 const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
@@ -172,7 +172,7 @@ io = new Server({
 const socketService = new SocketIOService(io);
 
 server.listen(port, async () => {
-  await connectMongoDb(config.mongo_uri);
+  // await connectMongoDb(config.mongo_uri);
   log.debug("Server is running...\nport " + port);
 });
 

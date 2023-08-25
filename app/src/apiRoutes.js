@@ -9,12 +9,11 @@ const {
   findFreePeer,
   getMeetingURL,
   makeUrlForVideo,
-  getAllVideoPaths,
 } = require("./utils");
 const fs = require("fs");
 const path = require("path");
-const User = require("./models/user.model");
-const { getVideoDurationInSeconds } = require("get-video-duration");
+// const User = require("./models/user.model");
+// const { getVideoDurationInSeconds } = require("get-video-duration");
 
 const log = new Logs("server");
 // const api_key_secret = process.env.API_KEY_SECRET || "videochat_default_secret";
@@ -26,30 +25,30 @@ router.get("/stream", (req, res, next) => {
 router.get("/video", async (req, res, next) => {
   // console.log(req.ip);
 
-  let user = await User.findOne({ ip: req.ip });
+  // let user = await User.findOne({ ip: req.ip });
 
-  if (!user) {
-    user = await User.create({ ip: req.ip });
-  }
+  // if (!user) {
+  //   user = await User.create({ ip: req.ip });
+  // }
 
   let videos = config.videos;
-  videos = videos.filter((v) => !user.watched.includes(v.path));
-  let video =
-    videos.length > 0
-      ? videos[Math.ceil(Math.random() * videos.length - 1)]
-      : config.videos[Math.ceil(Math.random() * config.videos.length - 1)];
+  // videos = videos.filter((v) => !user.watched.includes(v.path));
+  // let video =
+  //   videos.length > 0
+  //     ? videos[Math.ceil(Math.random() * videos.length - 1)]
+  //     : config.videos[Math.ceil(Math.random() * config.videos.length - 1)];
 
-  if (user.watched.length >= config.videos.length) {
-    user.watched = [];
-  }
+  // if (user.watched.length >= config.videos.length) {
+  //   user.watched = [];
+  // }
 
-  user.watched.push({
-    path: video.path,
-    duration: video.duration,
-    title: video.title,
-  });
-  console.log(user.watched);
-  await user.save();
+  // user.watched.push({
+  //   path: video.path,
+  //   duration: video.duration,
+  //   title: video.title,
+  // });
+  // console.log(user.watched);
+  // await user.save();
 
   // const range = req.headers.range;
   // if (!range) {
@@ -57,6 +56,12 @@ router.get("/video", async (req, res, next) => {
   //   return;
   // }
 
+  let video = videos[Math.ceil(Math.random() * videos.length - 1)];
+  video = {
+    path: video.path,
+    duration: video.duration,
+    title: video.title,
+  }
   let videoPath = path.resolve(video.path);
 
   videoPath = makeUrlForVideo(videoPath);
