@@ -5,7 +5,6 @@ const http = require("http");
 const { v4: uuidV4 } = require("uuid");
 require("dotenv").config();
 const { getVideoDurationInSeconds } = require("get-video-duration");
-const { faker } = require("@faker-js/faker");
 const log = new Logs("server");
 
 
@@ -232,7 +231,7 @@ const getAllVideoPaths = (videosPath) => {
   const videoPathArray = [];
   let videoDuration;
   // From a local path...
-
+  let fakeName = urlMaker();
   fs.readdirSync(`${videosPath}`).forEach(async (file, index) => {
     file = `${videosPath}/${file}`;
     videoDuration = await getVideoDurationInSeconds(file);
@@ -242,7 +241,7 @@ const getAllVideoPaths = (videosPath) => {
       videoPathArray.push({
         path: file,
         duration: videoDuration,
-        title: faker.internet.userName(),
+        title: fakeName
       });
   });
   return videoPathArray;
@@ -252,6 +251,8 @@ const makeUrlForVideo = (url) => {
   url = url.split(`\\`).slice(6);
   return `${url[0]}\\${url[1]}`;
 };
+
+
 
 module.exports = {
   errorHandler,
