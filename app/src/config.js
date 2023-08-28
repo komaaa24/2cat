@@ -6,7 +6,7 @@ module.exports = {
   sockets: {}, // collect sockets
   peers: {},
   videos: ["/videos/alisa.mp4", "/videos/aziza.mp4", "/videos/john.mp4", "/videos/maria.mp4", "/videos/mark.mp4",
-    "/videos/nozima.mp4", "/videos/shohida.mp4", "/videos/gulchehra.mp4", "/videos/phobe.mp4"
+    "/videos/nozima.mp4", "/videos/shohida.mp4", "/videos/gulchehra.mp4", "/videos/phobe.mp4", "/videos/rose.mp4"
   ],
   views: {
     client: path.join(__dirname, "../../", "public/views/client.html"),
