@@ -44,7 +44,7 @@ router.get("/video", async (req, res, next) => {
     .send({
       path: video,
       title: video.split("/")[2].split(".")[0],
-      duration: 20,
+      duration: 15,
     });
   return;
 });
