@@ -25,7 +25,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 "use strict"; // https://www.w3schools.com/js/js_strict.asp
 
-const BASE_URL="https://videochat.uz";
+const BASE_URL = "https://videochat.uz";
 const isHttps = false; // must be the same on server.js
 const signalingServer = getSignalingServer();
 const roomId = getRoomId();
@@ -1674,7 +1674,7 @@ function handleNextPeer(config) {
   if (config.error == "No peer") {
     if (fakeBotsAmount < fakeBotsLimit && config.peersCount < 2) {
       fakeBotsAmount++;
-      fetch(BASE_URL+'/video')
+      fetch(BASE_URL + '/video')
         .then(res => res.json())
         .then((resp) => {
           console.log(resp)
