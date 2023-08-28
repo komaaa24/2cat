@@ -3,15 +3,9 @@
   "version": "1.0.1",
   "description": "A free WebRTC browser-based video call",
   "main": "server.js",
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "__mocks__"
-    ]
-  },
-  "scripts": {
+    "scripts": {
     "start": "node app/src/server.js",
     "dev": "nodemon app/src/server.js",
-    "test": "jest --watch",
     "lint": "npx prettier --write ."
   },
   "repository": {
