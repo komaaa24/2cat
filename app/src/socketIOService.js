@@ -20,7 +20,7 @@ module.exports = class SocketIOService {
       configs.sockets[socket.id] = socket;
 
       const transport = socket.conn.transport.name; // in most cases, "polling"
-      log.debug("[" + socket.id + "] Connection transport", transport);
+      //log.debug("[" + socket.id + "] Connection transport", transport);
 
       /**
        * Check upgrade transport
@@ -51,7 +51,7 @@ module.exports = class SocketIOService {
       // understood
       socket.on("join", async (config) => {
         // log.debug('Join room', config);
-        log.debug("[" + socket.id + "] join ", config);
+       // log.debug("[" + socket.id + "] join ", config);
 
         let channel = config.channel;
         let channel_password = config.channel_password;
@@ -98,7 +98,7 @@ module.exports = class SocketIOService {
           peer_rec_status: peer_rec_status,
           peer_privacy_status: peer_privacy_status,
         };
-        log.debug("[Join] - connected peers grp by roomId", configs.peers);
+        //log.debug("[Join] - connected peers grp by roomId", configs.peers);
         await this.addPeerTo(channel, socket);
 
         configs.channels[channel][socket.id] = socket;
@@ -293,8 +293,15 @@ module.exports = class SocketIOService {
       });
 
       socket.on("nextPeer", async (config) => {
-        const peersLength = (configs.peers[config.room_id] != undefined && configs.peers[config.room_id]) ? Object.keys(configs.peers[config.room_id]).length : 0;
-        log.debug("Next button", config);
+       console.log("-----------------------------");
+        console.log(config);
+        console.log("---------------------------");
+        console.log(configs.peers);
+        console.log("---------------------------------"); 
+        const peersLength = Object.keys(configs.peers).length>0 ? Object.keys(configs.peers[Object.keys(configs.peers)[0]]).length : 0; 
+        console.log("------------------------------------------");
+        console.log(peersLength,config.room_id);
+        console.log("------------------------------------------");
         let freePeer = this.findFreePeer(
           config.room_id,
           config.last5peers,
@@ -623,7 +630,7 @@ module.exports = class SocketIOService {
 
   checkFreePeersAndMerge(peers, senderFunc) {
     let available;
-    console.log(peers);
+    console.log("Shu "+peers);
     setInterval(function () {
       available = Object.keys(peers).filter(
         (key) => Object.keys(peers[key]).length === 1

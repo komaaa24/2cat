@@ -36,7 +36,9 @@ router.get("/video", async (req, res, next) => {
   } 
 
   let video = filteredVideos[Math.ceil(Math.random() * filteredVideos.length - 1)];
-  
+  if(!USERS.get(req.ip)){
+    USERS.set(req.ip,[]);
+  } 
   USERS.get(req.ip).push(video);
 
   res
