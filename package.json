@@ -3,7 +3,7 @@
   "version": "1.0.1",
   "description": "A free WebRTC browser-based video call",
   "main": "server.js",
-    "scripts": {
+  "scripts": {
     "start": "node app/src/server.js",
     "dev": "nodemon app/src/server.js",
     "lint": "npx prettier --write ."
@@ -28,6 +28,8 @@
     "body-parser": "^1.20.1",
     "colors": "^1.4.0",
     "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cookies": "^0.8.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.3",
@@ -39,6 +41,7 @@
     "qs": "^6.11.0",
     "request-info": "^0.1.0",
     "socket.io": "^4.7.2",
+    "sqlite3": "^5.1.6",
     "swagger-ui-express": "^4.6.0",
     "uuid": "9.0.0",
     "yamljs": "^0.3.0"

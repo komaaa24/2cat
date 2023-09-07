@@ -254,6 +254,22 @@ const makeUrlForVideo = (url) => {
 };
 
 
+const memorizeUsers = async(req,res,next)=>{
+     try{
+      const isOldUser = req.cookies["user_id"];
+      if(isOldUser){
+        console.log(`${isOldUser} is old user`);
+        return next();  
+     } 
+     
+      const user_id = Math.ceil(Math.random()*100000);
+      res.cookie("user_id",user_id);
+      console.log(`${user_id} is New user`);
+      return next(); 
+   } catch(err){
+    next(err);
+  }
+};
 
 module.exports = {
   errorHandler,
@@ -266,4 +282,5 @@ module.exports = {
   // connectMongoDb,
   getAllVideoPaths,
   makeUrlForVideo,
+  memorizeUsers
 };

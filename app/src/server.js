@@ -6,24 +6,19 @@ const { Server } = require("socket.io");
 const compression = require("compression");
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 
 dotenv.config();
 
-let maxUsers = new Set();
-console.log("this is on master branchJ");
 
-process.on("unhandledRejection", (err) => {
-  console.log(`The Error : ${err}`);
-})
 
 const app = express();
-// const ffmpeg = require("ffmpeg");
 const Logs = require("./logs");
 const log = new Logs("server");
 const {
   errorHandler,
-  makeHttps,
-  // connectMongoDb,
+  makeHttps , memorizeUsers
 } = require("./utils");
 const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
@@ -34,19 +29,9 @@ const port = process.env.PORT || 3000; // must be the same to client.js signalin
 
 let io;
 
-// // Swagger config
-
-// const yamlJS = require("yamljs");
-// const swaggerUi = require("swagger-ui-express");
-// const swaggerDocument = yamlJS.load(
-//   path.join(__dirname + "/../api/swagger.yaml")
-// );
-// Api config
 
 const apiBasePath = "/api/v1"; // api endpoint path
-// const api_key_secret = process.env.API_KEY_SECRET || "videochat_default_secret";
 
-//const stun = process.env.STUN || "stun:iphone-stun.strato-iphone.de:3478" || "stun:stun.l.google.com:19302";
 //const stun = "stun:bn-turn1.xirsys.com";
 const stun = config.stunServers[0];
 
@@ -96,41 +81,17 @@ app.use(compression()); // Compress all HTTP responses using GZip
 app.use(express.json()); // Api parse body data as json
 app.use(express.static(dir.public)); // Use all static files from the public folder
 app.use(express.urlencoded({ extended: true })); // Need for Slack API body parser
-// app.use(
-//   apiBasePath + "/docs",
-//   swaggerUi.serve,
-//   swaggerUi.setup(swaggerDocument)
-// ); // api docs
+app.use(cookieParser());
 
-// all start from here
-// app.get("*", async (req, res, next) => {
-//   try {
-//     const isNewUser = await User.findOne({ ip: req.ip });
-//     if (!isNewUser) {
-//       const newUser = await User.create({
-//         ip: req.ip,
-//         watched: [],
-//       });
-//       await newUser.save();
-//     }
-//     next();
-//   } catch (err) {
-//     next(err);
-//   }
-// });
 
+app.use(memorizeUsers);
 
 app.use("/", require("./apiRoutes"));
 
 app.use('*',(req,res,next)=>{
-    maxUsers.add(req.ip);
+    
     next();
-});
 
-app.get("/api/v1/maxusers",(req,res,next)=>{
-
-    res.json(maxUsers.size);
-    return;
 });
 
 
