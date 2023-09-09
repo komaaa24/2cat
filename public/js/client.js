@@ -1674,54 +1674,19 @@ function handleRemovePeer(config) {
 }
 
 function handleNextPeer(config) {
-  console.log("Signaling server said to next peer:", config);
-  if (config.error == "No peer") {
-    if (fakeBotsAmount < fakeBotsLimit && config.peersCount < 2) {
-      fakeBotsAmount++;
-      // fetch(BASE_URL + "/video")
-      fetch(BASE_URL + "/video")
-        .then((res) => res.json())
-        .then((resp) => {
-          console.log("--------------------------------");
-          console.log(resp);
-          console.log("--------------------------------");
-          let peers = {
-            NrbVoHSuIovu4ZjJAAAD1: {
-              peer_name: resp.title,
-              peer_video: true,
-              peer_video_status: true,
-              peer_audio_status: true,
-              peer_screen_status: false,
-              peer_hand_status: false,
-              peer_rec_status: false,
-            },
-          };
-          if (!resp.message) {
-            // loadRemoteMediaStream(
-            //   LOCAL_URL + resp.path,
-            //   peers,
-            //   "NrbVoHSuIovu4ZjJAAAD1",
-            //   "video"
-            // );
-            getId("nextBtnLoading").style.display = "none";
-            openURL("/join/" + config.freePeer);
-            console.log("No free peer found", config);
-          }
-        });
-    } else {
-      playSound("alert");
-      setTimeout(() => {
-        openURL("/join/" + config.freePeer);
-        console.log("No free peer found", config);
-      }, 2400);
+  if (config.error=="No peer"){
+    userLog("toast","Bo'sh suhbatdosh topilmadi");
+    getId("nextBtnLoading").style.display = "none";
+    playSound("alert");
     }
-  } else if (config.error == "stay") {
-    console.log("Stay in room", config);
-  } else {
-    console.log("Free peer found", config);
-    openURL("/join/" + config.freePeer);
-  }
+   else if(config.error=='stay'){
+      console.log("Stay in room");
+   }else{
+    openURL("/join/"+config.freePeer);
+   }
+
 }
+
 
 /**
  * Set Videochat theme | dark | grey | ...
