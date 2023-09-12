@@ -573,16 +573,20 @@ module.exports = class SocketIOService {
   findFreePeer(roomID, last5, typeOfCall) {
     // remove roomID from peers, it may be a key of peers object
     let allChannels = configs.peers;
-    console.log(allChannels);
+    console.log("--------------------------configs.peers----------------------------");
+    console.log(configs.peers);
+    console.log("----------------------------");
     delete allChannels[roomID];
     let available = Object.keys(configs.peers).filter(
       (key) => Object.keys(configs.peers[key]).length === 1
     );
+    console.log("-----------------available------------------");
+    console.log(available);
+    console.log("-------------------------------------------");
     if (available.length > 2) {
       available.pop();
     }
     let newestPeers = available;
-    console.log(newestPeers);
     // let newestPeers = available.filter((key) => !last5.includes(key));
     if (newestPeers.length > 0) {
       return newestPeers[Math.floor(Math.random() * newestPeers.length)];

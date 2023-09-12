@@ -1674,10 +1674,13 @@ function handleRemovePeer(config) {
 }
 
 function handleNextPeer(config) {
-  if (config.error=="No peer"){
-    userLog("toast","Bo'sh suhbatdosh topilmadi");
-    getId("nextBtnLoading").style.display = "none";
+ 
+    if(config.error=="No peer"){
     playSound("alert");
+    setTimeout(()=>{
+     openURL("/join/"+config.freePeer);
+    console.log("no free peer found");
+    },1400)
     }
    else if(config.error=='stay'){
       console.log("Stay in room");
@@ -3556,12 +3559,12 @@ function setAudioOutputBtn() {
     }
     //if(localStorageCamera !== "user") swapCameraTo(localStorageCamera);
     //userLog("toast",localStorageCamera);
-    playSound("ok");
-    userLog(
-      "toast",
-      "Ovoz qurilmasi: " +
-        audioInputSelect.options[audioInputSelect.selectedIndex].innerText
-    );
+    //playSound("ok");
+    //userLog(
+     // "toast",
+     // "Ovoz qurilmasi: " +
+      //  audioInputSelect.options[audioInputSelect.selectedIndex].innerText
+    //);
     // save audio output device to localstorage
     localStorage.setItem("audioInputSelect", audioInputSelect.value);
     // getId("audioSource").value = audioInputSelect.value;
@@ -4479,7 +4482,8 @@ function handleError(err) {
       );
       break;
     default:
-      userLog("error", "GetUserMedia error " + err);
+     // userLog("error", "GetUserMedia error " + err);
+     console.log("GetUserMedia error " + err);
   }
 }
 
@@ -4769,7 +4773,7 @@ async function swapCamera() {
     }
   } catch (err) {
     console.log("[Error] to swapping camera", err);
-    userLog("error", "Error to swapping the camera " + err);
+   // userLog("error", "Error to swapping the camera " + err);
     // https://blog.addpipe.com/common-getusermedia-errors/
   }
 }
