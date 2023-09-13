@@ -7,8 +7,10 @@ const compression = require("compression");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
-dotenv.config();
+const ENV_PATH = path.resolve(__dirname, "../../.env");
+dotenv.config({ path: ENV_PATH });
 
 const app = express();
 const Logs = require("./logs");
@@ -16,6 +18,7 @@ const log = new Logs("server");
 const { errorHandler, makeHttps } = require("./utils");
 const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
+const { blockMiddleware } = require("./middlewares");
 
 const isHttps = false; // must be the same on client.js
 const port = process.env.PORT || 3000; // must be the same to client.js signalingServerPort
@@ -76,11 +79,12 @@ app.use(express.urlencoded({ extended: true })); // Need for Slack API body pars
 app.use(cookieParser());
 
 
+
+
+app.use(blockMiddleware);
+
 app.use("/", require("./apiRoutes"));
 
-app.use("*", (req, res, next) => {
-  next();
-});
 
 app.get("*", (req, res, next) => {
   res.sendFile(config.views.notFound);

@@ -2,7 +2,8 @@ const path = require("path");
 require("dotenv").config();
 
 module.exports = {
-  users: {},
+  bannedUsers: [],
+  users: [],
   channels: {}, // collect channels
   sockets: {}, // collect sockets
   peers: {},
@@ -28,6 +29,7 @@ module.exports = {
     stunTurn: path.join(__dirname, "../../", "public/views/testStunTurn.html"),
     teststream: path.join(__dirname, "../../", "public/views/teststream.html"),
     stream: path.join(__dirname, "../../", "public/views/stream.html"),
+    admin: path.join(__dirname, "../../", "public/views/admin.html"),
   },
   dir: {
     public: path.join(__dirname, "../../", "public"),

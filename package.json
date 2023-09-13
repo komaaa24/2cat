@@ -8,6 +8,11 @@
     "dev": "nodemon app/src/server.js",
     "lint": "npx prettier --write ."
   },
+  "nodemonConfig": {
+    "ignore": [
+      "app/db/*.json"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Muhammad-uzbek/videochat"
@@ -32,7 +37,6 @@
     "cookies": "^0.8.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
-    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "ffmpeg": "^0.0.4",
     "get-video-duration": "^4.1.0",
@@ -57,6 +61,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "crypto": "^1.0.1",
+    "dotenv": "^16.3.1",
     "jest": "^29.6.2",
     "morgan": "^1.10.0",
     "node-fetch": "^3.2.10",

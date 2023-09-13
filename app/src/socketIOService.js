@@ -50,9 +50,9 @@ module.exports = class SocketIOService {
 
       // understood
       socket.on("join", async (config) => {
-        // log.debug('Join room', config);
+        log.debug('Join room', config);
         // log.debug("[" + socket.id + "] join ", config);
-
+        
         let channel = config.channel;
         let channel_password = config.channel_password;
         let peer_name = config.peer_name;
@@ -364,12 +364,12 @@ module.exports = class SocketIOService {
         } else {
           log.debug(
             "[" +
-              socket.id +
-              "] emit peerAction to [" +
-              peer_id +
-              "] from room_id [" +
-              room_id +
-              "]"
+            socket.id +
+            "] emit peerAction to [" +
+            peer_id +
+            "] from room_id [" +
+            room_id +
+            "]"
           );
 
           try {
@@ -397,12 +397,12 @@ module.exports = class SocketIOService {
 
         log.debug(
           "[" +
-            socket.id +
-            "] kick out peer [" +
-            peer_id +
-            "] from room_id [" +
-            room_id +
-            "]"
+          socket.id +
+          "] kick out peer [" +
+          peer_id +
+          "] from room_id [" +
+          room_id +
+          "]"
         );
 
         await this.sendToPeer(peer_id, configs.sockets, "kickOut", {
@@ -432,12 +432,12 @@ module.exports = class SocketIOService {
 
         log.debug(
           "[" +
-            socket.id +
-            "] Peer [" +
-            peer_name +
-            "] send file to room_id [" +
-            room_id +
-            "]",
+          socket.id +
+          "] Peer [" +
+          peer_name +
+          "] send file to room_id [" +
+          room_id +
+          "]",
           {
             peerName: file.peerName,
             fileName: file.fileName,
@@ -480,12 +480,12 @@ module.exports = class SocketIOService {
         if (peer_id) {
           log.debug(
             "[" +
-              socket.id +
-              "] emit videoPlayer to [" +
-              peer_id +
-              "] from room_id [" +
-              room_id +
-              "]",
+            socket.id +
+            "] emit videoPlayer to [" +
+            peer_id +
+            "] from room_id [" +
+            room_id +
+            "]",
             logMe
           );
 
@@ -498,10 +498,10 @@ module.exports = class SocketIOService {
         } else {
           log.debug(
             "[" +
-              socket.id +
-              "] emit videoPlayer to [room_id: " +
-              room_id +
-              "]",
+            socket.id +
+            "] emit videoPlayer to [room_id: " +
+            room_id +
+            "]",
             logMe
           );
 
@@ -573,16 +573,11 @@ module.exports = class SocketIOService {
   findFreePeer(roomID, last5, typeOfCall) {
     // remove roomID from peers, it may be a key of peers object
     let allChannels = configs.peers;
-    console.log("--------------------------configs.peers----------------------------");
-    console.log(configs.peers);
-    console.log("----------------------------");
     delete allChannels[roomID];
     let available = Object.keys(configs.peers).filter(
       (key) => Object.keys(configs.peers[key]).length === 1
     );
-    console.log("-----------------available------------------");
-    console.log(available);
-    console.log("-------------------------------------------");
+
     if (available.length > 2) {
       available.pop();
     }

@@ -6,6 +6,7 @@ const { v4: uuidV4 } = require("uuid");
 const dotenv = require("dotenv");
 const { getVideoDurationInSeconds } = require("get-video-duration");
 const log = new Logs("server");
+const crypto = require("crypto")
 
 dotenv.config();
 
@@ -249,7 +250,51 @@ const makeUrlForVideo = (url) => {
   return `${url[0]}\\${url[1]}`;
 };
 
+
+const setUserProp = (users, id, prop) => {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]["userId"] == id) {
+      users[i][pr]
+    }
+  }
+
+}
+
+const makeUser = () => {
+  const newUserId = crypto.randomUUID();
+  let newUser = {};
+  newUser["userId"] = newUserId;
+  newUser["userStatus"] = "free";
+  newUser["lastRoom"] = "";
+  return newUser;
+}
+
+const bannedUser = (user) => {
+  if (user.userStatus == "banned") {
+    return true;
+  }
+  return false;
+}
+
+
+const doesUserExist = (users, userId) => {
+  try {
+    let ans = false;
+    for (let i = 0; i < users.length; i++) {
+      if (users[i]["userId"] == userId) {
+        return true;
+      }
+    }
+    return ans;
+  } catch (err) {
+    console.log(`Error while checking user in db`);
+    console.log(err);
+  }
+}
+
 module.exports = {
+  bannedUser,
+  makeUser,
   errorHandler,
   makeHttps,
   urlMaker,
@@ -260,4 +305,6 @@ module.exports = {
   // connectMongoDb,
   getAllVideoPaths,
   makeUrlForVideo,
+  doesUserExist
 };
+

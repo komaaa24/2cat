@@ -4,10 +4,19 @@ const express = require("express");
 const Logs = require("./logs");
 const router = express.Router();
 const config = require("./config");
-const { canJoin, findFreePeer, getMeetingURL } = require("./utils");
+const { canJoin, findFreePeer, getMeetingURL, doesUserExist } = require("./utils");
 const crypto = require("crypto");
+const { blockMiddleware } = require("./middlewares");
+const { getUsers, updateUser } = require("../db/controllers");
+const dotenv = require("dotenv");
+const path = require("path");
+
+const ENV_PATH = path.resolve(__dirname, "../../.env");
+dotenv.config({ path: ENV_PATH });
 
 const log = new Logs("server");
+
+router.use(blockMiddleware);
 
 router.get("/stream", (req, res, next) => {
   res.sendFile(config.views.stream);
@@ -85,6 +94,63 @@ router.get("/join", (req, res, next) => {
 router.get("/join/*", (req, res, next) => {
   res.sendFile(config.views.client);
 });
+
+
+
+// Admin routes
+router.get("/admin", (req, res, next) => {
+  if (req.query.pass != process.env.ADMIN_PASS) {
+    res.status(400).send({ message: "You are not admin" });
+    return;
+  }
+  res.sendFile(config.views.admin);
+  return;
+})
+
+router.get("/admin/ban-user/:userId", async (req, res, next) => {
+  const userId = req.params.userId.trim();
+  const users = await getUsers();
+  const existsUser = doesUserExist(users, userId);
+  console.log(existsUser);
+  if (!existsUser) {
+    return res.status(400).send({ message: `${userId} doesn't exist` })
+  }
+  if (req.query.pass == process.env.ADMIN_PASS) {
+    await updateUser(req.params.userId, { key: "userStatus", val: "banned" });
+    res.status(204).send(`User has been banned!`);
+    return;
+  }
+  return res.send("You are not admin");
+});
+
+router.get("/admin/free-user/:userId", async (req, res, next) => {
+  const users = await getUsers();
+  const existsUser = doesUserExist(users, req.params.userId);
+  console.log(existsUser);
+  if (!existsUser) {
+    return res.status(400).send({ message: `${req.params.userId} doesn't exist` })
+  }
+  if (req.query.pass == process.env.ADMIN_PASS) {
+    await updateUser(req.params.userId, { key: "userStatus", val: "free" });
+    res.status(204).send(`User has been freed`);
+    return;
+  }
+  return res.send("You are not admin");
+});
+
+
+router.get("/admin/all-users", async (req, res, next) => {
+  console.log(`Query password : ${req.query.pass}`);
+  if (req.query.pass == process.env.ADMIN_PASS) {
+    const users = await getUsers();
+    res.status(200).send({
+      users: users,
+    });
+    return;
+  }
+  return res.send("You are not admin");
+});
+
 
 router.post("/api/v1", (req, res, next) => {
   // check if user was authorized for the api call
