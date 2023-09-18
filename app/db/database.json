@@ -413,5 +413,25 @@
     "userId": "41144b5f-8c5e-45cb-b618-5b9ccb55efe6",
     "userStatus": "free",
     "lastRoom": "/admin/all-users?pass=sherbek"
+  },
+  {
+    "userId": "79ad98b4-e6a7-4135-8f80-3a361d5c1752",
+    "userStatus": "free",
+    "lastRoom": "/favicon.ico"
+  },
+  {
+    "userId": "83d76af5-1095-47e8-a520-2e30abf3191a",
+    "userStatus": "free",
+    "lastRoom": "/join/kichik-yurak"
+  },
+  {
+    "userId": "bf6af57e-7cbb-4ce4-aac9-c3174fe123fd",
+    "userStatus": "free",
+    "lastRoom": "/"
+  },
+  {
+    "userId": "eb6bf7d0-fba6-49fe-b229-a71a4243b532",
+    "userStatus": "free",
+    "lastRoom": "/join/silliq-mushu"
   }
 ]

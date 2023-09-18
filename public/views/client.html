@@ -2,7 +2,6 @@
 <html lang="en" class="no-js">
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-
     <script
       async<meta
       http-equiv="X-UA-Compatible"
@@ -18,22 +17,6 @@
 
       gtag("config", "G-X085TX7411");
     </script>
-
-    <!-- Clarity (clarity.js) - Microsoft analytics 
-    <script type="text/javascript">
-      (function (c, l, a, r, i, t, y) {
-        c[a] =
-          c[a] ||
-          function () {
-            (c[a].q = c[a].q || []).push(arguments);
-          };
-        t = l.createElement(r);
-        t.async = 1;
-        t.src = "https://www.clarity.ms/tag/" + i;
-        y = l.getElementsByTagName(r)[0];
-        y.parentNode.insertBefore(t, y);
-      })(window, document, "clarity", "script", "93jfa0ufr9");
-    </script>-->
 
     <!-- Title and Icon -->
 
@@ -86,7 +69,6 @@
 
     <link rel="stylesheet" href="../css/client.css" />
     <link rel="stylesheet" href="../css/videoGrid.css" />
-    <link rel="stylesheet" href="../css/whiteboard.css" />
     <link rel="stylesheet" href="../css/newcall.css" />
 
     <!-- https://cdnjs.com/libraries/font-awesome -->
@@ -147,7 +129,6 @@
       <button id="audioBtn" class="fas fa-microphone"></button>
       <button id="captionBtn" class="fas fa-closed-captioning"></button>
       <button id="myHandBtn" class="fas fa-hand-paper"></button>
-      <button id="whiteboardBtn" class="fas fa-chalkboard-teacher"></button>
       <button id="fileShareBtn" class="fas fa-folder-open"></button>
       <button id="audioOutputChangeBtn" class="fas fa-volume-up"></button>
       <button id="nextBtn">
@@ -450,112 +431,6 @@
 
     <!-- End my settings -->
 
-    <!-- Start whiteboard -->
-
-    <section id="whiteboard" class="hidden">
-      <header id="whiteboardHeader" class="whiteboard-header">
-        <div id="whiteboardTitle" class="whiteboard-header-title">
-          <button id="whiteboardCloseBtn" class="fas fa-times"></button>
-        </div>
-        <div class="whiteboard-header-options">
-          <button
-            id="whiteboardGhostButton"
-            class="fas fa-circle-half-stroke"
-          ></button>
-          <input
-            id="wbBackgroundColorEl"
-            class="whiteboardColorPicker"
-            type="color"
-            value="#FFFFFF"
-          />
-          <input
-            id="wbDrawingColorEl"
-            class="whiteboardColorPicker"
-            type="color"
-            value="#000"
-          />
-          <button id="whiteboardPencilBtn" class="fas fa-pencil-alt"></button>
-          <button
-            id="whiteboardObjectBtn"
-            class="fas fa-mouse-pointer"
-          ></button>
-          <button id="whiteboardUndoBtn" class="fas fa-undo"></button>
-          <button id="whiteboardRedoBtn" class="fas fa-redo"></button>
-          <button id="whiteboardImgFileBtn" class="far fa-image"></button>
-          <button id="whiteboardImgUrlBtn" class="fas fa-link"></button>
-          <button id="whiteboardTextBtn" class="fas fa-spell-check"></button>
-          <button id="whiteboardLineBtn" class="fas fa-slash"></button>
-          <button id="whiteboardRectBtn" class="far fa-square"></button>
-          <button id="whiteboardCircleBtn" class="far fa-circle"></button>
-          <button id="whiteboardSaveBtn" class="fas fa-save"></button>
-          <button id="whiteboardEraserBtn" class="fas fa-eraser"></button>
-          <button id="whiteboardCleanBtn" class="fas fa-trash"></button>
-        </div>
-      </header>
-      <main>
-        <canvas id="wbCanvas"></canvas>
-      </main>
-    </section>
-
-    <!-- End whiteboard -->
-
-    <!-- Start File Send -->
-
-    <div id="sendFileDiv" class="center fadein">
-      <img
-        id="imgShareSend"
-        src="../images/share.png"
-        alt="Share-send"
-        class="center-img"
-      /><br />
-      <div id="sendFileInfo"></div>
-      <div id="sendFilePercentage"></div>
-      <progress id="sendProgress" max="0" value="0"></progress>
-      <button id="sendAbortBtn">
-        <i class="fas fa-stop-circle"></i>&nbsp; Abort
-      </button>
-    </div>
-
-    <!-- End File Send -->
-
-    <!-- Start File Receive -->
-
-    <div id="receiveFileDiv" class="center fadein">
-      <img
-        id="imgShareReceive"
-        src="../images/share.png"
-        alt="Share-receive"
-        class="center-img"
-      /><br />
-      <div id="receiveFileInfo"></div>
-      <div id="receiveFilePercentage"></div>
-      <progress id="receiveProgress" max="0" value="0"></progress>
-      <button id="receiveHideBtn">
-        <i class="fas fa-eye-slash"></i>&nbsp; Hide
-      </button>
-    </div>
-
-    <!-- Stop File Receive -->
-
-    <!-- Start video URL iframe -->
-
-    <div id="videoUrlCont" class="center fadein">
-      <div id="videoUrlHeader">
-        <button id="videoUrlCloseBtn" class="fas fa-times"></button>
-      </div>
-      <br />
-      <iframe
-        id="videoUrlIframe"
-        title="Video Url Player"
-        src=""
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-
-    <!-- End Youtube Iframe -->
-
     <!-- Start Video - Audio player -->
 
     <div id="videoAudioUrlCont" class="center fadein">
@@ -580,19 +455,6 @@
     <div id="videoMediaContainer"></div>
 
     <!-- End Video container -->
-
-    <!--
-        - JS scripts https://cdn.jsdelivr.net
-        
-        - https://webrtc.github.io/adapter/adapter-latest.js                (https://github.com/webrtcHacks/adapter)
-        - https://www.npmjs.com/package/marked                              (https://github.com/markedjs/marked)
-        - https://www.npmjs.com/package/detectrtc                           (https://github.com/muaz-khan/DetectRTC)
-        - https://www.npmjs.com/package/sweetalert2                         (https://github.com/sweetalert2/sweetalert2)
-        - https://www.npmjs.com/package/fabric                              (https://github.com/fabricjs/fabric.js)
-        - https://www.npmjs.com/package/qrious                              (https://github.com/neocotic/qrious)
-        - https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js    (https://github.com/missive/emoji-mart)
-        - https://www.npmjs.com/package/tippy.js                            (https://github.com/atomiks/tippyjs) 
-        -->
     <script
       defer
       src="https://webrtc.github.io/adapter/adapter-latest.js"
@@ -677,27 +539,5 @@
         quicklink.listen();
       });
     </script>
-    <!-- end of Js scripts -->
-    <!-- 
-		the <video> and <audio> tags are all added and removed dynamically
-		in 'onAddStream', 'setupLocalMedia', and 'removePeer'/'disconnect'
-		-->
-
-    <!-- 
-            Start Google Translate 
-            https://www.w3schools.com/howto/howto_google_translate.asp
-        -->
-
-    <!-- <script>
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement(
-          { pageLanguage: "en" },
-          "google_translate_element"
-        );
-      }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
-
-    <!-- End Google Translate -->
   </body>
 </html>
