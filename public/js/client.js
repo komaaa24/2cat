@@ -1382,24 +1382,18 @@ function handleRemovePeer(config) {
     console.log("I am alone in the room, got Presenter Rules");
     handleRules(isPresenter);
   }
-  playSound("removePeer");
   console.log("ALL PEERS", allPeers);
   if (Object.keys(allPeers).length == 2) {
     console.log("2 ta suhbatdosh bor");
   } else {
-    setTimeout(() => {
-      nextPeer("leftUser");
-    }, 1000);
+    nextPeer("leftUser");
   }
 }
 
 function handleNextPeer(config) {
   if (config.error == "No peer") {
-    playSound("alert");
-    setTimeout(() => {
-      openURL("/join/" + config.freePeer);
-      console.log("no free peer found");
-    }, 1000)
+    openURL("/join/" + config.freePeer);
+    console.log("no free peer found");
   }
   else if (config.error == 'stay') {
     console.log("Stay in room");
@@ -1931,7 +1925,6 @@ async function loadLocalMedia(stream) {
   manageLeftButtons();
   handleButtonsRule();
   setupMySettings();
-  startCountTime();
   handleBodyOnMouseMove();
   if (isVideoFullScreenSupported && buttons.main.showFullScreenBtn) {
     handleVideoPlayerFs(myLocalMedia.id, myVideoFullScreenBtn.id);
@@ -2618,20 +2611,6 @@ function takeSnapshot(video) {
   context = canvas.getContext("2d");
   context.drawImage(video, 0, 0, width, height);
   dataURL = canvas.toDataURL("image/png"); // or image/jpeg
-  // console.log(dataURL);
-  saveDataToFile(dataURL, getDataTimeString() + "-SNAPSHOT.png");
-}
-
-/**
- * Start talk time
- */
-function startCountTime() {
-  countTime.style.display = "inline";
-  callStartTime = Date.now();
-  setInterval(function printTime() {
-    callElapsedTime = Date.now() - callStartTime;
-    countTime.innerHTML = getTimeToString(callElapsedTime);
-  }, 1000);
 }
 
 /**
@@ -4268,7 +4247,6 @@ function appendMessage(from, img, side, msg, privateMsg, msgId = null) {
 
   // check if i receive a private message
   let msgBubble = privateMsg ? "private-msg-bubble" : "msg-bubble";
-
   let msgHTML = `
 	<div id="msg-${chatMessagesId}" class="msg ${side}-msg">
 		<div class="msg-img" style="background-image: url('${img}')"></div>
