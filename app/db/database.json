@@ -652,7 +652,7 @@
   {
     "userId": "8ff9177a-f004-48f5-a388-67817ed2ebc8",
     "userStatus": "free",
-    "lastRoom": "/join/e54ca5a0-57b2-4aea-8bf1-70888666bf2c"
+    "lastRoom": "/join/0d2853f4-49ca-4113-942d-11a58cad35ce"
   },
   {
     "userId": "dafb0c8b-d25e-4298-9ce5-0b4669f5fc62",
@@ -693,5 +693,25 @@
     "userId": "77927553-2df2-4391-8aba-b83f0eac76d1",
     "userStatus": "free",
     "lastRoom": "/join/f1580414-d8c0-42ed-980c-f20832175aa1"
+  },
+  {
+    "userId": "e5ed3924-c130-4326-8aac-890394b6799a",
+    "userStatus": "free",
+    "lastRoom": "/"
+  },
+  {
+    "userId": "36708536-e2e8-4072-9734-b3d5839207b4",
+    "userStatus": "free",
+    "lastRoom": "/join/f69173f1-9d5f-4dfa-b5b4-6236c25b342f"
+  },
+  {
+    "userId": "f27c5057-74d5-407a-b31d-4001fce085d1",
+    "userStatus": "free",
+    "lastRoom": "/"
+  },
+  {
+    "userId": "41f77232-324d-4861-9aa0-84520785488b",
+    "userStatus": "free",
+    "lastRoom": "/join/1db0814d-b93c-4d72-a740-bee154b7041e"
   }
 ]

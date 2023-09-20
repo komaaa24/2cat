@@ -1382,18 +1382,24 @@ function handleRemovePeer(config) {
     console.log("I am alone in the room, got Presenter Rules");
     handleRules(isPresenter);
   }
+  playSound("removePeer");
   console.log("ALL PEERS", allPeers);
   if (Object.keys(allPeers).length == 2) {
     console.log("2 ta suhbatdosh bor");
   } else {
-    nextPeer("leftUser");
+    setTimeout(() => {
+      nextPeer("leftUser");
+    }, 900);
   }
 }
 
 function handleNextPeer(config) {
   if (config.error == "No peer") {
-    openURL("/join/" + config.freePeer);
-    console.log("no free peer found");
+    playSound("alert");
+    setTimeout(() => {
+      openURL("/join/" + config.freePeer);
+      console.log("no free peer found");
+    }, 900)
   }
   else if (config.error == 'stay') {
     console.log("Stay in room");
@@ -1925,6 +1931,7 @@ async function loadLocalMedia(stream) {
   manageLeftButtons();
   handleButtonsRule();
   setupMySettings();
+  startCountTime();
   handleBodyOnMouseMove();
   if (isVideoFullScreenSupported && buttons.main.showFullScreenBtn) {
     handleVideoPlayerFs(myLocalMedia.id, myVideoFullScreenBtn.id);
@@ -2135,8 +2142,6 @@ async function loadRemoteMediaStream(
   }
   // refresh remote peers avatar name
   setPeerAvatarImgName(remoteVideoAvatarImage.id, peer_name, useAvatarApi);
-  // refresh remote peers hand icon status and title
-  setPeerHandStatus(peer_id, peer_name, peer_hand_status);
   // refresh remote peers video icon status and title
   setPeerVideoStatus(peer_id, peer_video_status);
   // refresh remote peers audio icon status and title
@@ -2153,8 +2158,6 @@ async function loadRemoteMediaStream(
   }
   // show status menu
   toggleClassElements("statusMenu", "inline");
-  // notify if peer started to recording own screen + audio
-  if (peer_rec_status) notifyRecording(peer_name, "Started");
   // peer not has video at all
   if (buttons.remote.showmyVideoStatusButton && !peer_video) {
     remoteVideoAvatarImage.style.display = "block";
@@ -2611,6 +2614,20 @@ function takeSnapshot(video) {
   context = canvas.getContext("2d");
   context.drawImage(video, 0, 0, width, height);
   dataURL = canvas.toDataURL("image/png"); // or image/jpeg
+  // console.log(dataURL);
+  saveDataToFile(dataURL, getDataTimeString() + "-SNAPSHOT.png");
+}
+
+/**
+ * Start talk time
+ */
+function startCountTime() {
+  countTime.style.display = "inline";
+  callStartTime = Date.now();
+  setInterval(function printTime() {
+    callElapsedTime = Date.now() - callStartTime;
+    countTime.innerHTML = getTimeToString(callElapsedTime);
+  }, 1000);
 }
 
 /**
@@ -2686,43 +2703,79 @@ function refreshLocalMedi_only_audio() {
     .catch(handleError);
 }
 
+audioOutputBtn = getId("audioOutputChangeBtn");
+
+// Update font awesome icon based on device name
+function updateIcon(deviceName) {
+
+  if (deviceName.includes('Default')) {
+    audioOutputBtn.className = 'fas fa-volume-up';
+  } else {
+    audioOutputBtn.className = 'fa-solid fa-volume-low';
+  }
+
+}
+
+
+
 /**
  * audio output device change
  */
 function setAudioOutputBtn() {
-  audioOutputChangeBtn.addEventListener("click", async (e) => {
-    const allInputDevicesLength = audioInputSelect.options.length;
-    if (allInputDevicesLength <= 1) {
-      console.log("No audio input devices found");
-      return;
-    }
 
-    let currentIndex = audioInputSelect.selectedIndex;
-    currentIndex = (currentIndex + 1) % allInputDevicesLength;
-    audioInputSelect.selectedIndex = currentIndex;
+  // Event listener for button click
+  audioOutputChangeBtn.addEventListener('click', () => {
 
-    // refreshLocalMedia();
-    refreshLocalMedi_only_audio();
+    // Get current selected index
+    let currentIndex = audioOutputSelect.selectedIndex;
 
-    const selectedOption = audioInputSelect.options[currentIndex];
-    console.log("----------------------------")
-    console.log(selectedOption);
-    console.log("-----------------------------");
-    const isDefaultDevice =
-      selectedOption.innerText.toLowerCase().includes("default") ||
-      selectedOption.innerText.toLowerCase().includes("speakerphone");
+    // Increment index
+    currentIndex = (currentIndex + 1) % audioOutputSelect.options.length;
 
-    if (isDefaultDevice) {
-      audioOutputBtn.className = "fas fa-volume-up"
-      // audioOutputChangeBtn.classList.add("audioOutputChangeBtn-color");
-    } else {
-      audioOutputBtn.className = "fa-solid fa-volume-low"
-      // audioOutputChangeBtn.classList.remove("audioOutputChangeBtn-color");
-    }
+    // Update selection
+    audioOutputSelect.selectedIndex = currentIndex;
 
-    // Save audio output device to localStorage
-    localStorage.setItem("audioInputSelect", audioInputSelect.value);
+    // Update icon based on new selection
+    updateIcon(audioOutputSelect.options[currentIndex].text);
+
+    // Save selection to localStorage
+    localStorage.setItem('selectedAudioOutput', audioOutputSelect.value);
+
   });
+
+  // audioOutputChangeBtn.addEventListener("click", async (e) => {
+  //   audioOutputBtn = getId("audioOutputChangeBtn");
+  //   const allInputDevicesLength = audioInputSelect.options.length;
+
+  //   if (allInputDevicesLength <= 1) {
+  //     console.log("No audio input devices found");
+  //     return;
+  //   }
+
+  //   let currentIndex = audioInputSelect.selectedIndex;
+  //   currentIndex = (currentIndex + 1) % allInputDevicesLength;
+  //   audioInputSelect.selectedIndex = currentIndex;
+
+  //   // refreshLocalMedia();
+  //   refreshLocalMedi_only_audio();
+
+  //   const selectedOption = audioInputSelect.options[currentIndex];
+
+  //   const isDefaultDevice =
+  //     selectedOption.innerText.toLowerCase().includes("default") ||
+  //     selectedOption.innerText.toLowerCase().includes("speakerphone");
+
+  //   if (isDefaultDevice) {
+  //     audioOutputBtn.className = "fas fa-volume-up"
+  //     // audioOutputChangeBtn.classList.add("audioOutputChangeBtn-color");
+  //   } else {
+  //     audioOutputBtn.className = "fa-solid fa-volume-low"
+  //     // audioOutputChangeBtn.classList.remove("audioOutputChangeBtn-color");
+  //   }
+
+  //   // Save audio output device to localStorage
+  //   localStorage.setItem("audioInputSelect", audioInputSelect.value);
+  // });
 }
 /**
  * Audio mute - unmute button click event
@@ -3408,7 +3461,6 @@ function handleError(err) {
       );
       break;
     default:
-      // userLog("error", "GetUserMedia error " + err);
       console.log("GetUserMedia error " + err);
   }
 }
@@ -3677,10 +3729,6 @@ async function swapCamera() {
       await refreshMyStreamToPeers(camStream);
       await refreshMyLocalStream(camStream);
       await setMyVideoStatusTrue();
-      // if (!isCamMirrored) {
-      //   myVideo.classList.toggle("mirror");
-      //   isCamMirrored = true;
-      // }
       if (camera == "user") {
         myVideo.classList.add("mirror");
         isCamMirrored = true;
@@ -3691,8 +3739,6 @@ async function swapCamera() {
     }
   } catch (err) {
     console.log("[Error] to swapping camera", err);
-    // userLog("error", "Error to swapping the camera " + err);
-    // https://blog.addpipe.com/common-getusermedia-errors/
   }
 }
 
@@ -3715,10 +3761,6 @@ async function swapCameraTo(cameraType) {
       await refreshMyStreamToPeers(camStream);
       await refreshMyLocalStream(camStream);
       await setMyVideoStatusTrue();
-      // if (!isCamMirrored) {
-      //   myVideo.classList.toggle("mirror");
-      //   isCamMirrored = true;
-      // }
       if (camera == "user") {
         myVideo.classList.add("mirror");
         isCamMirrored = true;
@@ -3980,24 +4022,6 @@ async function refreshMyLocalStream(stream, localAudioTrackChange = false) {
 }
 
 /**
- * Start recording time
- */
-function startRecordingTime() {
-  recStartTime = Date.now();
-  let rc = setInterval(function printTime() {
-    if (isStreamRecording) {
-      recElapsedTime = Date.now() - recStartTime;
-      myVideoParagraph.innerHTML =
-        myPeerName +
-        "&nbsp;&nbsp; 🔴 &nbsp; REC " +
-        getTimeToString(recElapsedTime);
-      return;
-    }
-    clearInterval(rc);
-  }, 1000);
-}
-
-/**
  * Notify me if someone start to recording they screen + audio
  * @param {string} from peer_name
  * @param {string} action recording action
@@ -4247,6 +4271,7 @@ function appendMessage(from, img, side, msg, privateMsg, msgId = null) {
 
   // check if i receive a private message
   let msgBubble = privateMsg ? "private-msg-bubble" : "msg-bubble";
+
   let msgHTML = `
 	<div id="msg-${chatMessagesId}" class="msg ${side}-msg">
 		<div class="msg-img" style="background-image: url('${img}')"></div>
@@ -4771,28 +4796,10 @@ function handlePeerStatus(config) {
     case "audio":
       setPeerAudioStatus(peer_id, status);
       break;
-    case "hand":
-      setPeerHandStatus(peer_id, peer_name, status);
-      break;
     case "privacy":
       setVideoPrivacyStatus(peer_id + "_video", status);
       break;
   }
-}
-
-/**
- * Set Participant Hand Status Icon and Title
- * @param {string} peer_id socket.id
- * @param {string} peer_name peer name
- * @param {boolean} status of the hand
- */
-function setPeerHandStatus(peer_id, peer_name, status) {
-  let peerHandStatus = getId(peer_id + "_handStatus");
-  peerHandStatus.style.display = "none";
-  // if (status) {
-  //   userLog("toast", peer_name + " has raised the hand");
-  //   playSound("raiseHand");
-  //}
 }
 
 /**
@@ -4986,12 +4993,6 @@ function handlePeerAction(config) {
       break;
     case "hideVideo":
       setMyVideoOff(peer_name);
-      break;
-    case "recStart":
-      notifyRecording(peer_name, "Started");
-      break;
-    case "recStop":
-      notifyRecording(peer_name, "Stopped");
       break;
     case "screenStart":
       handleScreenStart(peer_id);
@@ -5691,4 +5692,10 @@ function getName(name) {
 }
 function elemDisplay(elem, yes) {
   elem.style.display = yes ? "inline" : "none";
+}
+
+function logger(el) {
+  console.log("----------------------------------");
+  console.log(el);
+  console.log("-----------------------------------");
 }
