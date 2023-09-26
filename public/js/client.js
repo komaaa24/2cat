@@ -2687,7 +2687,7 @@ function setShareRoomBtn() {
 function refreshLocalMedia_only_audio() {
   stopLocalAudioTrack();
   navigator.mediaDevices
-    .getUserMedia(getAudioVideoConstraints()) // Запрашиваем только аудио
+    .getUserMedia({ audio: true }) // Запрашиваем только аудио
     .then(gotStream)
     .then(gotDevices)
     .catch(handleError);
