@@ -2955,7 +2955,6 @@ function setChatEmojiBtn() {
     e.preventDefault();
     hideShowEmojiPicker();
   });
-
   // Add emoji picker
   const pickerOptions = { onEmojiSelect: addEmojiToMsg };
   const emojiPicker = new EmojiMart.Picker(pickerOptions);
