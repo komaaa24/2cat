@@ -8,6 +8,7 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const sessions = require("express-session");
 
 const ENV_PATH = path.resolve(__dirname, "../../.env");
 dotenv.config({ path: ENV_PATH });
@@ -24,9 +25,6 @@ const isHttps = false; // must be the same on client.js
 const port = process.env.PORT || 3000; // must be the same to client.js signalingServerPort
 
 let io;
-
-const apiBasePath = "/api/v1"; // api endpoint path
-
 //const stun = "stun:bn-turn1.xirsys.com";
 const stun = config.stunServers[0];
 
@@ -42,34 +40,10 @@ const turnUrls2 = config.turn.credential[1].url;
 const turnCredential2 = config.turn.credential[1].credentialName;
 const turnUsername2 = config.turn.credential[1].username;
 
-// understood
-// Sentry config
-// const Sentry = require("@sentry/node");
-// const { CaptureConsole } = require("@sentry/integrations");
-// const sentryEnabled = process.env.SENTRY_ENABLED || false;
-// const sentryDSN = process.env.SENTRY_DSN;
-// const sentryTracesSampleRate = process.env.SENTRY_TRACES_SAMPLE_RATE;
-
-// Setup sentry client
-// if (sentryEnabled == "true") {
-//   Sentry.init({
-//     dsn: sentryDSN,
-//     integrations: [
-//       new CaptureConsole({
-//         // array of methods that should be captured
-//         // defaults to ['log', 'info', 'warn', 'error', 'debug', 'assert']
-//         levels: ["warn", "error"],
-//       }),
-//     ],
-//     // Set tracesSampleRate to 1.0 to capture 100%
-//     // of transactions for performance monitoring.
-//     // We recommend adjusting this value in production
-//     tracesSampleRate: sentryTracesSampleRate,
-//   });
-// }
-
 // directory
 const dir = config.dir;
+
+const twoDays = 1000 * 60 * 60 * 48;
 
 app.use(cors()); // Enable All CORS Requests for all origins
 app.use(compression()); // Compress all HTTP responses using GZip
@@ -77,6 +51,12 @@ app.use(express.json()); // Api parse body data as json
 app.use(express.static(dir.public)); // Use all static files from the public folder
 app.use(express.urlencoded({ extended: true })); // Need for Slack API body parser
 app.use(cookieParser());
+app.use(sessions({
+  secret: process.env.SESSION_SECRET,
+  saveUninitialized: true,
+  cookie: { maxAge: twoDays },
+  resave: false
+}))
 
 
 

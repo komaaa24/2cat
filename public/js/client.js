@@ -1,5 +1,7 @@
 "use strict"; // https://www.w3schools.com/js/js_strict.asp
 
+const audioDevices = { default: "default", earpiece: "earpiece", speakerphone: "speakerphone", wired: "wired", bluetooth: "bluetooth" }
+
 const isHttps = false; // must be the same on server.js
 const signalingServer = getSignalingServer();
 const roomId = getRoomId();
@@ -253,9 +255,7 @@ let msgerSaveBtn;
 let msgerClose;
 let msgerChat;
 let msgerEmojiBtn;
-let msgerMarkdownBtn;
 let msgerInput;
-let msgerCleanTextBtn;
 let msgerPasteBtn;
 let msgerShowChatOnMsg;
 let msgerSendBtn;
@@ -385,9 +385,7 @@ function getHtmlElementsById() {
   msgerClose = getId("msgerClose");
   msgerChat = getId("msgerChat");
   msgerEmojiBtn = getId("msgerEmojiBtn");
-  msgerMarkdownBtn = getId("msgerMarkdownBtn");
   msgerInput = getId("msgerInput");
-  msgerCleanTextBtn = getId("msgerCleanTextBtn");
   msgerPasteBtn = getId("msgerPasteBtn");
   msgerShowChatOnMsg = getId("msgerShowChatOnMsg");
   msgerSendBtn = getId("msgerSendBtn");
@@ -490,8 +488,6 @@ function setButtonsToolTip() {
   setTippy(msgerSaveBtn, "Save messages", "top");
   setTippy(msgerClose, "Yopish", "right");
   setTippy(msgerEmojiBtn, "Emoji", "top");
-  setTippy(msgerMarkdownBtn, "Markdown", "top");
-  setTippy(msgerCleanTextBtn, "Tozalash", "top");
   setTippy(msgerPasteBtn, "Paste", "top");
   setTippy(msgerShowChatOnMsg, "Notify me", "top");
   setTippy(msgerSendBtn, "Yuborish", "top");
@@ -863,7 +859,6 @@ function handleButtonsRule() {
   elemDisplay(fullScreenBtn, buttons.main.showFullScreenBtn);
   // chat
   elemDisplay(msgerSaveBtn, buttons.chat.showSaveMessageBtn);
-  elemDisplay(msgerMarkdownBtn, buttons.chat.showMarkDownBtn);
   elemDisplay(msgerCPBtn, buttons.chat.showParticipantsBtn);
   elemDisplay(msgerShowChatOnMsg, buttons.chat.showNotifyMeBtn);
   // Settings
@@ -1382,7 +1377,6 @@ function handleRemovePeer(config) {
     console.log("I am alone in the room, got Presenter Rules");
     handleRules(isPresenter);
   }
-  playSound("removePeer");
   console.log("ALL PEERS", allPeers);
   if (Object.keys(allPeers).length == 2) {
     console.log("2 ta suhbatdosh bor");
@@ -1395,7 +1389,6 @@ function handleRemovePeer(config) {
 
 function handleNextPeer(config) {
   if (config.error == "No peer") {
-    playSound("alert");
     setTimeout(() => {
       openURL("/join/" + config.freePeer);
       console.log("no free peer found");
@@ -1586,7 +1579,6 @@ async function initEnumerateDevices() {
   await initEnumerateVideoDevices();
   if (!useAudio && !useVideo) {
     initEnumerateDevicesFailed = true;
-    playSound("alert");
     await Swal.fire({
       allowOutsideClick: false,
       allowEscapeKey: false,
@@ -1781,7 +1773,6 @@ async function setupLocalMedia() {
     }
   } catch (err) {
     console.error("[Error] - Access denied for audio - video device", err);
-    playSound("alert");
     openURL(
       `/permission?roomId=${roomId}&getUserMediaError=${err.toString()} <br/> Check the common getusermedia errors <a href="https://blog.addpipe.com/common-getusermedia-errors" target="_blank">here<a/>`
     );
@@ -2544,7 +2535,6 @@ function toggleVideoPin(position) {
  * @param {boolean} force_remove force to remove
  */
 function removeVideoPinMediaContainer(peer_id, force_remove = false) {
-  //alert(pinnedVideoPlayerId + '==' + peer_id);
   if (
     (isVideoPinned &&
       (pinnedVideoPlayerId == peer_id + "_video" ||
@@ -2694,10 +2684,10 @@ function setShareRoomBtn() {
   });
 }
 
-function refreshLocalMedi_only_audio() {
+function refreshLocalMedia_only_audio() {
   stopLocalAudioTrack();
   navigator.mediaDevices
-    .getUserMedia({ audio: true }) // Запрашиваем только аудио
+    .getUserMedia(getAudioVideoConstraints()) // Запрашиваем только аудио
     .then(gotStream)
     .then(gotDevices)
     .catch(handleError);
@@ -2706,77 +2696,88 @@ function refreshLocalMedi_only_audio() {
 audioOutputBtn = getId("audioOutputChangeBtn");
 
 // Update font awesome icon based on device name
-function updateIcon(deviceName) {
-
-  if (deviceName.includes('Default')) {
-    audioOutputBtn.className = 'fas fa-volume-up';
-  } else {
+function updateVolumeIcon(deviceType) {
+  if (deviceType == audioDevices.speakerphone) {
+    audioOutputBtn.className = "fa-solid fa-volume-high";
+  }
+  else if (deviceType == audioDevices.bluetooth) {
+    audioOutputBtn.className = "fa-brands fa-bluetooth";
+  }
+  else if (deviceType == audioDevices.wired) {
+    audioOutputBtn.className = "fa-solid fa-headphones"
+  }
+  else if (deviceType == audioDevices.earpiece) {
     audioOutputBtn.className = 'fa-solid fa-volume-low';
+  } else {
+    audioOutputBtn.className = 'lni lni-volume-medium';
   }
 
 }
 
+async function getDevices() {
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.length > 0 ? devices : false;
+}
 
+function identifyDevice(device) {
+  if (device.match(/earpiece/ig)) {
+    return audioDevices.earpiece;
+  }
+  if (device.match(/speakerphone/ig)) {
+    return audioDevices.speakerphone;
+  }
+  if (device.match(/wired/ig)) {
+    return audioDevices.wired;
+  }
+  if (device.match(/bluetooth/ig)) {
+    return audioDevices.bluetooth;
+  }
+  return audioDevices.default;
+}
 
 /**
  * audio output device change
  */
+
+
 function setAudioOutputBtn() {
+  audioOutputChangeBtn.addEventListener("click", async (e) => {
 
-  // Event listener for button click
-  audioOutputChangeBtn.addEventListener('click', () => {
+    let allInputDevicesLength = audioInputSelect.options.length;
 
-    // Get current selected index
-    let currentIndex = audioOutputSelect.selectedIndex;
+    logger("All input devices ", audioInputSelect.options)
+    if (allInputDevicesLength == 1) {
+      return console.log("No audio input devices found");
+    }
 
-    // Increment index
-    currentIndex = (currentIndex + 1) % audioOutputSelect.options.length;
 
-    // Update selection
-    audioOutputSelect.selectedIndex = currentIndex;
+    let currentIndex = audioInputSelect.selectedIndex;
+    currentIndex = (currentIndex + 1) % allInputDevicesLength;
+    audioInputSelect.selectedIndex = currentIndex;
 
-    // Update icon based on new selection
-    updateIcon(audioOutputSelect.options[currentIndex].text);
+    const selectedOption = audioInputSelect.options[currentIndex];
+    const deviceType = identifyDevice(selectedOption.innerText);
 
-    // Save selection to localStorage
-    localStorage.setItem('selectedAudioOutput', audioOutputSelect.value);
+    logger("Audio input select ", audioInputSelect.options);
+
+    logger("Device type ", deviceType);
+
+    refreshLocalMedia_only_audio();
+
+    updateVolumeIcon(deviceType);
+
+    localStorage.setItem("volumeIcon", deviceType);
+
+    // save audio output device to localstorage
+    localStorage.setItem("audioInputSelect", audioInputSelect.value);
+
+    return;
 
   });
-
-  // audioOutputChangeBtn.addEventListener("click", async (e) => {
-  //   audioOutputBtn = getId("audioOutputChangeBtn");
-  //   const allInputDevicesLength = audioInputSelect.options.length;
-
-  //   if (allInputDevicesLength <= 1) {
-  //     console.log("No audio input devices found");
-  //     return;
-  //   }
-
-  //   let currentIndex = audioInputSelect.selectedIndex;
-  //   currentIndex = (currentIndex + 1) % allInputDevicesLength;
-  //   audioInputSelect.selectedIndex = currentIndex;
-
-  //   // refreshLocalMedia();
-  //   refreshLocalMedi_only_audio();
-
-  //   const selectedOption = audioInputSelect.options[currentIndex];
-
-  //   const isDefaultDevice =
-  //     selectedOption.innerText.toLowerCase().includes("default") ||
-  //     selectedOption.innerText.toLowerCase().includes("speakerphone");
-
-  //   if (isDefaultDevice) {
-  //     audioOutputBtn.className = "fas fa-volume-up"
-  //     // audioOutputChangeBtn.classList.add("audioOutputChangeBtn-color");
-  //   } else {
-  //     audioOutputBtn.className = "fa-solid fa-volume-low"
-  //     // audioOutputChangeBtn.classList.remove("audioOutputChangeBtn-color");
-  //   }
-
-  //   // Save audio output device to localStorage
-  //   localStorage.setItem("audioInputSelect", audioInputSelect.value);
-  // });
 }
+
+
+
 /**
  * Audio mute - unmute button click event
  */
@@ -2885,13 +2886,6 @@ function setChatRoomBtn() {
     showButtonsBarAndMenu();
   });
 
-  // Markdown on-off
-  msgerMarkdownBtn.addEventListener("click", (e) => {
-    isChatMarkdownOn = !isChatMarkdownOn;
-    setColor(msgerMarkdownBtn, isChatMarkdownOn ? "lime" : "white");
-  });
-
-
   // Execute a function when the user releases a key on the keyboard
   msgerInput.addEventListener("keyup", (e) => {
     // Number 13 is the "Enter" key on the keyboard
@@ -2914,11 +2908,6 @@ function setChatRoomBtn() {
     isChatPasteTxt = true;
     checkLineBreaks();
   };
-
-  // clean input msg txt
-  msgerCleanTextBtn.addEventListener("click", (e) => {
-    cleanMessageInput();
-  });
 
   // paste to input msg txt
   msgerPasteBtn.addEventListener("click", (e) => {
@@ -3082,6 +3071,9 @@ function setupMySettings() {
   audioOutputSelect.addEventListener("change", (e) => {
     changeAudioDestination();
   });
+
+
+
   // select video input
   videoSelect.addEventListener("change", (e) => {
     myVideoChange = true;
@@ -3330,6 +3322,7 @@ function setLocalVideoQuality() {
  */
 function changeAudioDestination() {
   const audioDestination = audioOutputSelect.value;
+  logger("AudioDestination ", audioDestination);
   attachSinkId(myVideo, audioDestination);
 }
 
@@ -3343,7 +3336,7 @@ function attachSinkId(element, sinkId) {
     element
       .setSinkId(sinkId)
       .then(() => {
-        console.log(`Success, audio output device attached: ${sinkId}`);
+        logger(`Success, audio output device attached: ${sinkId}`, "true");
       })
       .catch((err) => {
         let errorMessage = err;
@@ -3354,7 +3347,7 @@ function attachSinkId(element, sinkId) {
         audioOutputSelect.selectedIndex = 0;
       });
   } else {
-    console.warn("Browser does not support output device selection.");
+    logger("Browser does not support output device selection.", "false");
   }
 }
 
@@ -3365,7 +3358,7 @@ function attachSinkId(element, sinkId) {
  */
 async function gotStream(stream) {
   await refreshMyStreamToPeers(stream, true);
-  await refreshMyLocalStream(stream, true);
+  // await refreshMyLocalStream(stream, true);
   camera = localStorage.getItem("camera")
     ? localStorage.getItem("camera")
     : "user";
@@ -3381,10 +3374,6 @@ async function gotStream(stream) {
         isCamMirrored = false;
       }
     }
-    // if camera is back camera then switch to back camera
-    // if (camera !== "user") {
-    //   swapCamera();
-    // }
   }
   // Refresh button list in case labels have become available
   return navigator.mediaDevices.enumerateDevices();
@@ -3455,10 +3444,7 @@ function handleError(err) {
   console.log("navigator.MediaDevices.getUserMedia error: ", err);
   switch (err.name) {
     case "OverconstrainedError":
-      userLog(
-        "error",
-        "GetUserMedia: Your device doesn't support the selected video quality or fps, please select the another one."
-      );
+      console.log(err);
       break;
     default:
       console.log("GetUserMedia error " + err);
@@ -4610,7 +4596,6 @@ function downloadChatMsgs() {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  playSound("download");
 }
 
 
@@ -4783,9 +4768,7 @@ function setMyVideoStatus(status) {
  * @param {object} config data
  */
 function handlePeerStatus(config) {
-  //
   let peer_id = config.peer_id;
-  let peer_name = config.peer_name;
   let element = config.element;
   let status = config.status;
 
@@ -4809,10 +4792,8 @@ function handlePeerStatus(config) {
  */
 function setPeerAudioStatus(peer_id, status) {
   let peerAudioStatus = getId(peer_id + "_audioStatus");
-  let remoteNameIcon = getId("nameAudioIcon");
   if (peerAudioStatus) {
     peerAudioStatus.className = className.audioOn + (status ? "" : "-slash");
-    remoteNameIcon.className = className.audioOn + (status ? "" : "-slash");
     setTippy(
       peerAudioStatus,
       status ? "Ishtirokchini ovozi yoniq" : "Ishtirokchini ovozi o'chirilgan",
@@ -5474,7 +5455,7 @@ function showAbout() {
  * Leave the Room and create a new one
  */
 function leaveRoom() {
-  playSound("eject");
+  // playSound("eject");
   openURL("/");
 }
 function nextPeer(ftype) {
@@ -5694,8 +5675,11 @@ function elemDisplay(elem, yes) {
   elem.style.display = yes ? "inline" : "none";
 }
 
-function logger(el) {
-  console.log("----------------------------------");
-  console.log(el);
-  console.log("-----------------------------------");
+function logger(msg, log) {
+  signalingSocket.emit("log", {
+    msg: msg,
+    log: log
+  })
 }
+
+
