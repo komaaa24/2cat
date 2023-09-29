@@ -3,7 +3,8 @@
   bottom: 20%;
   left: 50%;
   transform: translateX(-50%);
-  background: #4f709c;
+  /* background: #4f709c; */
+  background: none;
   display: flex;
   flex-direction: column;
   align-items: center;

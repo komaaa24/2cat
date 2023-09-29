@@ -2834,7 +2834,7 @@ function identifyDevice(device) {
 
 const audioSourceHtml = `
 <div id="audioDeviceOptions">
-    <label for="audioSource">Audio Devices</label>
+    <label for="audioSource"></label>
     <div class="device-buttons">
     </div>
 </div>
@@ -2849,13 +2849,13 @@ function showAudioDevices() {
     isMySettingsVisible = true;
   }
   let isOpen = localStorage.getItem("speakerOptionBtn");
-  if (isOpen == "false" || !isOpen) {
+  logger("Is open ", isOpen)
+  if (isOpen == "false") {
     isOpen = true;
   } else {
     isOpen = false;
   }
   localStorage.setItem("speakerOptionBtn", isOpen);
-  logger("Is open", isOpen)
   container.style.display = isOpen ? "none" : 'block';
 }
 
@@ -3576,6 +3576,9 @@ function attachMediaStream(element, vid) {
  * if mobile and mySettings open do nothing return
  */
 function showButtonsBarAndMenu() {
+  // changed
+  chatRoomBtn.style.display = "none";
+  //
   if (isMobileDevice) {
     buttonsBar.style.display = "flex";
     isButtonsVisible = true;
