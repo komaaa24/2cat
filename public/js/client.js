@@ -1801,11 +1801,13 @@ function handleAudioDeviceBtn() {
 
       localStorage.setItem("volumeIcon", deviceType);
 
-      const modal = getId("audioDeviceOptions");
+      showAudioDevices("false");
 
-      modal.style.display = "none"
+      // const modal = getId("audioDeviceOptions");
 
-      localStorage.setItem("speakerOptionBtn", false);
+      // modal.style.display = "none"
+
+      // localStorage.setItem("speakerOptionBtn", "false");
 
       // save audio output device to localstorage
       localStorage.setItem("audioInputSelect", audioInputSelect.value);
@@ -2850,36 +2852,32 @@ container.innerHTML = audioSourceHtml;
 container.style.display = 'none';
 document.body.appendChild(container);
 
-function showAudioDevices() {
+function showAudioDevices(isOpen) {
   if (!isMySettingsVisible) {
     isMySettingsVisible = true;
   }
-
-
-
-  container.style.display = "flex";
-  getId("audioDeviceOptions").style.display = "flex";
-  // let isOpen = localStorage.getItem("speakerOptionBtn") || "true";
-  // if (isOpen == "false") {
-  //   isOpen = true;
-  // } else {
-  //   isOpen = false;
-  // }
-  // localStorage.setItem("speakerOptionBtn", isOpen);
-  // container.style.display = isOpen ? "none" : 'block';
-
-}
-
-
-function hideDeviceOptions(isOpen) {
-  if (isOpen == "false") {
-    isOpen = true;
+  if (isOpen == "true") {
+    isOpen = "false";
   } else {
-    isOpen = false;
+    isOpen = "true";
   }
   localStorage.setItem("speakerOptionBtn", isOpen);
-  container.style.display = isOpen ? "none" : 'block';
+  container.style.display = isOpen == "true" ? "none" : 'flex';
+  getId("audioDeviceOptions").style.display = isOpen == "true" ? "none" : "flex";
+
+
 }
+
+
+// function hideDeviceOptions(isOpen) {
+//   if (isOpen == "false") {
+//     isOpen = true;
+//   } else {
+//     isOpen = false;
+//   }
+//   localStorage.setItem("speakerOptionBtn", isOpen);
+//   container.style.display = isOpen ? "none" : 'block';
+// }
 
 /**
  * audio output device change
@@ -2888,7 +2886,9 @@ function hideDeviceOptions(isOpen) {
 
 function setAudioOutputBtn() {
   audioOutputChangeBtn.addEventListener("click", async (e) => {
-    showAudioDevices();
+    let isOpen = localStorage.getItem("speakerOptionBtn") || "true";
+    logger(isOpen);
+    showAudioDevices(isOpen);
     handleAudioDeviceBtn();
   });
 }
