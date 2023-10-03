@@ -1801,6 +1801,12 @@ function handleAudioDeviceBtn() {
 
       localStorage.setItem("volumeIcon", deviceType);
 
+      const modal = getId("audioDeviceOptions");
+
+      modal.style.display = "none"
+
+      localStorage.setItem("speakerOptionBtn", false);
+
       // save audio output device to localstorage
       localStorage.setItem("audioInputSelect", audioInputSelect.value);
 
@@ -1874,7 +1880,7 @@ async function setupLocalMedia() {
       `/permission?roomId=${roomId}&getUserMediaError=${err.toString()} <br/> Check the common getusermedia errors <a href="https://blog.addpipe.com/common-getusermedia-errors" target="_blank">here<a/>`
     );
   }
-} // end [setup_local_stream]
+}
 
 /**
  * Load Local Media Stream obj
@@ -2848,8 +2854,24 @@ function showAudioDevices() {
   if (!isMySettingsVisible) {
     isMySettingsVisible = true;
   }
-  let isOpen = localStorage.getItem("speakerOptionBtn");
-  logger("Is open ", isOpen)
+
+
+
+  container.style.display = "flex";
+  getId("audioDeviceOptions").style.display = "flex";
+  // let isOpen = localStorage.getItem("speakerOptionBtn") || "true";
+  // if (isOpen == "false") {
+  //   isOpen = true;
+  // } else {
+  //   isOpen = false;
+  // }
+  // localStorage.setItem("speakerOptionBtn", isOpen);
+  // container.style.display = isOpen ? "none" : 'block';
+
+}
+
+
+function hideDeviceOptions(isOpen) {
   if (isOpen == "false") {
     isOpen = true;
   } else {
@@ -2868,7 +2890,6 @@ function setAudioOutputBtn() {
   audioOutputChangeBtn.addEventListener("click", async (e) => {
     showAudioDevices();
     handleAudioDeviceBtn();
-
   });
 }
 
