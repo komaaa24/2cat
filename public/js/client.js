@@ -1817,24 +1817,6 @@ function handleAudioDeviceBtn() {
   })
 }
 
-function changeSettingsParam(speakerSettings) {
-  let br = document.getElementsByClassName("br");
-  if (speakerSettings) {
-    tabRoomBtn.style.display = "inline";
-    tabDevicesBtn.style.display = "inline";
-    getId("cameraChangeBtn").style.display = "inline";
-    getId("speakerChangeBtn").style.display = "inline";
-    getId("tab").style.display = "inline";
-    br.style.display = "inline";
-  } else {
-    br.style.display = "none";
-    tabRoomBtn.style.display = "none";
-    tabDevicesBtn.style.display = "none";
-    getId("cameraChangeBtn").style.display = "none";
-    getId("speakerChangeBtn").style.display = "none";
-    getId("tab").style.display = "inline";
-  }
-}
 
 /**
  * Setup local media stuff. Ask user for permission to use the computers microphone and/or camera,
@@ -2773,7 +2755,6 @@ function manageLeftButtons() {
   setFullScreenBtn();
   setChatRoomBtn();
   setChatEmojiBtn();
-
   setMySettingsBtn();
   setAboutBtn();
   setLeaveRoomBtn();
@@ -2792,7 +2773,7 @@ function setShareRoomBtn() {
 function refreshLocalMedia_only_audio() {
   stopLocalAudioTrack();
   navigator.mediaDevices
-    .getUserMedia(getAudioVideoConstraints()) // Запрашиваем только аудио
+    .getUserMedia({ audio: true }) // Запрашиваем только аудио
     .then(gotStream)
     .then(gotDevices)
     .catch(handleError);
@@ -2853,6 +2834,7 @@ container.style.display = 'none';
 document.body.appendChild(container);
 
 function showAudioDevices(isOpen) {
+
   if (!isMySettingsVisible) {
     isMySettingsVisible = true;
   }
@@ -2862,6 +2844,9 @@ function showAudioDevices(isOpen) {
     isOpen = "true";
   }
   localStorage.setItem("speakerOptionBtn", isOpen);
+  if (isOpen == "false") {
+    hideShowMySettings();
+  }
   container.style.display = isOpen == "true" ? "none" : 'flex';
   getId("audioDeviceOptions").style.display = isOpen == "true" ? "none" : "flex";
 
@@ -2887,7 +2872,6 @@ function showAudioDevices(isOpen) {
 function setAudioOutputBtn() {
   audioOutputChangeBtn.addEventListener("click", async (e) => {
     let isOpen = localStorage.getItem("speakerOptionBtn") || "true";
-    logger(isOpen);
     showAudioDevices(isOpen);
     handleAudioDeviceBtn();
   });
@@ -3163,14 +3147,11 @@ if (isMobileDevice) {
  */
 function setupMySettings() {
   // tab buttons
-  tabDevicesBtn.addEventListener("click", (e) => {
-    openTab(e, "tabDevices");
-  });
-  // tabBandwidthBtn.addEventListener("click", (e) => {
-  //   openTab(e, "tabBandwidth");
-  // });
   tabRoomBtn.addEventListener("click", (e) => {
     openTab(e, "tabRoom");
+  });
+  tabDevicesBtn.addEventListener("click", (e) => {
+    openTab(e, "tabDevices");
   });
   tabStylingBtn.addEventListener("click", (e) => {
     openTab(e, "tabStyling");
@@ -3613,7 +3594,6 @@ function showButtonsBarAndMenu() {
     (isMobileDevice && isMySettingsVisible)
   )
     return;
-  //toggleClassElements("navbar", "block");
   buttonsBar.style.display = "flex";
   isButtonsVisible = true;
 }
@@ -4722,14 +4702,13 @@ function downloadChatMsgs() {
  */
 function hideShowMySettings() {
   if (!isMySettingsVisible) {
-    // playSound("newMessage");
-    // adapt it for mobile
     if (isMobileDevice) {
       document.documentElement.style.setProperty(
         "--mySettings-select-w",
         "99%"
       );
     }
+    showAudioDevices("false");
     // my current peer name
     myPeerNameSet.placeholder =
       myPeerName || window.localStorage.getItem("peer_name");
