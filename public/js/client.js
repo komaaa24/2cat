@@ -2925,18 +2925,20 @@ function setFullScreenBtn() {
  * Chat room buttons click event
  */
 function setChatRoomBtn() {
+
+  chatRoomBtn.style.display = "none";
   // adapt chat room size for mobile
   setChatRoomAndCaptionForMobile();
 
   // open hide chat room
-  chatRoomBtn.addEventListener("click", (e) => {
-    if (!isChatRoomVisible) {
-      showChatRoomDraggable();
-    } else {
-      hideChatRoomAndEmojiPicker();
-      e.target.className = className.chatOn;
-    }
-  });
+  // chatRoomBtn.addEventListener("click", (e) => {
+  //   if (!isChatRoomVisible) {
+  //     showChatRoomDraggable();
+  //   } else {
+  //     hideChatRoomAndEmojiPicker();
+  //     e.target.className = className.chatOn;
+  //   }
+  // });
 
   // show msger participants section
   msgerCPBtn.addEventListener("click", (e) => {
@@ -3063,7 +3065,6 @@ function addEmojiToMsg(data) {
  */
 function setMySettingsBtn() {
   mySettingsBtn.addEventListener("click", (e) => {
-
     if (isMobileDevice) {
       buttonsBar.style.display = "none";
       isButtonsVisible = false;
@@ -3564,10 +3565,10 @@ function attachMediaStream(element, vid) {
  * if mobile and myCaption visible do nothing
  * if mobile and mySettings open do nothing return
  */
+
+
 function showButtonsBarAndMenu() {
-  // changed
   chatRoomBtn.style.display = "none";
-  //
   if (isMobileDevice) {
     buttonsBar.style.display = "flex";
     isButtonsVisible = true;
@@ -3599,7 +3600,7 @@ function checkButtonsBarAndMenu() {
   // check again after 8 sec if it's not mobile
   setTimeout(() => {
     if (!isMobileDevice) checkButtonsBarAndMenu();
-  }, 5000);
+  }, 1000000);
 }
 
 /**
@@ -4688,7 +4689,6 @@ function downloadChatMsgs() {
  * Hide - show my settings
  */
 function hideShowMySettings() {
-  logger("Is my settings visible ", isMySettingsVisible);
   if (!isMySettingsVisible) {
     if (isMobileDevice) {
       document.documentElement.style.setProperty(
