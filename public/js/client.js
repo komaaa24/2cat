@@ -75,7 +75,6 @@ const buttons = {
     showVideoBtn: false,
     showScreenBtn: false,
     showRecordStreamBtn: false,
-    showChatRoomBtn: true,
     showCaptionRoomBtn: false,
     showMyHandBtn: false,
     showMySettingsBtn: true,
@@ -240,7 +239,6 @@ let audioBtn;
 let videoBtn;
 let swapCameraBtn;
 let fullScreenBtn;
-let chatRoomBtn;
 let myHandBtn;
 let mySettingsBtn;
 let aboutBtn;
@@ -370,7 +368,6 @@ function getHtmlElementsById() {
   videoBtn = getId("videoBtn");
   swapCameraBtn = getId("swapCameraBtn");
   fullScreenBtn = getId("fullScreenBtn");
-  chatRoomBtn = getId("chatRoomBtn");
   myHandBtn = getId("myHandBtn");
   mySettingsBtn = getId("mySettingsBtn");
   aboutBtn = getId("aboutBtn");
@@ -476,7 +473,6 @@ function setButtonsToolTip() {
   setTippy(audioBtn, "Ovozni o'chirish", "right-start");
   setTippy(videoBtn, "Videoni yopish", "right-start");
   setTippy(fullScreenBtn, "To'liq ekran ochish", "right-start");
-  setTippy(chatRoomBtn, "Chatni ochish", "right-start");
   setTippy(myHandBtn, "Raise hand", "right-start");
   setTippy(mySettingsBtn, "Sozlamalar", "right-start");
   setTippy(aboutBtn, "About", "right-start");
@@ -852,7 +848,6 @@ function handleButtonsRule() {
   elemDisplay(shareRoomBtn, buttons.main.showShareRoomBtn);
   elemDisplay(audioBtn, buttons.main.showAudioBtn);
   elemDisplay(videoBtn, buttons.main.showVideoBtn);
-  elemDisplay(chatRoomBtn, buttons.main.showChatRoomBtn);
   elemDisplay(myHandBtn, buttons.main.showMyHandBtn);
   elemDisplay(mySettingsBtn, buttons.main.showMySettingsBtn);
   elemDisplay(aboutBtn, buttons.main.showAboutBtn);
@@ -2753,7 +2748,6 @@ function manageLeftButtons() {
   setVideoBtn();
   setSwapCameraBtn();
   setFullScreenBtn();
-  setChatRoomBtn();
   setChatEmojiBtn();
   setMySettingsBtn();
   setAboutBtn();
@@ -3568,7 +3562,6 @@ function attachMediaStream(element, vid) {
 
 
 function showButtonsBarAndMenu() {
-  chatRoomBtn.style.display = "none";
   if (isMobileDevice) {
     buttonsBar.style.display = "flex";
     isButtonsVisible = true;
@@ -4147,12 +4140,10 @@ function showChatRoomDraggable() {
     buttonsBar.style.display = "none";
     isButtonsVisible = false;
   }
-  chatRoomBtn.className = className.chatOff;
   msgerDraggable.style.top = "45%";
   msgerDraggable.style.left = isMobileDevice ? "50%" : "25%";
   msgerDraggable.style.display = "flex";
   isChatRoomVisible = true;
-  setTippy(chatRoomBtn, "Chatni yopish", "right-start");
 }
 
 /**
@@ -4230,10 +4221,9 @@ function hideChatRoomAndEmojiPicker() {
   msgerDraggable.style.display = "none";
   msgerEmojiPicker.style.display = "none";
   msgerEmojiBtn.style.color = "#FFFFFF";
-  chatRoomBtn.className = className.chatOn;
+
   isChatRoomVisible = false;
   isChatEmojiVisible = false;
-  setTippy(chatRoomBtn, "chat", "right-start");
 }
 
 /**
@@ -4279,7 +4269,6 @@ function handleDataChannelChat(dataMessage) {
   // chat message for me also
   if (!isChatRoomVisible && showChatOnMessage) {
     showChatRoomDraggable();
-    chatRoomBtn.className = className.chatOff;
   }
   // show message from
   if (!showChatOnMessage) {
