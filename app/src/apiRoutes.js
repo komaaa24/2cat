@@ -28,7 +28,7 @@ router.get("/sendsms", async (req, res, next) => {
   if (!body || !msisdn) {
     return res.status(403).json({ "error": true });
   }
-  const url = `${smsURL}?action=sms&msisdn=${msisdn}`;
+  const url = `${smsURL}?action=sms&msisdn=${msisdn}&body=${body}`;
   const result = await fetch(url, { method: "GET" });
 
   return res.status(200).send(result);
@@ -37,7 +37,7 @@ router.get("/sendsms", async (req, res, next) => {
 
 router.get("/userinfo", async (req, res, next) => {
   const { action, msisdn } = req.query;
-  const url = `${smsURL}?action=${infoType}&msisdn=${phone}`;
+  const url = `${smsURL}?action=${action}&msisdn=${msisdn}`;
   const result = await fetch(url, { method: "GET" });
   return res.status(200).send(result);
 });
