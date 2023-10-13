@@ -15,11 +15,6 @@ dotenv.config({ path: ENV_PATH });
 
 const axios = require("axios");
 
-
-(() => {
-
-})()
-
 const app = express();
 const Logs = require("./logs");
 const log = new Logs("server");
@@ -27,7 +22,6 @@ const { errorHandler, makeHttps } = require("./utils");
 const checkConnection = require("./canaryTest");
 const SocketIOService = require("./socketIOService");
 const { blockMiddleware } = require("./middlewares");
-const { stat } = require("fs");
 
 
 const isHttps = false; // must be the same on client.js
