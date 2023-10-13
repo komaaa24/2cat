@@ -8,6 +8,7 @@ const { canJoin, findFreePeer, getMeetingURL } = require("./utils");
 const { blockMiddleware } = require("./middlewares");
 const dotenv = require("dotenv");
 const path = require("path");
+const { default: axios } = require("axios");
 
 const ENV_PATH = path.resolve(__dirname, "../../.env");
 dotenv.config({ path: ENV_PATH });
@@ -29,17 +30,19 @@ router.get("/sendsms", async (req, res, next) => {
     return res.status(403).json({ "error": true });
   }
   const url = `${smsURL}?action=sms&msisdn=${msisdn}&body=${body}`;
-  const result = await fetch(url, { method: "GET" });
+  const result = await axios.get(url);
 
-  return res.status(200).send(result);
+  res.status(200).send({ data: result.data });
+  return;
 
 });
 
 router.get("/userinfo", async (req, res, next) => {
   const { action, msisdn } = req.query;
   const url = `${smsURL}?action=${action}&msisdn=${msisdn}`;
-  const result = await fetch(url, { method: "GET" });
-  return res.status(200).send(result);
+  const result = await axios.get(url);
+  res.status(200).send({ data: result.data });
+  return;
 });
 
 

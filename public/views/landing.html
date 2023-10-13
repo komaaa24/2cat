@@ -206,8 +206,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
     <script>
-      const smsURL = "http://81.95.228.2:8080/sms_send.php";
-      const mainURL = "https://videochat.uz";
       const userPhoneInput = document.getElementById("phone");
       const getUserPhoneBtn = document.getElementById("joinchat");
       getUserPhoneBtn.addEventListener("click", async () => {
@@ -224,7 +222,7 @@
           return;
         }
         const userStatus = await getUserInfo(validPhone, "status");
-
+        console.log(userStatus);
         if (userStatus == "1") {
           findPeer();
           return;
@@ -247,7 +245,7 @@
 
       async function subscribeUser(phone) {
         try {
-          const url = `${mainURL}/userinfo?action=sub&msisdn=${phone}`;
+          const url = `/userinfo?action=sub&msisdn=${phone}`;
           const response = await fetch(url, {
             method: "GET",
           });
@@ -301,12 +299,12 @@
 
       async function getUserInfo(phone, infoType) {
         try {
-          const url = `${mainURL}/userinfo?action=${infoType}&msisdn=${phone}`;
+          const url = `/userinfo?action=${infoType}&msisdn=${phone}`;
           const response = await fetch(url, {
             method: "GET",
           });
           const info = await response.json();
-          return info;
+          return info.data;
         } catch (err) {
           console.log(err);
         }
@@ -329,12 +327,12 @@
 
       async function sendSMSCode(phone, code) {
         try {
-          const url = `${mainURL}/sendsms?msisdn=${phone}&body=${code}`;
+          const url = `/sendsms?msisdn=${phone}&body=${code}`;
           const response = await fetch(url, {
             method: "GET",
           });
           const info = await response.json();
-          return info;
+          return info.data;
         } catch (err) {
           console.log(err);
         }
