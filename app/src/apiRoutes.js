@@ -4,56 +4,48 @@ const express = require("express");
 const Logs = require("./logs");
 const router = express.Router();
 const config = require("./config");
-const { canJoin, findFreePeer, getMeetingURL, doesUserExist } = require("./utils");
-const crypto = require("crypto");
+const { canJoin, findFreePeer, getMeetingURL } = require("./utils");
 const { blockMiddleware } = require("./middlewares");
-const { getUsers, updateUser } = require("../db/controllers");
 const dotenv = require("dotenv");
 const path = require("path");
+const { default: axios } = require("axios");
 
 const ENV_PATH = path.resolve(__dirname, "../../.env");
 dotenv.config({ path: ENV_PATH });
+
+const smsURL = "http://81.95.228.2:8080/sms_send.php";
+
 
 const log = new Logs("server");
 
 router.use(blockMiddleware);
 
-router.get("/stream", (req, res, next) => {
-  res.sendFile(config.views.stream);
+router.get("/speaker", (req, res, next) => {
+  return res.sendFile(config.views.speaker);
+})
+
+router.get("/sendsms", async (req, res, next) => {
+  const { msisdn, body } = req.query;
+  if (!body || !msisdn) {
+    return res.status(403).json({ "error": true });
+  }
+  const url = `${smsURL}?action=sms&msisdn=${msisdn}&body=${body}`;
+  const result = await axios.get(url);
+  res.status(200).send({ data: result.data });
+  return;
+
 });
 
-router.get("/video", async (req, res, next) => {
-  const videos = config.videos;
-  let newUserId;
-  const user = req.cookies["user_id"];
+router.get("/userinfo", async (req, res, next) => {
+  const { action, msisdn } = req.query;
+  const url = `${smsURL}?action=${action}&msisdn=${msisdn}`;
+  const result = await axios.get(url);
+  res.status(200).send({ data: result.data });
 
-  if (!user) {
-    newUserId = crypto.randomUUID();
-    res.cookie("user_id", newUserId, { maxAge: 90 * 24 * 60 * 60 * 10 });
-    config.users.newUserId = [];
-  }
-  if (!config.users.newUserId) {
-    config.users.newUserId = [];
-  }
-
-  const watchedVideos = config.users.newUserId;
-  console.log(watchedVideos);
-  let filteredVideos = videos.filter((e) => !watchedVideos.includes(e));
-
-  if (filteredVideos.length == 0) {
-    return res.status(200).send({ message: "empty" });
-  }
-
-  let video =
-    filteredVideos[Math.ceil(Math.random() * filteredVideos.length - 1)];
-  config.users.newUserId.push(video);
-  res.status(200).send({
-    path: video,
-    title: video.split("/")[2].split(".")[0],
-    duration: 15,
-  });
   return;
 });
+
+
 
 router.get("/", (req, res, next) => {
   res.sendFile(config.views.landing);
@@ -109,14 +101,19 @@ router.get("/admin", (req, res, next) => {
 
 router.get("/admin/ban-user/:userId", async (req, res, next) => {
   const userId = req.params.userId.trim();
-  const users = await getUsers();
-  const existsUser = doesUserExist(users, userId);
+  const users = req.session.users;
+  const existsUser = users.filter(user => user.userId == userId)[0];
   console.log(existsUser);
   if (!existsUser) {
     return res.status(400).send({ message: `${userId} doesn't exist` })
   }
   if (req.query.pass == process.env.ADMIN_PASS) {
-    await updateUser(req.params.userId, { key: "userStatus", val: "banned" });
+    for (let i in users) {
+      if (users[i].userId == userId) {
+        users[i]["userStatus"] = "banned"
+      }
+    }
+    req.session.users = users;
     res.status(204).send(`User has been banned!`);
     return;
   }
@@ -124,14 +121,19 @@ router.get("/admin/ban-user/:userId", async (req, res, next) => {
 });
 
 router.get("/admin/free-user/:userId", async (req, res, next) => {
-  const users = await getUsers();
-  const existsUser = doesUserExist(users, req.params.userId);
+  const users = req.session.users || [];
+  const existsUser = users.filter(user => user.userId == req.params.userId)[0];;
   console.log(existsUser);
   if (!existsUser) {
     return res.status(400).send({ message: `${req.params.userId} doesn't exist` })
   }
   if (req.query.pass == process.env.ADMIN_PASS) {
-    await updateUser(req.params.userId, { key: "userStatus", val: "free" });
+    for (let i in users) {
+      if (users[i].userId == userId) {
+        users[i]["userStatus"] = "free"
+      }
+    }
+    req.session.users = users;
     res.status(204).send(`User has been freed`);
     return;
   }
@@ -142,7 +144,7 @@ router.get("/admin/free-user/:userId", async (req, res, next) => {
 router.get("/admin/all-users", async (req, res, next) => {
   console.log(`Query password : ${req.query.pass}`);
   if (req.query.pass == process.env.ADMIN_PASS) {
-    const users = await getUsers();
+    const users = req.session.users || [];
     res.status(200).send({
       users: users,
     });

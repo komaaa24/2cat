@@ -30,6 +30,7 @@ module.exports = {
     teststream: path.join(__dirname, "../../", "public/views/teststream.html"),
     stream: path.join(__dirname, "../../", "public/views/stream.html"),
     admin: path.join(__dirname, "../../", "public/views/admin.html"),
+    speaker: path.join(__dirname, "../../", "public/views/speakerTest.html")
   },
   dir: {
     public: path.join(__dirname, "../../", "public"),

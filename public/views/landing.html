@@ -1,84 +1,111 @@
 <!DOCTYPE html>
 <html lang="en" class="no-js">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
 
-<head>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests"
+    />
+    <script
+      async
+      http-equiv="X-UA-Compatible"
+      content="IE=edge"
+      src="https://www.googletagmanager.com/gtag/js?id=G-X085TX7411"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-  <script async http-equiv="X-UA-Compatible" content="IE=edge"
-    src="https://www.googletagmanager.com/gtag/js?id=G-X085TX7411"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag("js", new Date());
+      gtag("config", "G-X085TX7411");
+    </script>
 
-    gtag("config", "G-X085TX7411");
-  </script>
+    <!-- Clarity (clarity.js) - Microsoft analytics -->
+    <script type="text/javascript">
+      (function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            (c[a].q = c[a].q || []).push(arguments);
+          };
+        t = l.createElement(r);
+        t.async = 1;
+        t.src = "https://www.clarity.ms/tag/" + i;
+        y = l.getElementsByTagName(r)[0];
+        y.parentNode.insertBefore(t, y);
+      })(window, document, "clarity", "script", "93jfa0ufr9");
+    </script>
 
-  <!-- Clarity (clarity.js) - Microsoft analytics -->
-  <script type="text/javascript">
-    (function (c, l, a, r, i, t, y) {
-      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
-      t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-    })(window, document, "clarity", "script", "93jfa0ufr9");
-  </script>
+    <!-- Title and Icon -->
 
-  <!-- Title and Icon -->
+    <title>Videochat</title>
+    <link rel="shortcut icon" href="../images/favicon.png" />
+    <link rel="apple-touch-icon" href="../images/favicon.png" />
 
-  <title>Videochat</title>
-  <link rel="shortcut icon" href="../images/favicon.png" />
-  <link rel="apple-touch-icon" href="../images/favicon.png" />
+    <!-- Meta Information -->
 
-  <!-- Meta Information -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="videochat.uz. Video muloqot portali" />
+    <meta
+      name="keywords"
+      content="webrtc, self hosted, voip, sip, real-time communications, chat, messaging, meet, webrtc stun, webrtc turn, video meeting, video chat, video conference, multi video chat, multi video conference, peer to peer, p2p, rtc, alternative to, zoom, microsoft teams, google meet, jitsi, meeting"
+    />
 
-  <meta name="description" content="videochat.uz. Video muloqot portali" />
-  <meta name="keywords"
-    content="webrtc, self hosted, voip, sip, real-time communications, chat, messaging, meet, webrtc stun, webrtc turn, video meeting, video chat, video conference, multi video chat, multi video conference, peer to peer, p2p, rtc, alternative to, zoom, microsoft teams, google meet, jitsi, meeting" />
+    <!-- https://ogp.me -->
 
-  <!-- https://ogp.me -->
+    <!-- Primary Meta Tags -->
+    <title>Videochat</title>
+    <meta name="title" content="videochat.uz" />
+    <meta name="description" content="Video muloqot portali" />
 
-  <!-- Primary Meta Tags -->
-  <title>Videochat</title>
-  <meta name="title" content="videochat.uz">
-  <meta name="description" content="Video muloqot portali">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://videochat.uz/" />
+    <meta property="og:title" content="videochat.uz" />
+    <meta property="og:description" content="Video muloqot portali" />
+    <!-- <meta property="og:image" content="https://videochat.uz/images/preview.png"> -->
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://videochat.uz/">
-  <meta property="og:title" content="videochat.uz">
-  <meta property="og:description" content="Video muloqot portali">
-  <!-- <meta property="og:image" content="https://videochat.uz/images/preview.png"> -->
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://videochat.uz/" />
+    <meta property="twitter:title" content="videochat.uz" />
+    <meta property="twitter:description" content="Video muloqot portali" />
+    <!-- <meta property="twitter:image" content="https://videochat.uz/images/preview.png"> -->
 
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://videochat.uz/">
-  <meta property="twitter:title" content="videochat.uz">
-  <meta property="twitter:description" content="Video muloqot portali">
-  <!-- <meta property="twitter:image" content="https://videochat.uz/images/preview.png"> -->
+    <!-- StyleSheet -->
 
-  <!-- StyleSheet -->
+    <link rel="stylesheet" href="../css/landing.css" />
+    <link rel="stylesheet" href="../css/newcall.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+  </head>
 
-  <link rel="stylesheet" href="../css/landing.css" />
-  <link rel="stylesheet" href="../css/newcall.css" />
-</head>
-
-<body class="has-animations">
-  <div class="body-wrap">
-    <header class="site-header reveal-from-top">
-      <div class="container">
-        <div class="site-header-inner">
-          <div class="brand">
-            <div class="m-0">
-              <a href="/"><img src="../images/favicon.png" alt="Neon" width="32" height="32" /><span>Videochat.uz</span></a>
+  <body class="has-animations">
+    <div class="body-wrap">
+      <header class="site-header reveal-from-top">
+        <div class="container">
+          <div class="site-header-inner">
+            <div class="brand">
+              <div class="m-0">
+                <a href="/"
+                  ><img
+                    src="../images/favicon.png"
+                    alt="Neon"
+                    width="32"
+                    height="32"
+                  /><span>Videochat.uz</span></a
+                >
+              </div>
             </div>
-          </div>
-          <!-- <div class="login-button">
+            <!-- <div class="login-button">
             <a href="#" class="button button-primary button-wide-mobile br-2 pulse btn-hover" style="border: 2px solid #D8D8D88F; text-transform: none;">
               <span id="usersCount">
                 0
@@ -86,342 +113,249 @@
                foydalanuvchi onlayn
             </a>
           </div> -->
+          </div>
         </div>
-      </div>
-    </header>
-    <main class="site-content">
-      <section class="hero section illustration-section-01">
-        <div class="container">
-          <div class="hero-inner section-inner">
-            <div class="split-wrap invert-mobile">
-              <div class="split-item">
-                <div class="
-                      hero-content
-                      split-item-content
-                      center-content-mobile
-                    ">
-                  <h1 class="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="150">
-                    Videochat.uz <br />
-                    Bepul online real-vaqt video muloqot
-                    <br />
-                    Oddiy, tez va xavfsiz.
-                  </h1>
-                  <p class="mt-0 mb-32 reveal-from-bottom" data-reveal-delay="300">
-                    
-                  </p>
-                  <div class="reveal-from-bottom" data-reveal-delay="450">
-                    <a class="button button-primary button-wide-mobile br-6 pulse btn-hover" id="joinchat" style="
+      </header>
+      <main class="site-content">
+        <section class="hero section illustration-section-01">
+          <div class="container">
+            <div class="hero-inner section-inner">
+              <div class="split-wrap invert-mobile">
+                <div class="split-item">
+                  <div
+                    class="hero-content split-item-content center-content-mobile"
+                  >
+                    <h1
+                      class="mt-0 mb-16 reveal-from-bottom"
+                      data-reveal-delay="150"
+                    >
+                      Videochat.uz <br />
+                      Online real-vaqt video muloqot
+                      <br />
+                      Oddiy, tez va xavfsiz.
+                    </h1>
+                    <p
+                      class="mt-0 mb-32 reveal-from-bottom"
+                      data-reveal-delay="200"
+                    ></p>
+                    <div class="reveal-from-bottom" data-reveal-delay="400">
+                      <label for="phone">Raqamingizni kiriting:</label><br />
+                      <input
+                        style="
+                          background-color: #f1f1f1;
+                          font-size: x-large;
+                          border: none;
+                          border-radius: 8px;
+                        "
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        autocomplete="on"
+                        autofocus
+                        required
+                      />
+                      <button
+                        class="button button-primary button-wide-mobile br-6 pulse btn-hover"
+                        id="joinchat"
+                        style="
                           border: 0;
-                          background-image: linear-gradient(to right, #03001e, #7303c0, #ec38bc);
-                        " href="/join/shirin-tush">Kirish</a>
+                          background-image: linear-gradient(
+                            to right,
+                            #03001e,
+                            #7303c0,
+                            #ec38bc
+                          );
+                        "
+                      >
+                        Kirish
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <style>
-                  @media (min-width: 641px) {
-                    .hero .split-wrap .split-item {
-                      min-height: 492px;
+                  <style>
+                    @media (min-width: 641px) {
+                      .hero .split-wrap .split-item {
+                        min-height: 492px;
+                      }
                     }
-                  }
-                </style>
+                  </style>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-<!-- 
-      <section class="features-tiles section center-content">
+        </section>
+      </main>
+
+      <footer class="site-footer center-content-mobile">
         <div class="container">
-          <div class="features-tiles-inner section-inner has-top-divider">
-            <div class="section-header">
-              <div class="container-xs reveal-from-bottom" data-reveal-delay="650">
-                <h2 class="mt-0 mb-16">
-                  Ko'plab yangi do'stlar orttiring!
-                </h2>
-                <p class="m-0">
-                  videochat.uz is built radically different. We left behind slow
-                  bulky servers, opting for peer to peer calling. We
-                  engineered a platform with maximum video quality lowest
-                  latency that makes your calls crystal clear.
-                </p>
-              </div>
-            </div>
-
-            <div class="tiles-wrap">
-              <div class="tiles-item reveal-from-right">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/icon1.svg" alt="Screen-Share" width="40px" height="40px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Screen-Share</h4>
-                    <p class="m-0 text-sm">
-                      Share your files, videos, images, etc with screen share feature. Useful for teaching, showing
-                      projects, etc.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-left">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/feature-tile-icon-04.svg" alt="Webcam Streaming" width="72px" height="72px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">WebCam Streaming</h4>
-                    <p class="m-0 text-sm">
-                      Having the webcam on, allows participants to make a
-                      deeper connection with you. Up to 4k resolution.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-right">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/icon3.svg" alt="Chat Room" width="40px" height="40px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Chat Room</h4>
-                    <p class="m-0 text-sm">
-                      Chat with others in meeting, either public chat or
-                      private, save the meeting messages. Integrated emoji
-                      picker to show your feeling.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-left">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/icon4.svg" alt="Meeting Recording" width="40px" height="40px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Meeting Recording</h4>
-                    <p class="m-0 text-sm">
-                      Record your Screen, WebCam and Audio. Save it for use it
-                      in future or to share with others.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-right">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/wboard.svg" alt="Interactive Whiteboard" width="40px" height="40px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Interactive Whiteboard</h4>
-                    <p class="m-0 text-sm">
-                      Simple collaborative whiteboard to draw and explain your
-                      concepts to the other participants in the meeting.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-left">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/feature-tile-icon-02.svg" alt="File Sharing" width="72" height="72" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">File Sharing</h4>
-                    <p class="m-0 text-sm">
-                      Share any types of files to all participants in the
-                      meeting, with total security, thanks to Datagram Transport
-                      Layer Security (DTLS).
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-right">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/feature-tile-icon-05.svg" alt="Total Privacy" width="72" height="72" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Total Privacy</h4>
-                    <p class="m-0 text-sm">
-                      Data stays between you and your participants. videochat.uz
-                      don't collect or share personal information. It's built
-                      for privacy first.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="tiles-item reveal-from-left">
-                <div class="tiles-item-inner">
-                  <div class="features-tiles-item-header">
-                    <div class="features-tiles-item-image mb-16">
-                      <img src="../images/icon6.svg" alt="Maximum Security" width="40px" height="40px" />
-                    </div>
-                  </div>
-                  <div class="features-tiles-item-content">
-                    <h4 class="mt-0 mb-8">Maximum Security</h4>
-                    <p class="m-0 text-sm">
-                      End to end state of the art encryption means your
-                      participants are exactly that. Your calls.
-                    </p>
-                  </div>
-                </div>
+          <div class="site-footer-inner">
+            <div class="footer-top space-between text-xxs">
+              <div class="brand">
+                <a href="/" style="display: flex; align-items: center"
+                  ><img
+                    src="../images/favicon.png"
+                    alt="Videolify logo"
+                    style="width: 32px; height: 32px; margin-right: 10px"
+                  />videochat.uz</a
+                >
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+      const userPhoneInput = document.getElementById("phone");
+      const getUserPhoneBtn = document.getElementById("joinchat");
+      getUserPhoneBtn.addEventListener("click", async () => {
+        const phone = userPhoneInput.value.replaceAll(" ", "");
+        let validPhone = validatePhone(phone);
+        if (!validPhone || !phone) {
+          swal.fire("Telefon raqami yo'q yoki hato");
+	  return;
+        }
 
-      <section class="team section center-content">
-        <div class="container">
-          <div class="team-inner section-inner has-top-divider">
-            <div class="section-header center-content reveal-from-bottom">
-              <div class="container-xs">
-                <h2 class="mt-0 mb-16">Supported Browsers</h2>
-              </div>
-            </div>
-            <div class="tiles-wrap">
-              <div class="tiles-item reveal-from-bottom">
-                <div class="tiles-item-inner">
-                  <div class="team-item-header">
-                    <div class="team-item-image mb-24">
-                      <img src="../images/browsers.png" alt="Supported Browsers" width="auto" height="auto" />
-                    </div>
-                  </div>
-                  <div class="team-item-content">
-                    <h5 class="team-item-name mt-0 mb-4">
-                      Chrome, Edge, Firefox, Opera, Safari, Brave & more...
-                    </h5>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        let userOperator = clarifyUserOperator(validPhone);
 
-      <section class="team section center-content">
-        <div class="container">
-          <div class="team-inner section-inner has-top-divider">
-            <div class="section-header center-content reveal-from-bottom">
-              <div class="container-xs">
-                <h2 class="mt-0 mb-16">Meet the team</h2>
-              </div>
-            </div>
+        if (userOperator != "ums") {
+          findPeer();
+          return;
+        }
+        const userStatus = await getUserInfo(validPhone, "status");
+        if (userStatus == "1") {
+          findPeer();
+          return;
+        }
 
-            <div class="tiles-wrap">
-              <div class="tiles-item reveal-from-bottom">
-                <div class="tiles-item-inner">
-                  <div class="team-item-header">
-                    <div class="team-item-image mb-24">
-                      <img src="../images/Potrait.gif" style="border-radius: 70px" alt="Team member author" width="180" height="180" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="tiles-item reveal-from-bottom">
-                <div class="tiles-item-inner">
-                  <div class="team-item-header">
-                    <div class="team-item-image mb-24">
-                      <img src="../images/miro.png" alt="Team member author" width="180" height="180" />
-                    </div>
-                  </div>
-                  <div class="team-item-content">
-                    <a target="_blank" href="https://github.com/miroslavpejic85">
-                      <h5 class="team-item-name mt-0 mb-4">Miroslav Pejic</h5>
-                    </a>
-                    <div class="
-                          team-item-role
-                          text-xxs
-                          fw-500
-                          tt-u
-                          text-color-secondary
-                          mb-8
-                        ">
-                      Backend Developer
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        if (userStatus == "0" || userStatus == "2") {
+          const generatedCode = generateCode();
+          const smsStatus = await sendSMSCode(validPhone, generatedCode);
+          const code = await getCode();
+          if (code === generatedCode) {
+            const isUserSubscribed = await subscribeUser(validPhone);
+            if (isUserSubscribed != "ok") {
+              window.location.href = "/";
+            }
+            localStorage.setItem("userStatus", "subscribed");
+            findPeer();
+          }
+        }
+      });
 
-      <section class="section">
-        <div class="container">
-          <div class="section-inner has-top-divider">
-            <div class="container-xs">
-              <div class="section-header center-content">
-                <h2 class="m-0">
-                  Try an easier, more secure way of calling.
-                </h2>
-              </div>
-              <div class="center-content">
-                <a class="button button-primary button-wide-mobile br-6 pulse btn-hover" style="
-                      border: 0;
-                      background-image: linear-gradient(to right, #03001e, #7303c0, #ec38bc);
-                    " href="/newcall">Try now</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> -->
-    </main>
+      async function subscribeUser(phone) {
+        try {
+          const url = `/userinfo?action=sub&msisdn=${phone}`;
+          const response = await fetch(url, {
+            method: "GET",
+          });
+          const info = await response.json();
+          return info;
+        } catch (err) {
+          console.log(err);
+        }
+      }
 
-    <footer class="site-footer center-content-mobile">
-      <div class="container">
-        <div class="site-footer-inner">
-          <div class="footer-top space-between text-xxs">
-            <div class="brand">
-              <a href="/" style="display: flex; align-items: center;"><img src="../images/favicon.png" alt="Videolify logo" style="width: 32px; height: 32px; margin-right: 10px;" />videochat.uz</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </div>
-  <script>
-    function findPeer() {
-      fetch('/api/freepeers')
-        .then(response => response.json())
-        .then(data => {
-          let kirishButton = document.getElementById("joinchat");
-          kirishButton.href = `/join/${data.freePeer}`;
-        });
-    }
-    findPeer();
-    function usersCount() {
-      fetch('/api/groupspeer')
-        .then(response => response.json())
-        .then(data => {
-          let usersCount = document.getElementById("usersCount");
-          usersCount.innerHTML = data.users;
-        });
-    }
-    usersCount();
-    // let randomChats = ['qiziq-chat','qizil-lola', 'tungi-osmon', 'qora-quyon'];
-    // let randomChat = randomChats[Math.floor(Math.random() * randomChats.length)];
-    // kirishButton.href = `/join/${randomChat}`;
-  </script>
-  <script defer src="../js/landing.js"></script>
-</body>
+      function generateCode() {
+        return Math.floor(1000 + Math.random() * 9000).toString();
+      }
+
+      async function getCode() {
+        let code;
+
+        while (!code) {
+          const result = await swal.fire({
+            title: "sms codeni kirting",
+            input: "text",
+            inputAttributes: {
+              maxlength: 4,
+              pattern: "[0-9]*",
+            },
+            showCancelButton: true,
+          });
+
+          if (result.dismiss === swal.DismissReason.cancel) {
+            break;
+          }
+
+          const userCode = result.value;
+
+          if (userCode.length === 4) {
+            code = userCode;
+          } else {
+            swal.fire("hato codeni kiritdingiz");
+          }
+        }
+
+        return code;
+      }
+
+      function clarifyUserOperator(userNumber) {
+        return userNumber.slice(3).startsWith(88) ||
+          userNumber.slice(3).startsWith(97)
+          ? "ums"
+          : "other";
+      }
+
+      async function getUserInfo(phone, infoType) {
+        try {
+          const url = `/userinfo?action=${infoType}&msisdn=${phone}`;
+          const response = await fetch(url, {
+            method: "GET",
+          });
+          const info = await response.json();
+          return info.data;
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      function validatePhone(phone) {
+        let validPhoneNumber = 0;
+        if (phone.length == 9 && !isNaN(Number(phone))) {
+          return "998" + phone;
+        } else if (phone.startsWith("+998") && phone.length == 13) {
+          return phone.slice(1);
+        } else if (phone.replace(/\d/, "").length > 1) {
+          return false;
+        } else if (isNaN(Number(phone))) {
+          return false;
+        } else {
+          return "998" + phone;
+        }
+      }
+
+      async function sendSMSCode(phone, code) {
+        try {
+          const url = `/sendsms?msisdn=${phone}&body=${code}`;
+          const response = await fetch(url, {
+            method: "GET",
+          });
+          const info = await response.json();
+          return info.data;
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      function findPeer() {
+        fetch("/api/freepeers")
+          .then((response) => response.json())
+          .then((data) => {
+            let joinUrl = `/join/${data.freePeer}`;
+            window.location.href = joinUrl;
+          });
+      }
+      function usersCount() {
+        fetch("/api/groupspeer")
+          .then((response) => response.json())
+          .then((data) => {
+            let usersCount = document.getElementById("usersCount");
+            usersCount.innerHTML = data.users || "";
+          });
+      }
+      usersCount();
+    </script>
+    <script defer src="../js/landing.js"></script>
+  </body>
 </html>

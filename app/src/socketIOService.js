@@ -16,12 +16,14 @@ module.exports = class SocketIOService {
         host: socket.handshake.headers.host.split(":")[0],
       });
 
+      socket.on("log", data => {
+        console.log("--------------------------------")
+        console.log(data);
+        console.log("--------------------------------")
+      })
+
       socket.channels = {};
       configs.sockets[socket.id] = socket;
-
-      const transport = socket.conn.transport.name; // in most cases, "polling"
-      //log.debug("[" + socket.id + "] Connection transport", transport);
-
       /**
        * Check upgrade transport
        */
@@ -52,7 +54,7 @@ module.exports = class SocketIOService {
       socket.on("join", async (config) => {
         log.debug('Join room', config);
         // log.debug("[" + socket.id + "] join ", config);
-        
+
         let channel = config.channel;
         let channel_password = config.channel_password;
         let peer_name = config.peer_name;
@@ -649,7 +651,7 @@ module.exports = class SocketIOService {
           freePeer: secondChannel,
         });
       }
-    }, 40000);
+    }, 20000);
     return available;
   }
 };

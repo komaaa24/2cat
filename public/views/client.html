@@ -2,7 +2,6 @@
 <html lang="en" class="no-js">
   <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
-
     <script
       async<meta
       http-equiv="X-UA-Compatible"
@@ -18,22 +17,6 @@
 
       gtag("config", "G-X085TX7411");
     </script>
-
-    <!-- Clarity (clarity.js) - Microsoft analytics 
-    <script type="text/javascript">
-      (function (c, l, a, r, i, t, y) {
-        c[a] =
-          c[a] ||
-          function () {
-            (c[a].q = c[a].q || []).push(arguments);
-          };
-        t = l.createElement(r);
-        t.async = 1;
-        t.src = "https://www.clarity.ms/tag/" + i;
-        y = l.getElementsByTagName(r)[0];
-        y.parentNode.insertBefore(t, y);
-      })(window, document, "clarity", "script", "93jfa0ufr9");
-    </script>-->
 
     <!-- Title and Icon -->
 
@@ -86,8 +69,8 @@
 
     <link rel="stylesheet" href="../css/client.css" />
     <link rel="stylesheet" href="../css/videoGrid.css" />
-    <link rel="stylesheet" href="../css/whiteboard.css" />
     <link rel="stylesheet" href="../css/newcall.css" />
+    <link rel="stylesheet" href="../css/speakerOptionPopup.css" />
 
     <!-- https://cdnjs.com/libraries/font-awesome -->
 
@@ -95,6 +78,12 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
     />
+     <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
 
     <!-- https://animate.style 4 using for swal fadeIn-Out -->
 
@@ -135,20 +124,14 @@
       <button
         id="mySettingsBtn"
         class="fas fa-sharp fa-regular fa-gear"
+	style="display:none;"
       ></button>
       <button id="shareRoomBtn" class="fas fa-users"></button>
-
       <button id="videoBtn" class="fas fa-video"></button>
       <button id="swapCameraBtn" class="fas fa-camera-rotate"></button>
-      <button id="screenShareBtn" class="fas fa-desktop"></button>
-      <button id="recordStreamBtn" class="fas fa-record-vinyl"></button>
       <button id="fullScreenBtn" class="fas fa-expand-alt"></button>
-      <button id="chatRoomBtn" class="fas fa-comment"></button>
       <button id="audioBtn" class="fas fa-microphone"></button>
-      <button id="captionBtn" class="fas fa-closed-captioning"></button>
       <button id="myHandBtn" class="fas fa-hand-paper"></button>
-      <button id="whiteboardBtn" class="fas fa-chalkboard-teacher"></button>
-      <button id="fileShareBtn" class="fas fa-folder-open"></button>
       <button id="audioOutputChangeBtn" class="fas fa-volume-up"></button>
       <button id="nextBtn">
         <img
@@ -168,7 +151,6 @@
         https://codepen.io/sajadhsm/pen/odaBdd
         https://getemoji.com
         -->
-
     <section id="msgerDraggable" class="msger-draggable fadein">
       <section id="msger" class="msger">
         <header id="msgerHeader" class="msger-header">
@@ -180,7 +162,6 @@
             <button id="msgerClean" class="fas fa-trash"></button>
           </div>
         </header>
-
         <main id="msgerChat" class="msger-chat"></main>
 
         <!-- Start emoji picker -->
@@ -201,11 +182,7 @@
 
         <div class="msger-input-buttons">
           <button id="msgerEmojiBtn" class="fas fa-smile"></button>
-          <button id="msgerMarkdownBtn" class="fab fa-markdown"></button>
-          <button id="msgerShareFileBtn" class="fas fa-paperclip"></button>
-          <button id="msgerVideoUrlBtn" class="fab fa-youtube"></button>
           <button id="msgerCPBtn" class="fas fa-users"></button>
-          <button id="msgerCleanTextBtn" class="fas fa-trash"></button>
           <button id="msgerPasteBtn" class="fas fa-paste"></button>
           <label class="switch">
             <input id="msgerShowChatOnMsg" type="checkbox" checked />
@@ -284,38 +261,35 @@
 
     <!-- Start my settings -->
 
-    <section id="mySettings" class="center fadein">
+    <section id="mySettings" class="center">
       <header id="mySettingsHeader">
         <button id="mySettingsCloseBtn" class="fas fa-times"></button>
       </header>
-      <main>
-        <br />
-        <div class="tab">
-          <button id="tabDevicesBtn" class="fas fa-cog tablinks"></button>
-          <button id="tabBandwidthBtn" class="fas fa-wifi tablinks"></button>
+      <main id="settings_main">
+        <br class="br" />
+        <div class="tab" id="tab">
           <button id="tabRoomBtn" class="fas fa-home tablinks"></button>
+          <button id="tabDevicesBtn" class="fas fa-cog tablinks"></button>
           <button id="tabStylingBtn" class="fas fa-palette tablinks"></button>
           <button id="tabLanguagesBtn" class="fas fa-globe tablinks"></button>
         </div>
-
         <div id="tabDevices" class="tabcontent">
-          <br />
-          <div>
+          <br class="br" />
+          <div id="cameraChangeBtn">
             <label for="videoSource">Kamera</label><br />
             <select id="videoSource"></select>
           </div>
           <br />
-          <div>
-            <label for="audioSource">Mikrofon</label><br />
+          <div id="audioDevices">
+            <label for="audioSource">Audio Devices</label><br />
             <select id="audioSource"></select>
           </div>
           <br />
-          <div>
+          <div id="speakerChangeBtn">
             <label for="audioOutput">Speaker</label><br />
             <select id="audioOutput"></select>
           </div>
         </div>
-
         <div id="tabBandwidth" class="tabcontent">
           <br />
           <label for="videoQuality">Video sifati</label>
@@ -391,14 +365,14 @@
             </button>
           </div>
           <br /><br />
-          <label>Ovoz effektlar</label><br />
+          <!-- 
           <input
             id="switchSounds"
             style="color: #fff"
             class="toggle"
             type="checkbox"
             checked
-          />
+          /> -->
         </div>
 
         <div id="tabStyling" class="tabcontent">
@@ -450,112 +424,6 @@
 
     <!-- End my settings -->
 
-    <!-- Start whiteboard -->
-
-    <section id="whiteboard" class="hidden">
-      <header id="whiteboardHeader" class="whiteboard-header">
-        <div id="whiteboardTitle" class="whiteboard-header-title">
-          <button id="whiteboardCloseBtn" class="fas fa-times"></button>
-        </div>
-        <div class="whiteboard-header-options">
-          <button
-            id="whiteboardGhostButton"
-            class="fas fa-circle-half-stroke"
-          ></button>
-          <input
-            id="wbBackgroundColorEl"
-            class="whiteboardColorPicker"
-            type="color"
-            value="#FFFFFF"
-          />
-          <input
-            id="wbDrawingColorEl"
-            class="whiteboardColorPicker"
-            type="color"
-            value="#000"
-          />
-          <button id="whiteboardPencilBtn" class="fas fa-pencil-alt"></button>
-          <button
-            id="whiteboardObjectBtn"
-            class="fas fa-mouse-pointer"
-          ></button>
-          <button id="whiteboardUndoBtn" class="fas fa-undo"></button>
-          <button id="whiteboardRedoBtn" class="fas fa-redo"></button>
-          <button id="whiteboardImgFileBtn" class="far fa-image"></button>
-          <button id="whiteboardImgUrlBtn" class="fas fa-link"></button>
-          <button id="whiteboardTextBtn" class="fas fa-spell-check"></button>
-          <button id="whiteboardLineBtn" class="fas fa-slash"></button>
-          <button id="whiteboardRectBtn" class="far fa-square"></button>
-          <button id="whiteboardCircleBtn" class="far fa-circle"></button>
-          <button id="whiteboardSaveBtn" class="fas fa-save"></button>
-          <button id="whiteboardEraserBtn" class="fas fa-eraser"></button>
-          <button id="whiteboardCleanBtn" class="fas fa-trash"></button>
-        </div>
-      </header>
-      <main>
-        <canvas id="wbCanvas"></canvas>
-      </main>
-    </section>
-
-    <!-- End whiteboard -->
-
-    <!-- Start File Send -->
-
-    <div id="sendFileDiv" class="center fadein">
-      <img
-        id="imgShareSend"
-        src="../images/share.png"
-        alt="Share-send"
-        class="center-img"
-      /><br />
-      <div id="sendFileInfo"></div>
-      <div id="sendFilePercentage"></div>
-      <progress id="sendProgress" max="0" value="0"></progress>
-      <button id="sendAbortBtn">
-        <i class="fas fa-stop-circle"></i>&nbsp; Abort
-      </button>
-    </div>
-
-    <!-- End File Send -->
-
-    <!-- Start File Receive -->
-
-    <div id="receiveFileDiv" class="center fadein">
-      <img
-        id="imgShareReceive"
-        src="../images/share.png"
-        alt="Share-receive"
-        class="center-img"
-      /><br />
-      <div id="receiveFileInfo"></div>
-      <div id="receiveFilePercentage"></div>
-      <progress id="receiveProgress" max="0" value="0"></progress>
-      <button id="receiveHideBtn">
-        <i class="fas fa-eye-slash"></i>&nbsp; Hide
-      </button>
-    </div>
-
-    <!-- Stop File Receive -->
-
-    <!-- Start video URL iframe -->
-
-    <div id="videoUrlCont" class="center fadein">
-      <div id="videoUrlHeader">
-        <button id="videoUrlCloseBtn" class="fas fa-times"></button>
-      </div>
-      <br />
-      <iframe
-        id="videoUrlIframe"
-        title="Video Url Player"
-        src=""
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-
-    <!-- End Youtube Iframe -->
-
     <!-- Start Video - Audio player -->
 
     <div id="videoAudioUrlCont" class="center fadein">
@@ -580,19 +448,6 @@
     <div id="videoMediaContainer"></div>
 
     <!-- End Video container -->
-
-    <!--
-        - JS scripts https://cdn.jsdelivr.net
-        
-        - https://webrtc.github.io/adapter/adapter-latest.js                (https://github.com/webrtcHacks/adapter)
-        - https://www.npmjs.com/package/marked                              (https://github.com/markedjs/marked)
-        - https://www.npmjs.com/package/detectrtc                           (https://github.com/muaz-khan/DetectRTC)
-        - https://www.npmjs.com/package/sweetalert2                         (https://github.com/sweetalert2/sweetalert2)
-        - https://www.npmjs.com/package/fabric                              (https://github.com/fabricjs/fabric.js)
-        - https://www.npmjs.com/package/qrious                              (https://github.com/neocotic/qrious)
-        - https://cdn.jsdelivr.net/npm/emoji-mart@latest/dist/browser.js    (https://github.com/missive/emoji-mart)
-        - https://www.npmjs.com/package/tippy.js                            (https://github.com/atomiks/tippyjs) 
-        -->
     <script
       defer
       src="https://webrtc.github.io/adapter/adapter-latest.js"
@@ -677,27 +532,5 @@
         quicklink.listen();
       });
     </script>
-    <!-- end of Js scripts -->
-    <!-- 
-		the <video> and <audio> tags are all added and removed dynamically
-		in 'onAddStream', 'setupLocalMedia', and 'removePeer'/'disconnect'
-		-->
-
-    <!-- 
-            Start Google Translate 
-            https://www.w3schools.com/howto/howto_google_translate.asp
-        -->
-
-    <!-- <script>
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement(
-          { pageLanguage: "en" },
-          "google_translate_element"
-        );
-      }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script> -->
-
-    <!-- End Google Translate -->
   </body>
 </html>

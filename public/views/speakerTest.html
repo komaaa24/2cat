@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playground</title>
+    <link rel="stylesheet" href="../css/speakerOptionPopup.css" />
+  </head>
+  <body>
+    <div id="audioOptions"></div>
+    <section class="center">
+      <!--  mobile mock  -->
+      <div class="mockup">
+        <!--   mobile botttom nav, it can be any element you want, like a button etc.   -->
+        <nav class="center">
+          <div class="btn"></div>
+          <div class="btn"></div>
+          <div class="btn"></div>
+        </nav>
+
+        <!--  main bottom sheet / modal    -->
+        <div class="bottom-sheet-wrapper">
+          <div class="backdrop"></div>
+          <div class="bottom-sheet">
+            <div class="close center">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      // Get first nav button
+      const navButton = document.querySelector(".btn");
+
+      // Add click handler
+      navButton.addEventListener("click", () => {
+        // Show modal
+        document
+          .querySelector(".bottom-sheet-wrapper")
+          .classList.add("show-modal");
+      });
+
+      // Get close and backdrop elements
+      const close = document.querySelector(".close");
+      const backdrop = document.querySelector(".backdrop");
+
+      // Add click handlers
+      close.addEventListener("click", () => {
+        document
+          .querySelector(".bottom-sheet-wrapper")
+          .classList.remove("show-modal");
+      });
+
+      backdrop.addEventListener("click", () => {
+        document
+          .querySelector(".bottom-sheet-wrapper")
+          .classList.remove("show-modal");
+      });
+    </script>
+  </body>
+</html>
