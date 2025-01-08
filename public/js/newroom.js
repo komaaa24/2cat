@@ -94,7 +94,7 @@ let adjectivesUz = [
   "qaytmas",
   "sokin",
   "ahmoqona",
-  "dono"
+  "dono",
 ];
 
 let nouns = [
@@ -236,9 +236,8 @@ adjective = adjective.charAt(0) + adjective.substring(1);
 document.getElementById("roomName").value = "";
 
 // Typing Effect
-
 let i = 0;
-let txt =  adjective +"-"+ noun;
+let txt = adjective + "-" + noun;
 let speed = 100;
 
 typeWriter();

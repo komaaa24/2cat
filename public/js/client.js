@@ -1,8 +1,8 @@
-"use strict"; // https://www.w3schools.com/js/js_strict.asp
+"use strict";
 
 const audioDevices = { default: "default", earpiece: "earpiece", speakerphone: "speakerphone", wired: "wired", bluetooth: "bluetooth" }
 
-const isHttps = false; // must be the same on server.js
+const isHttps = false;
 const signalingServer = getSignalingServer();
 const roomId = getRoomId();
 const peersAmountUrl = "/api/groupspeer";

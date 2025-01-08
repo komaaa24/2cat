@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finding a Room</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+      .loading {
+        font-size: 1.5rem;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading">Finding a room...</div>
+
+    <script>
+      const VIDEO_CHAT_UZ = "https://videochat.uz";
+      Telegram.WebApp.ready();
+
+      async function fetchFreePeer() {
+        try {
+          const response = await fetch(`${VIDEO_CHAT_UZ}/api/freepeers`);
+          if (!response.ok) {
+            throw new Error(
+              "Network response was not ok " + response.statusText
+            );
+          }
+          const data = await response.json();
+          if (data && data.freePeer) {
+            window.location.href = `${VIDEO_CHAT_UZ}/join/${data.freePeer}`;
+          } else {
+            throw new Error("Invalid response data");
+          }
+        } catch (error) {
+          document.querySelector(".loading").textContent =
+            "Error finding a room. Please try again later.";
+          console.error("Error fetching free peer:", error);
+        }
+      }
+
+      fetchFreePeer();
+    </script>
+  </body>
+</html>

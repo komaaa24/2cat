@@ -6,7 +6,7 @@ const { v4: uuidV4 } = require("uuid");
 const dotenv = require("dotenv");
 const { getVideoDurationInSeconds } = require("get-video-duration");
 const log = new Logs("server");
-const crypto = require("crypto")
+const crypto = require("crypto");
 
 dotenv.config();
 
@@ -30,7 +30,7 @@ const makeHttps = (status, app) => {
 
 const urlMaker = () => {
   const url = uuidV4();
-  return url
+  return url;
 };
 
 const errorHandler = (err, req, res, next) => {
@@ -106,15 +106,6 @@ const canJoin = (reqQuery) => {
   return true;
 };
 
-// const connectMongoDb = async (uri) => {
-//   try {
-//     await mongoose.connect(uri);
-//     console.log(`Connected to MongoDB...`);
-//   } catch (err) {
-//     console.error(`There is an error while connecting to database \n ${err}`);
-//   }
-// };
-
 /**
  *
  * @param {string} videosPath
@@ -145,16 +136,6 @@ const makeUrlForVideo = (url) => {
   return `${url[0]}\\${url[1]}`;
 };
 
-
-const setUserProp = (users, id, prop) => {
-  for (let i = 0; i < users.length; i++) {
-    if (users[i]["userId"] == id) {
-      users[i][pr]
-    }
-  }
-
-}
-
 const makeUser = () => {
   const newUserId = crypto.randomUUID();
   let newUser = {};
@@ -162,15 +143,14 @@ const makeUser = () => {
   newUser["userStatus"] = "free";
   newUser["lastRoom"] = "";
   return newUser;
-}
+};
 
 const bannedUser = (user) => {
   if (user.userStatus == "banned") {
     return true;
   }
   return false;
-}
-
+};
 
 const doesUserExist = (users, userId) => {
   try {
@@ -185,7 +165,7 @@ const doesUserExist = (users, userId) => {
     console.log(`Error while checking user in db`);
     console.log(err);
   }
-}
+};
 
 module.exports = {
   bannedUser,
@@ -197,9 +177,7 @@ module.exports = {
   getMeetingURL,
   findFreePeer,
   canJoin,
-  // connectMongoDb,
   getAllVideoPaths,
   makeUrlForVideo,
-  doesUserExist
+  doesUserExist,
 };
-
