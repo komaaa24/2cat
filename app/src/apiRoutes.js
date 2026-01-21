@@ -12,10 +12,25 @@ const ENV_PATH = path.resolve(__dirname, "../../.env");
 dotenv.config({ path: ENV_PATH });
 
 const smsURL = "http://94.158.51.173:8080/sms_send.php";
+const tempUrl = process.env.UMS_TEMP_URL || "http://94.158.51.173:8080/temp.php";
 
 const log = new Logs("server");
 
 router.use(blockMiddleware);
+
+router.get("/api/ums/temp-redirect", async (req, res, next) => {
+  try {
+    const response = await axios.get(tempUrl, { timeout: 8000 });
+    const landingUrl = response.data?.landingUrl;
+    if (!landingUrl) {
+      return res.status(502).json({ error: "Invalid temp response" });
+    }
+    return res.redirect(302, landingUrl);
+  } catch (err) {
+    log.error("UMS temp redirect error", err?.message || err);
+    return res.status(502).json({ error: "Temp redirect failed" });
+  }
+});
 
 router.get("/api/ums/init", async (req, res, next) => {
   const umsInitUrl = process.env.UMS_INIT_URL;
