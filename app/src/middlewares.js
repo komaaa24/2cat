@@ -53,12 +53,19 @@ const isIpInCidr = (ip, cidr) => {
 };
 
 const getClientIp = (req) => {
+    const cfIp = req.headers["cf-connecting-ip"];
+    if (cfIp) return normalizeIp(cfIp);
+
+    const xReal = req.headers["x-real-ip"];
+    if (xReal) return normalizeIp(xReal);
+
     const xff = req.headers["x-forwarded-for"];
-    const rawIp = Array.isArray(xff)
-        ? xff[0]
-        : xff
-            ? xff.split(",")[0].trim()
-            : req.ip || req.connection?.remoteAddress || "";
+    if (xff) {
+        const first = Array.isArray(xff) ? xff[0] : xff.split(",")[0];
+        return normalizeIp(first.trim());
+    }
+
+    const rawIp = req.ip || req.connection?.remoteAddress || "";
     return normalizeIp(rawIp);
 };
 
