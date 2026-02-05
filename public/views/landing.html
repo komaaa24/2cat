@@ -117,85 +117,25 @@
         </div>
       </header>
       <main class="site-content">
-        <section class="hero section illustration-section-01">
-          <div class="container">
-            <div class="hero-inner section-inner">
-              <div class="split-wrap invert-mobile">
-                <div class="split-item">
-                  <div
-                    class="hero-content split-item-content center-content-mobile"
-                  >
-                    <h1
-                      id="welcomeText"
-                      class="mt-0 mb-16 reveal-from-bottom"
-                      data-reveal-delay="150"
-                    >
-                      Videochat.uz <br />
-                      Online real-vaqt video muloqot
-                      <br />
-                      Oddiy, tez va xavfsiz.
-                    </h1>
-                    <p
-                      class="mt-0 mb-32 reveal-from-bottom"
-                      data-reveal-delay="200"
-                    ></p>
-                    <div class="reveal-from-bottom" data-reveal-delay="400">
-<!--
-    <pre id="headers">Загрузка...</pre>
-<script>
-        fetch('/headers')  // Делаем запрос на серверный эндпоинт
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("headers").textContent = JSON.stringify(data, null, 4);
-            })
-            .catch(error => {
-                console.error("Ошибка:", error);
-                document.getElementById("headers").textContent = "Ошибка загрузки заголовков";
-            });
-    </script>
--->
-                      <label for="phone" id="phoneLabel">Raqamingizni kiriting:</label><br />
-                      <input
-                        style="
-                          background-color: #f1f1f1;
-                          font-size: x-large;
-                          border: none;
-                          border-radius: 8px;
-                        "
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        autocomplete="on"
-                        autofocus
-                        required
-                      />
-                      <button
-                        class="button button-primary button-wide-mobile br-6 pulse btn-hover"
-                        id="joinchat"
-                        style="
-                          border: 0;
-                          background-image: linear-gradient(
-                            to right,
-                            #03001e,
-                            #7303c0,
-                            #ec38bc
-                          );
-                        "
-                      >
-                        Kirish
-                      </button>
-                    </div>
-                  </div>
-                  <style>
-                    @media (min-width: 641px) {
-                      .hero .split-wrap .split-item {
-                        min-height: 492px;
-                      }
-                    }
-                  </style>
-                </div>
-              </div>
+        <section class="auth-hero">
+          <div class="auth-bg">
+            <span class="blob blob-1"></span>
+            <span class="blob blob-2"></span>
+            <span class="grid"></span>
+          </div>
+          <div class="auth-card">
+            <div class="auth-brand">
+              <img src="../images/favicon.png" alt="Videochat" />
+              <span>Videochat.uz</span>
             </div>
+            <h1>Avtorizatsiya</h1>
+            <p class="auth-sub">
+              Telefon raqamingizni SMS orqali tasdiqlang. UMS oynasiga o‘tib, kod kiritsangiz, biz avtomatik chatga ulangamiz.
+            </p>
+            <button id="joinchat" class="auth-btn">Avtorizatsiyadan o‘tish</button>
+            <p class="auth-note">
+              UMS abonentlari uchun tezkor yo‘naltirish. Boshqa operatorlar: to‘g‘ridan-to‘g‘ri chatga o‘tamiz.
+            </p>
           </div>
         </section>
       </main>
@@ -223,10 +163,7 @@
     <script>
       const IP_FINDER_API = "https://ipapi.co/";
       const API="https://videochat.uz";
-      const userPhoneInput = document.getElementById("phone");
       const getUserPhoneBtn = document.getElementById("joinchat");
-      const welcomeText = document.getElementById("welcomeText");
-      const phoneLabel = document.getElementById("phoneLabel");
 
       const userInfo = {};
 
@@ -248,11 +185,6 @@
         const ip = await identifyUserLocation();
         const country = await identifyCountry(ip);
         userInfo.country = country;
-
-        // Telefon raqamini biz so‘ramaymiz, UMS landing o‘zi so‘raydi.
-        userPhoneInput.style.display = "none";
-        phoneLabel.style.display = "none";
-        getUserPhoneBtn.textContent = "Kirish";
 
         if (userInfo.country === "UZ") {
           getUserPhoneBtn.addEventListener("click", () => {
