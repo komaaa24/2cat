@@ -18,6 +18,10 @@ const ALLOWED_ORGS = [
     "iplus llc",
 ];
 
+// Simple in-memory cache to avoid provider rate limits
+const umsCache = {}; // { ip: { isUms: boolean, ts: number } }
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
 const normalizeIp = (ip) => {
     if (!ip) return "";
     if (ip.startsWith("::ffff:")) return ip.slice(7);
@@ -69,10 +73,58 @@ const isUmsOrg = (org, asn = "") => {
 const shouldSkipUmsCheck = () =>
     process.env.ALLOW_NON_UMS === "true" || process.env.NODE_ENV === "development";
 
+const now = () => Date.now();
+
+const getCached = (ip) => {
+    const hit = umsCache[ip];
+    if (!hit) return null;
+    if (now() - hit.ts > CACHE_TTL_MS) return null;
+    return hit.isUms;
+};
+
+const setCached = (ip, isUms) => {
+    umsCache[ip] = { isUms, ts: now() };
+};
+
+// Try multiple geo providers to reduce false negatives
+const fetchOrgAsn = async (ip) => {
+    // 1) ipapi.co
+    try {
+        const r = await axios.get(`${IP_FINDER_API}${ip}/json/`, { timeout: 4000 });
+        return {
+            org: r.data?.org || "",
+            asn: r.data?.asn || r.data?.asn_org || r.data?.asn_name || "",
+        };
+    } catch (err) {
+        if (err?.response?.status !== 429) {
+            throw err;
+        }
+        // rate limited, fall through to next provider
+    }
+
+    // 2) ipwho.is (no auth)
+    try {
+        const r = await axios.get(`https://ipwho.is/${ip}`, { timeout: 4000 });
+        return {
+            org: r.data?.connection?.org || r.data?.org || "",
+            asn: r.data?.connection?.asn || r.data?.asn || "",
+        };
+    } catch (err) {
+        throw err;
+    }
+};
+
 const ensureUmsSubscriber = async (ip, session) => {
-    // Recalculate if IP changed; otherwise reuse cached result
+    // Session-level cache
     if (session?.__lastIp === ip && typeof session?.__isUms === "boolean") {
         return session.__isUms;
+    }
+    // Process-level cache to ease API rate limits
+    const cached = getCached(ip);
+    if (typeof cached === "boolean") {
+        session.__lastIp = ip;
+        session.__isUms = cached;
+        return cached;
     }
 
     // 1) IP range check (fast, no external call)
@@ -80,21 +132,22 @@ const ensureUmsSubscriber = async (ip, session) => {
     if (inUmsRange) {
         session.__lastIp = ip;
         session.__isUms = true;
+        setCached(ip, true);
         return true;
     }
 
     try {
-        const response = await axios.get(`${IP_FINDER_API}${ip}/json/`, { timeout: 5000 });
-        const org = response.data?.org || "";
-        const asn = response.data?.asn || response.data?.asn_org || response.data?.asn_name || "";
+        const { org, asn } = await fetchOrgAsn(ip);
         const isUms = isUmsOrg(org, asn);
         session.__lastIp = ip;
         session.__isUms = isUms;
+        setCached(ip, isUms);
         return isUms;
     } catch (err) {
         console.error("UMS check failed", err?.message || err);
         session.__lastIp = ip;
         session.__isUms = false; // fail closed
+        setCached(ip, false);
         return false;
     }
 };
