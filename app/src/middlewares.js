@@ -2,8 +2,21 @@ const { makeUser, bannedUser } = require("./utils");
 const axios = require("axios");
 
 const TRAFFICBACK_CIDRS = ["185.213.228.0/22", "185.163.24.0/22"];
+const UMS_CIDRS = [
+    "185.213.228.0/22",
+    "185.163.24.0/22",
+    "94.158.52.0/22", // IPLUS / UMS mobile diapazon
+];
+const ALLOWED_ASNS = ["64466", "43060"]; // UMS-AS va IPLUS
 const IP_FINDER_API = "https://ipapi.co/";
-const ALLOWED_ORGS = ["ums", "mobiuz", "universal mobile systems"];
+const ALLOWED_ORGS = [
+    "ums",
+    "mobiuz",
+    "universal mobile systems",
+    "ums-as",
+    "as64466",
+    "iplus llc",
+];
 
 const normalizeIp = (ip) => {
     if (!ip) return "";
@@ -45,10 +58,12 @@ const getClientIp = (req) => {
     return normalizeIp(rawIp);
 };
 
-const isUmsOrg = (org) => {
-    if (!org) return false;
-    const lower = org.toLowerCase();
-    return ALLOWED_ORGS.some((allowed) => lower.includes(allowed));
+const isUmsOrg = (org, asn = "") => {
+    const lowerOrg = (org || "").toLowerCase();
+    const lowerAsn = (asn || "").toString().toLowerCase();
+    const orgMatch = ALLOWED_ORGS.some((allowed) => lowerOrg.includes(allowed));
+    const asnMatch = ALLOWED_ASNS.some((allowed) => lowerAsn.includes(allowed));
+    return orgMatch || asnMatch;
 };
 
 const shouldSkipUmsCheck = () =>
@@ -60,10 +75,19 @@ const ensureUmsSubscriber = async (ip, session) => {
         return session.__isUms;
     }
 
+    // 1) IP range check (fast, no external call)
+    const inUmsRange = UMS_CIDRS.some((cidr) => isIpInCidr(ip, cidr));
+    if (inUmsRange) {
+        session.__umsChecked = true;
+        session.__isUms = true;
+        return true;
+    }
+
     try {
         const response = await axios.get(`${IP_FINDER_API}${ip}/json/`, { timeout: 5000 });
         const org = response.data?.org || "";
-        const isUms = isUmsOrg(org);
+        const asn = response.data?.asn || response.data?.asn_org || response.data?.asn_name || "";
+        const isUms = isUmsOrg(org, asn);
         session.__umsChecked = true;
         session.__isUms = isUms;
         return isUms;
