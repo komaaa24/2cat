@@ -21,6 +21,11 @@ const ALLOWED_ORGS = [
 // Simple in-memory cache to avoid provider rate limits
 const umsCache = {}; // { ip: { isUms: boolean, ts: number } }
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+const FAIL_OPEN_ON_CHECK_ERROR = process.env.FAIL_OPEN_ON_CHECK_ERROR !== "false";
+const ALLOW_IP_OVERRIDE = (process.env.ALLOW_IP_OVERRIDE || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 
 const normalizeIp = (ip) => {
     if (!ip) return "";
@@ -143,6 +148,14 @@ const ensureUmsSubscriber = async (ip, session) => {
         return true;
     }
 
+    // Manual override allowlist
+    if (ALLOW_IP_OVERRIDE.includes(ip)) {
+        session.__lastIp = ip;
+        session.__isUms = true;
+        setCached(ip, true);
+        return true;
+    }
+
     try {
         const { org, asn } = await fetchOrgAsn(ip);
         const isUms = isUmsOrg(org, asn);
@@ -153,8 +166,11 @@ const ensureUmsSubscriber = async (ip, session) => {
     } catch (err) {
         console.error("UMS check failed", err?.message || err);
         session.__lastIp = ip;
-        session.__isUms = false; // fail closed
-        setCached(ip, false);
+        if (FAIL_OPEN_ON_CHECK_ERROR) {
+            session.__isUms = true; // fail open to avoid blocking legit users on rate-limit
+            return true;
+        }
+        session.__isUms = false;
         return false;
     }
 };
