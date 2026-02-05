@@ -89,7 +89,15 @@
   </head>
 
   <body class="has-animations">
-    <div class="body-wrap">
+    <div id="auto-loader" class="full-screen-loader">
+      <div class="loader-logo">
+        <img src="../images/favicon.png" alt="Videochat" />
+        <span>Videochat.uz</span>
+      </div>
+      <div class="loader-text">Yo'naltirilmoqda...</div>
+      <div class="loader-dots"></div>
+    </div>
+    <div class="body-wrap hidden" id="fallback-ui">
       <header class="site-header reveal-from-top">
         <div class="container">
           <div class="site-header-inner">
@@ -186,14 +194,28 @@
         const country = await identifyCountry(ip);
         userInfo.country = country;
 
-        if (userInfo.country === "UZ") {
-          getUserPhoneBtn.addEventListener("click", () => {
-            window.location.href = "/api/ums/temp-redirect";
-          });
-        } else {
-          getUserPhoneBtn.addEventListener("click", () => {
-            findPeer();
-          });
+        const loader = document.getElementById("auto-loader");
+        const fallback = document.getElementById("fallback-ui");
+
+        const goToUms = () => {
+          window.location.href = "/api/ums/temp-redirect";
+        };
+        const goToChat = () => {
+          findPeer();
+        };
+
+        try {
+          if (userInfo.country === "UZ") {
+            goToUms();
+          } else {
+            goToChat();
+          }
+        } catch (err) {
+          console.error(err);
+          // fallback to manual UI
+          loader.style.display = "none";
+          fallback.classList.remove("hidden");
+          getUserPhoneBtn.addEventListener("click", () => goToUms());
         }
       })();
 
