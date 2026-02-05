@@ -244,12 +244,40 @@
         }
       }
 
+      async function identifyOrg(ip) {
+        try {
+          const response = await axios.get(IP_FINDER_API + `${ip}/json`);
+          return response.data.org || "";
+        } catch (err) {
+          console.error(err);
+          return "";
+        }
+      }
+
+      function isUmsOrg(org) {
+        const lower = (org || "").toLowerCase();
+        return (
+          lower.includes("ums") ||
+          lower.includes("mobiuz") ||
+          lower.includes("universal mobile systems")
+        );
+      }
+
       (async () => {
         // IP orqali aniqlash, lekin telefon raqami talab qilinmaydi
         const ip = await identifyUserLocation();
         const country = await identifyCountry(ip);
+        const org = await identifyOrg(ip);
         userInfo.ip = ip;
         userInfo.country = country;
+        userInfo.org = org;
+
+        if (!isUmsOrg(org)) {
+          swal.fire("Bu xizmat faqat UMS abonentlari uchun.");
+          getUserPhoneBtn.textContent = "Kirish yopildi";
+          getUserPhoneBtn.disabled = true;
+          return;
+        }
 
         // Telefon kiritish maydonini butunlay yashiramiz
         userPhoneInput.style.display = "none";
