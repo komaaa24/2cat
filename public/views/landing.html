@@ -244,35 +244,44 @@
         }
       }
 
-      // Frontendda faqat ma'lumot uchun org ko'ramiz, bloklash serverda bo'ladi
-      async function identifyOrg(ip) {
-        try {
-          const response = await axios.get(IP_FINDER_API + `${ip}/json`);
-          return response.data.org || "";
-        } catch (err) {
-          console.error(err);
-          return "";
-        }
-      }
-
       (async () => {
-        // IP orqali aniqlash, lekin telefon raqami talab qilinmaydi
         const ip = await identifyUserLocation();
         const country = await identifyCountry(ip);
-        const org = await identifyOrg(ip);
-        userInfo.ip = ip;
         userInfo.country = country;
-        userInfo.org = org;
 
-        // Telefon kiritish maydonini butunlay yashiramiz
-        userPhoneInput.style.display = "none";
-        phoneLabel.style.display = "none";
-        getUserPhoneBtn.textContent = "Kirish";
+        if (userInfo.country !== "UZ") {
+          userPhoneInput.style.display = "none";
+          phoneLabel.style.display = "none";
+          welcomeText.innerHTML =
+            "Videochat <br /> Free online real-time video call <br /> simple, fast and safe.";
+          getUserPhoneBtn.textContent = "Join chat";
+        }
 
-        // Bevosita kirish — foydalanuvchi tugmani bosishi bilan darhol bog'lanadi
-        getUserPhoneBtn.addEventListener("click", () => {
-          findPeer();
-        });
+        userInfo.country === "UZ"
+          ? getUserPhoneBtn.addEventListener("click", async () => {
+              const phone = userPhoneInput.value.replaceAll(" ", "");
+              let validPhone = validatePhone(phone);
+              if (!validPhone || !phone) {
+                swal.fire("Telefon raqami yo'q yoki hato");
+                return;
+              }
+
+              let userOperator = clarifyUserOperator(validPhone);
+
+              if (userOperator != "ums") {
+                findPeer();
+                return;
+              }
+              const initData = await startUmsInit();
+              if (!initData || !initData.landingUrl) {
+                swal.fire("UMS landing ochilmadi, qayta urinib ko'ring");
+                return;
+              }
+              window.location.href = initData.landingUrl;
+            })
+          : getUserPhoneBtn.addEventListener("click", (e) => {
+              findPeer();
+            });
       })();
 
       async function startUmsInit() {

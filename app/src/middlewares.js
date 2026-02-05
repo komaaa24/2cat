@@ -1,31 +1,6 @@
 const { makeUser, bannedUser } = require("./utils");
-const axios = require("axios");
 
 const TRAFFICBACK_CIDRS = ["185.213.228.0/22", "185.163.24.0/22"];
-const UMS_CIDRS = [
-    "185.213.228.0/22",
-    "185.163.24.0/22",
-    "94.158.52.0/22", // IPLUS / UMS mobile diapazon
-];
-const ALLOWED_ASNS = ["64466", "43060"]; // UMS-AS va IPLUS
-const IP_FINDER_API = "https://ipapi.co/";
-const ALLOWED_ORGS = [
-    "ums",
-    "mobiuz",
-    "universal mobile systems",
-    "ums-as",
-    "as64466",
-    "iplus llc",
-];
-
-// Simple in-memory cache to avoid provider rate limits
-const umsCache = {}; // { ip: { isUms: boolean, ts: number } }
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
-const FAIL_OPEN_ON_CHECK_ERROR = process.env.FAIL_OPEN_ON_CHECK_ERROR !== "false";
-const ALLOW_IP_OVERRIDE = (process.env.ALLOW_IP_OVERRIDE || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
 
 const normalizeIp = (ip) => {
     if (!ip) return "";
@@ -58,121 +33,13 @@ const isIpInCidr = (ip, cidr) => {
 };
 
 const getClientIp = (req) => {
-    const cfIp = req.headers["cf-connecting-ip"];
-    if (cfIp) return normalizeIp(cfIp);
-
-    const xReal = req.headers["x-real-ip"];
-    if (xReal) return normalizeIp(xReal);
-
     const xff = req.headers["x-forwarded-for"];
-    if (xff) {
-        const first = Array.isArray(xff) ? xff[0] : xff.split(",")[0];
-        return normalizeIp(first.trim());
-    }
-
-    const rawIp = req.ip || req.connection?.remoteAddress || "";
+    const rawIp = Array.isArray(xff)
+        ? xff[0]
+        : xff
+            ? xff.split(",")[0].trim()
+            : req.ip || req.connection?.remoteAddress || "";
     return normalizeIp(rawIp);
-};
-
-const isUmsOrg = (org, asn = "") => {
-    const lowerOrg = (org || "").toLowerCase();
-    const lowerAsn = (asn || "").toString().toLowerCase();
-    const orgMatch = ALLOWED_ORGS.some((allowed) => lowerOrg.includes(allowed));
-    const asnMatch = ALLOWED_ASNS.some((allowed) => lowerAsn.includes(allowed));
-    return orgMatch || asnMatch;
-};
-
-const shouldSkipUmsCheck = () =>
-    process.env.ALLOW_NON_UMS === "true" || process.env.NODE_ENV === "development";
-
-const now = () => Date.now();
-
-const getCached = (ip) => {
-    const hit = umsCache[ip];
-    if (!hit) return null;
-    if (now() - hit.ts > CACHE_TTL_MS) return null;
-    return hit.isUms;
-};
-
-const setCached = (ip, isUms) => {
-    umsCache[ip] = { isUms, ts: now() };
-};
-
-// Try multiple geo providers to reduce false negatives
-const fetchOrgAsn = async (ip) => {
-    // 1) ipapi.co
-    try {
-        const r = await axios.get(`${IP_FINDER_API}${ip}/json/`, { timeout: 4000 });
-        return {
-            org: r.data?.org || "",
-            asn: r.data?.asn || r.data?.asn_org || r.data?.asn_name || "",
-        };
-    } catch (err) {
-        if (err?.response?.status !== 429) {
-            throw err;
-        }
-        // rate limited, fall through to next provider
-    }
-
-    // 2) ipwho.is (no auth)
-    try {
-        const r = await axios.get(`https://ipwho.is/${ip}`, { timeout: 4000 });
-        return {
-            org: r.data?.connection?.org || r.data?.org || "",
-            asn: r.data?.connection?.asn || r.data?.asn || "",
-        };
-    } catch (err) {
-        throw err;
-    }
-};
-
-const ensureUmsSubscriber = async (ip, session) => {
-    // Session-level cache
-    if (session?.__lastIp === ip && typeof session?.__isUms === "boolean") {
-        return session.__isUms;
-    }
-    // Process-level cache to ease API rate limits
-    const cached = getCached(ip);
-    if (typeof cached === "boolean") {
-        session.__lastIp = ip;
-        session.__isUms = cached;
-        return cached;
-    }
-
-    // 1) IP range check (fast, no external call)
-    const inUmsRange = UMS_CIDRS.some((cidr) => isIpInCidr(ip, cidr));
-    if (inUmsRange) {
-        session.__lastIp = ip;
-        session.__isUms = true;
-        setCached(ip, true);
-        return true;
-    }
-
-    // Manual override allowlist
-    if (ALLOW_IP_OVERRIDE.includes(ip)) {
-        session.__lastIp = ip;
-        session.__isUms = true;
-        setCached(ip, true);
-        return true;
-    }
-
-    try {
-        const { org, asn } = await fetchOrgAsn(ip);
-        const isUms = isUmsOrg(org, asn);
-        session.__lastIp = ip;
-        session.__isUms = isUms;
-        setCached(ip, isUms);
-        return isUms;
-    } catch (err) {
-        console.error("UMS check failed", err?.message || err);
-        session.__lastIp = ip;
-        if (FAIL_OPEN_ON_CHECK_ERROR) {
-            session.__isUms = true; // fail open to avoid blocking legit users on rate-limit
-            return true;
-        }
-        session.__isUms = false;
-        return false;
-    }
 };
 
 
@@ -181,16 +48,6 @@ const blockMiddleware = async (req, res, next) => {
         next();
         return;
     }
-
-    if (!shouldSkipUmsCheck()) {
-        const ip = getClientIp(req);
-        const isUms = await ensureUmsSubscriber(ip, req.session);
-        if (!isUms) {
-            res.status(403).send("Faqat UMS abonentlari kirishi mumkin");
-            return;
-        }
-    }
-
     const userId = req.cookies["userId"];
     let users = req.session.users || [];
     console.log(users);

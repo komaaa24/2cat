@@ -16,7 +16,6 @@ dotenv.config({ path: ENV_PATH });
 const axios = require("axios");
 
 const app = express();
-app.set("trust proxy", true); // respect X-Forwarded-For / real client IP behind proxies
 const Logs = require("./logs");
 const log = new Logs("server");
 const { errorHandler, makeHttps } = require("./utils");
