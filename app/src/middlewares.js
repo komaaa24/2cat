@@ -70,15 +70,15 @@ const shouldSkipUmsCheck = () =>
     process.env.ALLOW_NON_UMS === "true" || process.env.NODE_ENV === "development";
 
 const ensureUmsSubscriber = async (ip, session) => {
-    // Cache result in session to avoid repeated lookups per user
-    if (session?.__umsChecked) {
+    // Recalculate if IP changed; otherwise reuse cached result
+    if (session?.__lastIp === ip && typeof session?.__isUms === "boolean") {
         return session.__isUms;
     }
 
     // 1) IP range check (fast, no external call)
     const inUmsRange = UMS_CIDRS.some((cidr) => isIpInCidr(ip, cidr));
     if (inUmsRange) {
-        session.__umsChecked = true;
+        session.__lastIp = ip;
         session.__isUms = true;
         return true;
     }
@@ -88,14 +88,13 @@ const ensureUmsSubscriber = async (ip, session) => {
         const org = response.data?.org || "";
         const asn = response.data?.asn || response.data?.asn_org || response.data?.asn_name || "";
         const isUms = isUmsOrg(org, asn);
-        session.__umsChecked = true;
+        session.__lastIp = ip;
         session.__isUms = isUms;
         return isUms;
     } catch (err) {
         console.error("UMS check failed", err?.message || err);
-        // Fail closed: treat as not UMS
-        session.__umsChecked = true;
-        session.__isUms = false;
+        session.__lastIp = ip;
+        session.__isUms = false; // fail closed
         return false;
     }
 };
